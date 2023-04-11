@@ -1,0 +1,15 @@
+{
+  "name": "azimuth-watcher-ts",
+  "private": true,
+  "license": "AGPL-3.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "lerna run build --stream",
+    "lint": "lerna run lint --stream -- --max-warnings=0"
+  },
+  "devDependencies": {
+    "lerna": "^6.6.1"
+  }
+}

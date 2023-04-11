@@ -1,0 +1,43 @@
+subscription onEvent{
+    onEvent{
+        block{
+            cid
+            hash
+            number
+            timestamp
+            parentHash
+        }
+        tx{
+            hash
+            index
+            from
+            to
+        }
+        contract
+        eventIndex
+        event{
+            ... on UpgradePollStartedEvent {
+                proposal
+            }
+            ... on DocumentPollStartedEvent {
+                proposal
+            }
+            ... on UpgradeMajorityEvent {
+                proposal
+            }
+            ... on DocumentMajorityEvent {
+                proposal
+            }
+            ... on OwnershipRenouncedEvent {
+                previousOwner
+            }
+            ... on OwnershipTransferredEvent {
+                previousOwner
+                newOwner
+            }
+        }
+        proof{
+            data
+        }
+    }
+}
