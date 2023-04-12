@@ -1,0 +1,140 @@
+directive @cacheControl(maxAge: Int, inheritMaxAge: Boolean, scope: CacheControlScope) on FIELD_DEFINITION | OBJECT | INTERFACE | UNION
+
+enum CacheControlScope {
+  PUBLIC
+  PRIVATE
+}
+
+scalar BigInt
+
+scalar BigDecimal
+
+scalar Bytes
+
+type Proof {
+  data: String!
+}
+
+type ResultBoolean {
+  value: Boolean!
+  proof: Proof
+}
+
+type ResultString {
+  value: String!
+  proof: Proof
+}
+
+type ResultInt {
+  value: Int!
+  proof: Proof
+}
+
+type ResultBigInt {
+  value: BigInt!
+  proof: Proof
+}
+
+type _Block_ {
+  cid: String!
+  hash: String!
+  number: Int!
+  timestamp: Int!
+  parentHash: String!
+}
+
+type _Transaction_ {
+  hash: String!
+  index: Int!
+  from: String!
+  to: String!
+}
+
+type ResultEvent {
+  block: _Block_!
+  tx: _Transaction_!
+  contract: String!
+  eventIndex: Int!
+  event: Event!
+  proof: Proof
+}
+
+union Event = CensuredEvent | ForgivenEvent
+
+type CensuredEvent {
+  by: Int!
+  who: Int!
+}
+
+type ForgivenEvent {
+  by: Int!
+  who: Int!
+}
+
+type SyncStatus {
+  latestIndexedBlockHash: String!
+  latestIndexedBlockNumber: Int!
+  latestCanonicalBlockHash: String!
+  latestCanonicalBlockNumber: Int!
+}
+
+type ResultState {
+  block: _Block_!
+  contractAddress: String!
+  cid: String!
+  kind: String!
+  data: String!
+}
+
+type Query {
+  events(blockHash: String!, contractAddress: String!, name: String): [ResultEvent!]
+  eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!): [ResultEvent!]
+  isActive(blockHash: String!, contractAddress: String!, _point: Int!): ResultBoolean!
+  getKeyRevisionNumber(blockHash: String!, contractAddress: String!, _point: Int!): ResultInt!
+  hasBeenLinked(blockHash: String!, contractAddress: String!, _point: Int!): ResultBoolean!
+  isLive(blockHash: String!, contractAddress: String!, _point: Int!): ResultBoolean!
+  getContinuityNumber(blockHash: String!, contractAddress: String!, _point: Int!): ResultInt!
+  getSpawnCount(blockHash: String!, contractAddress: String!, _point: Int!): ResultInt!
+  hasSponsor(blockHash: String!, contractAddress: String!, _point: Int!): ResultBoolean!
+  getSponsor(blockHash: String!, contractAddress: String!, _point: Int!): ResultInt!
+  isSponsor(blockHash: String!, contractAddress: String!, _point: Int!, _sponsor: Int!): ResultBoolean!
+  getSponsoringCount(blockHash: String!, contractAddress: String!, _sponsor: Int!): ResultBigInt!
+  isEscaping(blockHash: String!, contractAddress: String!, _point: Int!): ResultBoolean!
+  getEscapeRequest(blockHash: String!, contractAddress: String!, _point: Int!): ResultInt!
+  isRequestingEscapeTo(blockHash: String!, contractAddress: String!, _point: Int!, _sponsor: Int!): ResultBoolean!
+  getEscapeRequestsCount(blockHash: String!, contractAddress: String!, _sponsor: Int!): ResultBigInt!
+  getOwner(blockHash: String!, contractAddress: String!, _point: Int!): ResultString!
+  isOwner(blockHash: String!, contractAddress: String!, _point: Int!, _address: String!): ResultBoolean!
+  getOwnedPointCount(blockHash: String!, contractAddress: String!, _whose: String!): ResultBigInt!
+  getOwnedPointAtIndex(blockHash: String!, contractAddress: String!, _whose: String!, _index: BigInt!): ResultInt!
+  getManagementProxy(blockHash: String!, contractAddress: String!, _point: Int!): ResultString!
+  isManagementProxy(blockHash: String!, contractAddress: String!, _point: Int!, _proxy: String!): ResultBoolean!
+  canManage(blockHash: String!, contractAddress: String!, _point: Int!, _who: String!): ResultBoolean!
+  getManagerForCount(blockHash: String!, contractAddress: String!, _proxy: String!): ResultBigInt!
+  getSpawnProxy(blockHash: String!, contractAddress: String!, _point: Int!): ResultString!
+  isSpawnProxy(blockHash: String!, contractAddress: String!, _point: Int!, _proxy: String!): ResultBoolean!
+  canSpawnAs(blockHash: String!, contractAddress: String!, _point: Int!, _who: String!): ResultBoolean!
+  getSpawningForCount(blockHash: String!, contractAddress: String!, _proxy: String!): ResultBigInt!
+  getVotingProxy(blockHash: String!, contractAddress: String!, _point: Int!): ResultString!
+  isVotingProxy(blockHash: String!, contractAddress: String!, _point: Int!, _proxy: String!): ResultBoolean!
+  canVoteAs(blockHash: String!, contractAddress: String!, _point: Int!, _who: String!): ResultBoolean!
+  getVotingForCount(blockHash: String!, contractAddress: String!, _proxy: String!): ResultBigInt!
+  getTransferProxy(blockHash: String!, contractAddress: String!, _point: Int!): ResultString!
+  isTransferProxy(blockHash: String!, contractAddress: String!, _point: Int!, _proxy: String!): ResultBoolean!
+  canTransfer(blockHash: String!, contractAddress: String!, _point: Int!, _who: String!): ResultBoolean!
+  getTransferringForCount(blockHash: String!, contractAddress: String!, _proxy: String!): ResultBigInt!
+  isOperator(blockHash: String!, contractAddress: String!, _owner: String!, _operator: String!): ResultBoolean!
+  getCensuringCount(blockHash: String!, contractAddress: String!, _whose: Int!): ResultBigInt!
+  getCensuredByCount(blockHash: String!, contractAddress: String!, _who: Int!): ResultBigInt!
+  getSyncStatus: SyncStatus
+  getStateByCID(cid: String!): ResultState
+  getState(blockHash: String!, contractAddress: String!, kind: String): ResultState
+}
+
+type Mutation {
+  watchContract(address: String!, kind: String!, checkpoint: Boolean!, startingBlock: Int): Boolean!
+}
+
+type Subscription {
+  onEvent: ResultEvent!
+}

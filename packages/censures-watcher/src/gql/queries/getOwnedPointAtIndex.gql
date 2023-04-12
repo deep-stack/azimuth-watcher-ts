@@ -1,0 +1,8 @@
+query getOwnedPointAtIndex($blockHash: String!, $contractAddress: String!, $_whose: String!, $_index: BigInt!){
+    getOwnedPointAtIndex(blockHash: $blockHash, contractAddress: $contractAddress, _whose: $_whose, _index: $_index){
+        value
+        proof{
+            data
+        }
+    }
+}

@@ -1,0 +1,8 @@
+query getCensuringCount($blockHash: String!, $contractAddress: String!, $_whose: Int!){
+    getCensuringCount(blockHash: $blockHash, contractAddress: $contractAddress, _whose: $_whose){
+        value
+        proof{
+            data
+        }
+    }
+}
