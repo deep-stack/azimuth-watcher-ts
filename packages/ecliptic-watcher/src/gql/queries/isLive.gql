@@ -1,0 +1,8 @@
+query isLive($blockHash: String!, $contractAddress: String!, $_point: Int!){
+    isLive(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point){
+        value
+        proof{
+            data
+        }
+    }
+}

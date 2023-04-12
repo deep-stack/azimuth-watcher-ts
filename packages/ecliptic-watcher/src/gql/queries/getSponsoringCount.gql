@@ -1,0 +1,8 @@
+query getSponsoringCount($blockHash: String!, $contractAddress: String!, $_sponsor: Int!){
+    getSponsoringCount(blockHash: $blockHash, contractAddress: $contractAddress, _sponsor: $_sponsor){
+        value
+        proof{
+            data
+        }
+    }
+}
