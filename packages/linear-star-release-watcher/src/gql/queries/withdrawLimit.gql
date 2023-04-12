@@ -1,0 +1,8 @@
+query withdrawLimit($blockHash: String!, $contractAddress: String!, $_participant: String!){
+    withdrawLimit(blockHash: $blockHash, contractAddress: $contractAddress, _participant: $_participant){
+        value
+        proof{
+            data
+        }
+    }
+}

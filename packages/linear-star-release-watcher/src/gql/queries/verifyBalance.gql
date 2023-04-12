@@ -1,0 +1,8 @@
+query verifyBalance($blockHash: String!, $contractAddress: String!, $_participant: String!){
+    verifyBalance(blockHash: $blockHash, contractAddress: $contractAddress, _participant: $_participant){
+        value
+        proof{
+            data
+        }
+    }
+}

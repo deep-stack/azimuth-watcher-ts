@@ -1,0 +1,8 @@
+query getContinuityNumber($blockHash: String!, $contractAddress: String!, $_point: Int!){
+    getContinuityNumber(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point){
+        value
+        proof{
+            data
+        }
+    }
+}

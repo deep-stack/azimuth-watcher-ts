@@ -1,0 +1,8 @@
+query isOperator($blockHash: String!, $contractAddress: String!, $_owner: String!, $_operator: String!){
+    isOperator(blockHash: $blockHash, contractAddress: $contractAddress, _owner: $_owner, _operator: $_operator){
+        value
+        proof{
+            data
+        }
+    }
+}

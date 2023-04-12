@@ -1,0 +1,8 @@
+query getEscapeRequest($blockHash: String!, $contractAddress: String!, $_point: Int!){
+    getEscapeRequest(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point){
+        value
+        proof{
+            data
+        }
+    }
+}
