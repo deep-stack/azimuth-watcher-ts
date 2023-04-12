@@ -1,0 +1,8 @@
+query getBatch($blockHash: String!, $contractAddress: String!, $_participant: String!, $_batch: Int!){
+    getBatch(blockHash: $blockHash, contractAddress: $contractAddress, _participant: $_participant, _batch: $_batch){
+        value
+        proof{
+            data
+        }
+    }
+}

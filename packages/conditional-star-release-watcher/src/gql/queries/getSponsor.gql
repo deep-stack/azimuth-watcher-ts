@@ -1,0 +1,8 @@
+query getSponsor($blockHash: String!, $contractAddress: String!, $_point: Int!){
+    getSponsor(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point){
+        value
+        proof{
+            data
+        }
+    }
+}

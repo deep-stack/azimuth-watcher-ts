@@ -1,0 +1,8 @@
+query getSpawnCount($blockHash: String!, $contractAddress: String!, $_point: Int!){
+    getSpawnCount(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point){
+        value
+        proof{
+            data
+        }
+    }
+}
