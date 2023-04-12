@@ -1,0 +1,90 @@
+subscription onEvent{
+    onEvent{
+        block{
+            cid
+            hash
+            number
+            timestamp
+            parentHash
+        }
+        tx{
+            hash
+            index
+            from
+            to
+        }
+        contract
+        eventIndex
+        event{
+            ... on OwnerChangedEvent {
+                point
+                owner
+            }
+            ... on ActivatedEvent {
+                point
+            }
+            ... on SpawnedEvent {
+                prefix
+                child
+            }
+            ... on EscapeRequestedEvent {
+                point
+                sponsor
+            }
+            ... on EscapeCanceledEvent {
+                point
+                sponsor
+            }
+            ... on EscapeAcceptedEvent {
+                point
+                sponsor
+            }
+            ... on LostSponsorEvent {
+                point
+                sponsor
+            }
+            ... on ChangedKeysEvent {
+                point
+                encryptionKey
+                authenticationKey
+                cryptoSuiteVersion
+                keyRevisionNumber
+            }
+            ... on BrokeContinuityEvent {
+                point
+                number
+            }
+            ... on ChangedSpawnProxyEvent {
+                point
+                spawnProxy
+            }
+            ... on ChangedTransferProxyEvent {
+                point
+                transferProxy
+            }
+            ... on ChangedManagementProxyEvent {
+                point
+                managementProxy
+            }
+            ... on ChangedVotingProxyEvent {
+                point
+                votingProxy
+            }
+            ... on ChangedDnsEvent {
+                primary
+                secondary
+                tertiary
+            }
+            ... on OwnershipRenouncedEvent {
+                previousOwner
+            }
+            ... on OwnershipTransferredEvent {
+                previousOwner
+                newOwner
+            }
+        }
+        proof{
+            data
+        }
+    }
+}

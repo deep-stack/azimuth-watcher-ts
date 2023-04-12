@@ -1,0 +1,8 @@
+query isManagementProxy($blockHash: String!, $contractAddress: String!, $_point: Int!, $_proxy: String!){
+    isManagementProxy(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point, _proxy: $_proxy){
+        value
+        proof{
+            data
+        }
+    }
+}

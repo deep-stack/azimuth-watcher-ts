@@ -1,0 +1,8 @@
+query getSpawningForCount($blockHash: String!, $contractAddress: String!, $_proxy: String!){
+    getSpawningForCount(blockHash: $blockHash, contractAddress: $contractAddress, _proxy: $_proxy){
+        value
+        proof{
+            data
+        }
+    }
+}
