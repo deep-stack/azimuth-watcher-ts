@@ -1,0 +1,35 @@
+subscription onEvent{
+    onEvent{
+        block{
+            cid
+            hash
+            number
+            timestamp
+            parentHash
+        }
+        tx{
+            hash
+            index
+            from
+            to
+        }
+        contract
+        eventIndex
+        event{
+            ... on ClaimAddedEvent {
+                by
+                _protocol
+                _claim
+                _dossier
+            }
+            ... on ClaimRemovedEvent {
+                by
+                _protocol
+                _claim
+            }
+        }
+        proof{
+            data
+        }
+    }
+}

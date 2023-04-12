@@ -1,0 +1,8 @@
+query getVotingForCount($blockHash: String!, $contractAddress: String!, $_proxy: String!){
+    getVotingForCount(blockHash: $blockHash, contractAddress: $contractAddress, _proxy: $_proxy){
+        value
+        proof{
+            data
+        }
+    }
+}
