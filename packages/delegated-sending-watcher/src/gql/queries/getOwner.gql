@@ -1,0 +1,8 @@
+query getOwner($blockHash: String!, $contractAddress: String!, $_point: Int!){
+    getOwner(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point){
+        value
+        proof{
+            data
+        }
+    }
+}

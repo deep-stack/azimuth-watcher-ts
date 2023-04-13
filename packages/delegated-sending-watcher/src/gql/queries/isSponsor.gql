@@ -1,0 +1,8 @@
+query isSponsor($blockHash: String!, $contractAddress: String!, $_point: Int!, $_sponsor: Int!){
+    isSponsor(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point, _sponsor: $_sponsor){
+        value
+        proof{
+            data
+        }
+    }
+}

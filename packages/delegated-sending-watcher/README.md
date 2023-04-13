@@ -1,29 +1,16 @@
-# azimuth-watcher
+# delegated-sending-watcher
 
 ## Currently unsupported queries
 
 The watcher was generated in `eth_call` mode and does not support the following queries in its current state:
 
-* `getKeys(uint32 _point) returns (bytes32 crypt, bytes32 auth, uint32 suite, uint32 revision)`
+* `getPoolStars(uint32 _who) returns (uint16[] stars)`
 
-* `getSpawned(uint32 _point) returns (uint32[] spawned)`
+* `getInviters() returns (uint32[] invs)`
 
-* `getSponsoring(uint32 _sponsor) returns (uint32[] sponsees)`
+* `getInvited(uint32 _who) returns (uint32[] invd)`
 
-* `getEscapeRequests(uint32 _sponsor) returns (uint32[] requests)`
-
-* `getOwnedPoints(address _whose) returns (uint32[] ownedPoints)`
-
-* `getOwnedPointAtIndex(address _whose, uint256 _index) returns (uint32 point)`
-
-* `getManagerFor(address _proxy) returns (uint32[] mfor)`
-
-* `getSpawningFor(address _proxy) returns (uint32[] sfor)`
-
-* `getVotingFor(address _proxy) returns (uint32[] vfor)`
-
-* `getTransferringFor(address _proxy) returns (uint32[] tfor)`
-
+* `getPool(uint32 _point) returns (uint32 pool)`
 
 ## Setup
 
@@ -37,7 +24,7 @@ The watcher was generated in `eth_call` mode and does not support the following 
 
   ```bash
   sudo su - postgres
-  createdb azimuth-watcher
+  createdb delegated-sending-watcher
   ```
 
 * If the watcher is an `active` watcher:
@@ -45,19 +32,19 @@ The watcher was generated in `eth_call` mode and does not support the following 
   Create database for the job queue and enable the `pgcrypto` extension on them (https://github.com/timgit/pg-boss/blob/master/docs/usage.md#intro):
 
   ```
-  createdb azimuth-watcher-job-queue
+  createdb delegated-sending-watcher-job-queue
   ```
 
   ```
-  postgres@tesla:~$ psql -U postgres -h localhost azimuth-watcher-job-queue
+  postgres@tesla:~$ psql -U postgres -h localhost delegated-sending-watcher-job-queue
   Password for user postgres:
   psql (12.7 (Ubuntu 12.7-1.pgdg18.04+1))
   SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off)
   Type "help" for help.
 
-  azimuth-watcher-job-queue=# CREATE EXTENSION pgcrypto;
+  delegated-sending-watcher-job-queue=# CREATE EXTENSION pgcrypto;
   CREATE EXTENSION
-  azimuth-watcher-job-queue=# exit
+  delegated-sending-watcher-job-queue=# exit
   ```
 
 * In the [config file](./environments/local.toml):

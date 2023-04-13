@@ -1,0 +1,8 @@
+query canVoteAs($blockHash: String!, $contractAddress: String!, $_point: Int!, $_who: String!){
+    canVoteAs(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point, _who: $_who){
+        value
+        proof{
+            data
+        }
+    }
+}

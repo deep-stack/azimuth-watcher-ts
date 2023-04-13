@@ -1,0 +1,8 @@
+query canSend($blockHash: String!, $contractAddress: String!, $_as: Int!, $_point: Int!){
+    canSend(blockHash: $blockHash, contractAddress: $contractAddress, _as: $_as, _point: $_point){
+        value
+        proof{
+            data
+        }
+    }
+}

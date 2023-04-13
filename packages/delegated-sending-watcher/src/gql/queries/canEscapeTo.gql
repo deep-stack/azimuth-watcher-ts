@@ -1,0 +1,8 @@
+query canEscapeTo($blockHash: String!, $contractAddress: String!, $_point: Int!, $_sponsor: Int!){
+    canEscapeTo(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point, _sponsor: $_sponsor){
+        value
+        proof{
+            data
+        }
+    }
+}

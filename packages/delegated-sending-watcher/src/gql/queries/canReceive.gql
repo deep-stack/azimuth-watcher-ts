@@ -1,0 +1,8 @@
+query canReceive($blockHash: String!, $contractAddress: String!, $_recipient: String!){
+    canReceive(blockHash: $blockHash, contractAddress: $contractAddress, _recipient: $_recipient){
+        value
+        proof{
+            data
+        }
+    }
+}

@@ -1,0 +1,8 @@
+query getTransferringForCount($blockHash: String!, $contractAddress: String!, $_proxy: String!){
+    getTransferringForCount(blockHash: $blockHash, contractAddress: $contractAddress, _proxy: $_proxy){
+        value
+        proof{
+            data
+        }
+    }
+}
