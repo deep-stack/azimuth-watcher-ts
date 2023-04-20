@@ -1,0 +1,8 @@
+query getDocumentProposals($blockHash: String!, $contractAddress: String!){
+    getDocumentProposals(blockHash: $blockHash, contractAddress: $contractAddress){
+        value
+        proof{
+            data
+        }
+    }
+}

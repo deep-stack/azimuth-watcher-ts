@@ -71,7 +71,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
     Query: {
       isActive: (
         _: any,
-        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number },
+        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -87,7 +87,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       getKeyRevisionNumber: (
         _: any,
-        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number },
+        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -103,7 +103,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       hasBeenLinked: (
         _: any,
-        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number },
+        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -119,7 +119,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       isLive: (
         _: any,
-        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number },
+        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -135,7 +135,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       getContinuityNumber: (
         _: any,
-        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number },
+        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -151,7 +151,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       getSpawnCount: (
         _: any,
-        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number },
+        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -165,9 +165,25 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         return indexer.getSpawnCount(blockHash, contractAddress, _point);
       },
 
+      getSpawned: (
+        _: any,
+        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
+        __: any,
+        info: GraphQLResolveInfo
+      ): Promise<ValueResult> => {
+        log('getSpawned', blockHash, contractAddress, _point);
+        gqlTotalQueryCount.inc(1);
+        gqlQueryCount.labels('getSpawned').inc(1);
+
+        // Set cache-control hints
+        // setGQLCacheHints(info, {}, gqlCacheConfig);
+
+        return indexer.getSpawned(blockHash, contractAddress, _point);
+      },
+
       hasSponsor: (
         _: any,
-        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number },
+        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -183,7 +199,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       getSponsor: (
         _: any,
-        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number },
+        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -199,7 +215,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       isSponsor: (
         _: any,
-        { blockHash, contractAddress, _point, _sponsor }: { blockHash: string, contractAddress: string, _point: number, _sponsor: number },
+        { blockHash, contractAddress, _point, _sponsor }: { blockHash: string, contractAddress: string, _point: bigint, _sponsor: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -215,7 +231,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       getSponsoringCount: (
         _: any,
-        { blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: number },
+        { blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -229,9 +245,25 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         return indexer.getSponsoringCount(blockHash, contractAddress, _sponsor);
       },
 
+      getSponsoring: (
+        _: any,
+        { blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: bigint },
+        __: any,
+        info: GraphQLResolveInfo
+      ): Promise<ValueResult> => {
+        log('getSponsoring', blockHash, contractAddress, _sponsor);
+        gqlTotalQueryCount.inc(1);
+        gqlQueryCount.labels('getSponsoring').inc(1);
+
+        // Set cache-control hints
+        // setGQLCacheHints(info, {}, gqlCacheConfig);
+
+        return indexer.getSponsoring(blockHash, contractAddress, _sponsor);
+      },
+
       isEscaping: (
         _: any,
-        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number },
+        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -247,7 +279,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       getEscapeRequest: (
         _: any,
-        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number },
+        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -263,7 +295,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       isRequestingEscapeTo: (
         _: any,
-        { blockHash, contractAddress, _point, _sponsor }: { blockHash: string, contractAddress: string, _point: number, _sponsor: number },
+        { blockHash, contractAddress, _point, _sponsor }: { blockHash: string, contractAddress: string, _point: bigint, _sponsor: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -279,7 +311,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       getEscapeRequestsCount: (
         _: any,
-        { blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: number },
+        { blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -293,9 +325,25 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         return indexer.getEscapeRequestsCount(blockHash, contractAddress, _sponsor);
       },
 
+      getEscapeRequests: (
+        _: any,
+        { blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: bigint },
+        __: any,
+        info: GraphQLResolveInfo
+      ): Promise<ValueResult> => {
+        log('getEscapeRequests', blockHash, contractAddress, _sponsor);
+        gqlTotalQueryCount.inc(1);
+        gqlQueryCount.labels('getEscapeRequests').inc(1);
+
+        // Set cache-control hints
+        // setGQLCacheHints(info, {}, gqlCacheConfig);
+
+        return indexer.getEscapeRequests(blockHash, contractAddress, _sponsor);
+      },
+
       getOwner: (
         _: any,
-        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number },
+        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -311,7 +359,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       isOwner: (
         _: any,
-        { blockHash, contractAddress, _point, _address }: { blockHash: string, contractAddress: string, _point: number, _address: string },
+        { blockHash, contractAddress, _point, _address }: { blockHash: string, contractAddress: string, _point: bigint, _address: string },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -341,6 +389,22 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         return indexer.getOwnedPointCount(blockHash, contractAddress, _whose);
       },
 
+      getOwnedPoints: (
+        _: any,
+        { blockHash, contractAddress, _whose }: { blockHash: string, contractAddress: string, _whose: string },
+        __: any,
+        info: GraphQLResolveInfo
+      ): Promise<ValueResult> => {
+        log('getOwnedPoints', blockHash, contractAddress, _whose);
+        gqlTotalQueryCount.inc(1);
+        gqlQueryCount.labels('getOwnedPoints').inc(1);
+
+        // Set cache-control hints
+        // setGQLCacheHints(info, {}, gqlCacheConfig);
+
+        return indexer.getOwnedPoints(blockHash, contractAddress, _whose);
+      },
+
       getOwnedPointAtIndex: (
         _: any,
         { blockHash, contractAddress, _whose, _index }: { blockHash: string, contractAddress: string, _whose: string, _index: bigint },
@@ -359,7 +423,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       getManagementProxy: (
         _: any,
-        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number },
+        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -375,7 +439,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       isManagementProxy: (
         _: any,
-        { blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: number, _proxy: string },
+        { blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: bigint, _proxy: string },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -391,7 +455,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       canManage: (
         _: any,
-        { blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: number, _who: string },
+        { blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: bigint, _who: string },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -421,9 +485,25 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         return indexer.getManagerForCount(blockHash, contractAddress, _proxy);
       },
 
+      getManagerFor: (
+        _: any,
+        { blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string },
+        __: any,
+        info: GraphQLResolveInfo
+      ): Promise<ValueResult> => {
+        log('getManagerFor', blockHash, contractAddress, _proxy);
+        gqlTotalQueryCount.inc(1);
+        gqlQueryCount.labels('getManagerFor').inc(1);
+
+        // Set cache-control hints
+        // setGQLCacheHints(info, {}, gqlCacheConfig);
+
+        return indexer.getManagerFor(blockHash, contractAddress, _proxy);
+      },
+
       getSpawnProxy: (
         _: any,
-        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number },
+        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -439,7 +519,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       isSpawnProxy: (
         _: any,
-        { blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: number, _proxy: string },
+        { blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: bigint, _proxy: string },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -455,7 +535,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       canSpawnAs: (
         _: any,
-        { blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: number, _who: string },
+        { blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: bigint, _who: string },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -485,9 +565,25 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         return indexer.getSpawningForCount(blockHash, contractAddress, _proxy);
       },
 
+      getSpawningFor: (
+        _: any,
+        { blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string },
+        __: any,
+        info: GraphQLResolveInfo
+      ): Promise<ValueResult> => {
+        log('getSpawningFor', blockHash, contractAddress, _proxy);
+        gqlTotalQueryCount.inc(1);
+        gqlQueryCount.labels('getSpawningFor').inc(1);
+
+        // Set cache-control hints
+        // setGQLCacheHints(info, {}, gqlCacheConfig);
+
+        return indexer.getSpawningFor(blockHash, contractAddress, _proxy);
+      },
+
       getVotingProxy: (
         _: any,
-        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number },
+        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -503,7 +599,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       isVotingProxy: (
         _: any,
-        { blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: number, _proxy: string },
+        { blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: bigint, _proxy: string },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -519,7 +615,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       canVoteAs: (
         _: any,
-        { blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: number, _who: string },
+        { blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: bigint, _who: string },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -549,9 +645,25 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         return indexer.getVotingForCount(blockHash, contractAddress, _proxy);
       },
 
+      getVotingFor: (
+        _: any,
+        { blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string },
+        __: any,
+        info: GraphQLResolveInfo
+      ): Promise<ValueResult> => {
+        log('getVotingFor', blockHash, contractAddress, _proxy);
+        gqlTotalQueryCount.inc(1);
+        gqlQueryCount.labels('getVotingFor').inc(1);
+
+        // Set cache-control hints
+        // setGQLCacheHints(info, {}, gqlCacheConfig);
+
+        return indexer.getVotingFor(blockHash, contractAddress, _proxy);
+      },
+
       getTransferProxy: (
         _: any,
-        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number },
+        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -567,7 +679,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       isTransferProxy: (
         _: any,
-        { blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: number, _proxy: string },
+        { blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: bigint, _proxy: string },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -583,7 +695,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       canTransfer: (
         _: any,
-        { blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: number, _who: string },
+        { blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: bigint, _who: string },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -613,6 +725,22 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         return indexer.getTransferringForCount(blockHash, contractAddress, _proxy);
       },
 
+      getTransferringFor: (
+        _: any,
+        { blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string },
+        __: any,
+        info: GraphQLResolveInfo
+      ): Promise<ValueResult> => {
+        log('getTransferringFor', blockHash, contractAddress, _proxy);
+        gqlTotalQueryCount.inc(1);
+        gqlQueryCount.labels('getTransferringFor').inc(1);
+
+        // Set cache-control hints
+        // setGQLCacheHints(info, {}, gqlCacheConfig);
+
+        return indexer.getTransferringFor(blockHash, contractAddress, _proxy);
+      },
+
       isOperator: (
         _: any,
         { blockHash, contractAddress, _owner, _operator }: { blockHash: string, contractAddress: string, _owner: string, _operator: string },
@@ -627,6 +755,22 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
         return indexer.isOperator(blockHash, contractAddress, _owner, _operator);
+      },
+
+      getUpgradeProposals: (
+        _: any,
+        { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
+        __: any,
+        info: GraphQLResolveInfo
+      ): Promise<ValueResult> => {
+        log('getUpgradeProposals', blockHash, contractAddress);
+        gqlTotalQueryCount.inc(1);
+        gqlQueryCount.labels('getUpgradeProposals').inc(1);
+
+        // Set cache-control hints
+        // setGQLCacheHints(info, {}, gqlCacheConfig);
+
+        return indexer.getUpgradeProposals(blockHash, contractAddress);
       },
 
       getUpgradeProposalCount: (
@@ -645,6 +789,22 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         return indexer.getUpgradeProposalCount(blockHash, contractAddress);
       },
 
+      getDocumentProposals: (
+        _: any,
+        { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
+        __: any,
+        info: GraphQLResolveInfo
+      ): Promise<ValueResult> => {
+        log('getDocumentProposals', blockHash, contractAddress);
+        gqlTotalQueryCount.inc(1);
+        gqlQueryCount.labels('getDocumentProposals').inc(1);
+
+        // Set cache-control hints
+        // setGQLCacheHints(info, {}, gqlCacheConfig);
+
+        return indexer.getDocumentProposals(blockHash, contractAddress);
+      },
+
       getDocumentProposalCount: (
         _: any,
         { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
@@ -659,6 +819,22 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
         return indexer.getDocumentProposalCount(blockHash, contractAddress);
+      },
+
+      getDocumentMajorities: (
+        _: any,
+        { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
+        __: any,
+        info: GraphQLResolveInfo
+      ): Promise<ValueResult> => {
+        log('getDocumentMajorities', blockHash, contractAddress);
+        gqlTotalQueryCount.inc(1);
+        gqlQueryCount.labels('getDocumentMajorities').inc(1);
+
+        // Set cache-control hints
+        // setGQLCacheHints(info, {}, gqlCacheConfig);
+
+        return indexer.getDocumentMajorities(blockHash, contractAddress);
       },
 
       hasVotedOnUpgradePoll: (
@@ -695,7 +871,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       findClaim: (
         _: any,
-        { blockHash, contractAddress, _whose, _protocol, _claim }: { blockHash: string, contractAddress: string, _whose: number, _protocol: string, _claim: string },
+        { blockHash, contractAddress, _whose, _protocol, _claim }: { blockHash: string, contractAddress: string, _whose: bigint, _protocol: string, _claim: string },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -903,7 +1079,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       getSpawnLimit: (
         _: any,
-        { blockHash, contractAddress, _point, _time }: { blockHash: string, contractAddress: string, _point: number, _time: bigint },
+        { blockHash, contractAddress, _point, _time }: { blockHash: string, contractAddress: string, _point: bigint, _time: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -919,7 +1095,7 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
 
       canEscapeTo: (
         _: any,
-        { blockHash, contractAddress, _point, _sponsor }: { blockHash: string, contractAddress: string, _point: number, _sponsor: number },
+        { blockHash, contractAddress, _point, _sponsor }: { blockHash: string, contractAddress: string, _point: bigint, _sponsor: bigint },
         __: any,
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
@@ -965,6 +1141,22 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         return indexer.verifyBalance(blockHash, contractAddress, _participant);
       },
 
+      getBatches: (
+        _: any,
+        { blockHash, contractAddress, _participant }: { blockHash: string, contractAddress: string, _participant: string },
+        __: any,
+        info: GraphQLResolveInfo
+      ): Promise<ValueResult> => {
+        log('getBatches', blockHash, contractAddress, _participant);
+        gqlTotalQueryCount.inc(1);
+        gqlQueryCount.labels('getBatches').inc(1);
+
+        // Set cache-control hints
+        // setGQLCacheHints(info, {}, gqlCacheConfig);
+
+        return indexer.getBatches(blockHash, contractAddress, _participant);
+      },
+
       getBatch: (
         _: any,
         { blockHash, contractAddress, _participant, _batch }: { blockHash: string, contractAddress: string, _participant: string, _batch: number },
@@ -979,6 +1171,22 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
         return indexer.getBatch(blockHash, contractAddress, _participant, _batch);
+      },
+
+      getWithdrawn: (
+        _: any,
+        { blockHash, contractAddress, _participant }: { blockHash: string, contractAddress: string, _participant: string },
+        __: any,
+        info: GraphQLResolveInfo
+      ): Promise<ValueResult> => {
+        log('getWithdrawn', blockHash, contractAddress, _participant);
+        gqlTotalQueryCount.inc(1);
+        gqlQueryCount.labels('getWithdrawn').inc(1);
+
+        // Set cache-control hints
+        // setGQLCacheHints(info, {}, gqlCacheConfig);
+
+        return indexer.getWithdrawn(blockHash, contractAddress, _participant);
       },
 
       getWithdrawnFromBatch: (
@@ -997,6 +1205,22 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         return indexer.getWithdrawnFromBatch(blockHash, contractAddress, _participant, _batch);
       },
 
+      getForfeited: (
+        _: any,
+        { blockHash, contractAddress, _participant }: { blockHash: string, contractAddress: string, _participant: string },
+        __: any,
+        info: GraphQLResolveInfo
+      ): Promise<ValueResult> => {
+        log('getForfeited', blockHash, contractAddress, _participant);
+        gqlTotalQueryCount.inc(1);
+        gqlQueryCount.labels('getForfeited').inc(1);
+
+        // Set cache-control hints
+        // setGQLCacheHints(info, {}, gqlCacheConfig);
+
+        return indexer.getForfeited(blockHash, contractAddress, _participant);
+      },
+
       hasForfeitedBatch: (
         _: any,
         { blockHash, contractAddress, _participant, _batch }: { blockHash: string, contractAddress: string, _participant: string, _batch: number },
@@ -1011,6 +1235,22 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
         return indexer.hasForfeitedBatch(blockHash, contractAddress, _participant, _batch);
+      },
+
+      getRemainingStars: (
+        _: any,
+        { blockHash, contractAddress, _participant }: { blockHash: string, contractAddress: string, _participant: string },
+        __: any,
+        info: GraphQLResolveInfo
+      ): Promise<ValueResult> => {
+        log('getRemainingStars', blockHash, contractAddress, _participant);
+        gqlTotalQueryCount.inc(1);
+        gqlQueryCount.labels('getRemainingStars').inc(1);
+
+        // Set cache-control hints
+        // setGQLCacheHints(info, {}, gqlCacheConfig);
+
+        return indexer.getRemainingStars(blockHash, contractAddress, _participant);
       },
 
       events: async (_: any, { blockHash, contractAddress, name }: { blockHash: string, contractAddress: string, name?: string }) => {

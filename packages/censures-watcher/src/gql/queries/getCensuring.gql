@@ -1,0 +1,8 @@
+query getCensuring($blockHash: String!, $contractAddress: String!, $_whose: Int!){
+    getCensuring(blockHash: $blockHash, contractAddress: $contractAddress, _whose: $_whose){
+        value
+        proof{
+            data
+        }
+    }
+}

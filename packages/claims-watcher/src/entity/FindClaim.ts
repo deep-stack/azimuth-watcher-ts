@@ -3,6 +3,7 @@
 //
 
 import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm';
+import { bigintTransformer } from '@cerc-io/util';
 
 @Entity()
 @Index(['blockHash', 'contractAddress', '_whose', '_protocol', '_claim'], { unique: true })
@@ -19,8 +20,8 @@ export class FindClaim {
   @Column('varchar', { length: 42 })
     contractAddress!: string;
 
-  @Column('integer')
-    _whose!: number;
+  @Column('numeric', { transformer: bigintTransformer })
+    _whose!: bigint;
 
   @Column('varchar')
     _protocol!: string;

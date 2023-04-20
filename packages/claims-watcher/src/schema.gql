@@ -15,26 +15,6 @@ type Proof {
   data: String!
 }
 
-type ResultBoolean {
-  value: Boolean!
-  proof: Proof
-}
-
-type ResultString {
-  value: String!
-  proof: Proof
-}
-
-type ResultInt {
-  value: Int!
-  proof: Proof
-}
-
-type ResultBigInt {
-  value: BigInt!
-  proof: Proof
-}
-
 type _Block_ {
   cid: String!
   hash: String!
@@ -62,14 +42,14 @@ type ResultEvent {
 union Event = ClaimAddedEvent | ClaimRemovedEvent
 
 type ClaimAddedEvent {
-  by: Int!
+  by: BigInt!
   _protocol: String!
   _claim: String!
   _dossier: String!
 }
 
 type ClaimRemovedEvent {
-  by: Int!
+  by: BigInt!
   _protocol: String!
   _claim: String!
 }
@@ -92,45 +72,78 @@ type ResultState {
 type Query {
   events(blockHash: String!, contractAddress: String!, name: String): [ResultEvent!]
   eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!): [ResultEvent!]
-  isActive(blockHash: String!, contractAddress: String!, _point: Int!): ResultBoolean!
-  getKeyRevisionNumber(blockHash: String!, contractAddress: String!, _point: Int!): ResultInt!
-  hasBeenLinked(blockHash: String!, contractAddress: String!, _point: Int!): ResultBoolean!
-  isLive(blockHash: String!, contractAddress: String!, _point: Int!): ResultBoolean!
-  getContinuityNumber(blockHash: String!, contractAddress: String!, _point: Int!): ResultInt!
-  getSpawnCount(blockHash: String!, contractAddress: String!, _point: Int!): ResultInt!
-  hasSponsor(blockHash: String!, contractAddress: String!, _point: Int!): ResultBoolean!
-  getSponsor(blockHash: String!, contractAddress: String!, _point: Int!): ResultInt!
-  isSponsor(blockHash: String!, contractAddress: String!, _point: Int!, _sponsor: Int!): ResultBoolean!
-  getSponsoringCount(blockHash: String!, contractAddress: String!, _sponsor: Int!): ResultBigInt!
-  isEscaping(blockHash: String!, contractAddress: String!, _point: Int!): ResultBoolean!
-  getEscapeRequest(blockHash: String!, contractAddress: String!, _point: Int!): ResultInt!
-  isRequestingEscapeTo(blockHash: String!, contractAddress: String!, _point: Int!, _sponsor: Int!): ResultBoolean!
-  getEscapeRequestsCount(blockHash: String!, contractAddress: String!, _sponsor: Int!): ResultBigInt!
-  getOwner(blockHash: String!, contractAddress: String!, _point: Int!): ResultString!
-  isOwner(blockHash: String!, contractAddress: String!, _point: Int!, _address: String!): ResultBoolean!
+  isActive(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultBoolean!
+  getKeyRevisionNumber(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultBigInt!
+  hasBeenLinked(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultBoolean!
+  isLive(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultBoolean!
+  getContinuityNumber(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultBigInt!
+  getSpawnCount(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultBigInt!
+  getSpawned(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultBigIntArray!
+  hasSponsor(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultBoolean!
+  getSponsor(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultBigInt!
+  isSponsor(blockHash: String!, contractAddress: String!, _point: BigInt!, _sponsor: BigInt!): ResultBoolean!
+  getSponsoringCount(blockHash: String!, contractAddress: String!, _sponsor: BigInt!): ResultBigInt!
+  getSponsoring(blockHash: String!, contractAddress: String!, _sponsor: BigInt!): ResultBigIntArray!
+  isEscaping(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultBoolean!
+  getEscapeRequest(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultBigInt!
+  isRequestingEscapeTo(blockHash: String!, contractAddress: String!, _point: BigInt!, _sponsor: BigInt!): ResultBoolean!
+  getEscapeRequestsCount(blockHash: String!, contractAddress: String!, _sponsor: BigInt!): ResultBigInt!
+  getEscapeRequests(blockHash: String!, contractAddress: String!, _sponsor: BigInt!): ResultBigIntArray!
+  getOwner(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultString!
+  isOwner(blockHash: String!, contractAddress: String!, _point: BigInt!, _address: String!): ResultBoolean!
   getOwnedPointCount(blockHash: String!, contractAddress: String!, _whose: String!): ResultBigInt!
-  getOwnedPointAtIndex(blockHash: String!, contractAddress: String!, _whose: String!, _index: BigInt!): ResultInt!
-  getManagementProxy(blockHash: String!, contractAddress: String!, _point: Int!): ResultString!
-  isManagementProxy(blockHash: String!, contractAddress: String!, _point: Int!, _proxy: String!): ResultBoolean!
-  canManage(blockHash: String!, contractAddress: String!, _point: Int!, _who: String!): ResultBoolean!
+  getOwnedPoints(blockHash: String!, contractAddress: String!, _whose: String!): ResultBigIntArray!
+  getOwnedPointAtIndex(blockHash: String!, contractAddress: String!, _whose: String!, _index: BigInt!): ResultBigInt!
+  getManagementProxy(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultString!
+  isManagementProxy(blockHash: String!, contractAddress: String!, _point: BigInt!, _proxy: String!): ResultBoolean!
+  canManage(blockHash: String!, contractAddress: String!, _point: BigInt!, _who: String!): ResultBoolean!
   getManagerForCount(blockHash: String!, contractAddress: String!, _proxy: String!): ResultBigInt!
-  getSpawnProxy(blockHash: String!, contractAddress: String!, _point: Int!): ResultString!
-  isSpawnProxy(blockHash: String!, contractAddress: String!, _point: Int!, _proxy: String!): ResultBoolean!
-  canSpawnAs(blockHash: String!, contractAddress: String!, _point: Int!, _who: String!): ResultBoolean!
+  getManagerFor(blockHash: String!, contractAddress: String!, _proxy: String!): ResultBigIntArray!
+  getSpawnProxy(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultString!
+  isSpawnProxy(blockHash: String!, contractAddress: String!, _point: BigInt!, _proxy: String!): ResultBoolean!
+  canSpawnAs(blockHash: String!, contractAddress: String!, _point: BigInt!, _who: String!): ResultBoolean!
   getSpawningForCount(blockHash: String!, contractAddress: String!, _proxy: String!): ResultBigInt!
-  getVotingProxy(blockHash: String!, contractAddress: String!, _point: Int!): ResultString!
-  isVotingProxy(blockHash: String!, contractAddress: String!, _point: Int!, _proxy: String!): ResultBoolean!
-  canVoteAs(blockHash: String!, contractAddress: String!, _point: Int!, _who: String!): ResultBoolean!
+  getSpawningFor(blockHash: String!, contractAddress: String!, _proxy: String!): ResultBigIntArray!
+  getVotingProxy(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultString!
+  isVotingProxy(blockHash: String!, contractAddress: String!, _point: BigInt!, _proxy: String!): ResultBoolean!
+  canVoteAs(blockHash: String!, contractAddress: String!, _point: BigInt!, _who: String!): ResultBoolean!
   getVotingForCount(blockHash: String!, contractAddress: String!, _proxy: String!): ResultBigInt!
-  getTransferProxy(blockHash: String!, contractAddress: String!, _point: Int!): ResultString!
-  isTransferProxy(blockHash: String!, contractAddress: String!, _point: Int!, _proxy: String!): ResultBoolean!
-  canTransfer(blockHash: String!, contractAddress: String!, _point: Int!, _who: String!): ResultBoolean!
+  getVotingFor(blockHash: String!, contractAddress: String!, _proxy: String!): ResultBigIntArray!
+  getTransferProxy(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultString!
+  isTransferProxy(blockHash: String!, contractAddress: String!, _point: BigInt!, _proxy: String!): ResultBoolean!
+  canTransfer(blockHash: String!, contractAddress: String!, _point: BigInt!, _who: String!): ResultBoolean!
   getTransferringForCount(blockHash: String!, contractAddress: String!, _proxy: String!): ResultBigInt!
+  getTransferringFor(blockHash: String!, contractAddress: String!, _proxy: String!): ResultBigIntArray!
   isOperator(blockHash: String!, contractAddress: String!, _owner: String!, _operator: String!): ResultBoolean!
-  findClaim(blockHash: String!, contractAddress: String!, _whose: Int!, _protocol: String!, _claim: String!): ResultInt!
+  findClaim(blockHash: String!, contractAddress: String!, _whose: BigInt!, _protocol: String!, _claim: String!): ResultInt!
   getSyncStatus: SyncStatus
   getStateByCID(cid: String!): ResultState
   getState(blockHash: String!, contractAddress: String!, kind: String): ResultState
+}
+
+type ResultBoolean {
+  value: Boolean!
+  proof: Proof
+}
+
+type ResultBigInt {
+  value: BigInt!
+  proof: Proof
+}
+
+type ResultBigIntArray {
+  value: [BigInt!]!
+  proof: Proof
+}
+
+type ResultString {
+  value: String!
+  proof: Proof
+}
+
+type ResultInt {
+  value: Int!
+  proof: Proof
 }
 
 type Mutation {

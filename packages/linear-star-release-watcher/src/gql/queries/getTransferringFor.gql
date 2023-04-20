@@ -1,0 +1,8 @@
+query getTransferringFor($blockHash: String!, $contractAddress: String!, $_proxy: String!){
+    getTransferringFor(blockHash: $blockHash, contractAddress: $contractAddress, _proxy: $_proxy){
+        value
+        proof{
+            data
+        }
+    }
+}

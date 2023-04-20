@@ -1,4 +1,4 @@
-query canSend($blockHash: String!, $contractAddress: String!, $_as: Int!, $_point: Int!){
+query canSend($blockHash: String!, $contractAddress: String!, $_as: BigInt!, $_point: BigInt!){
     canSend(blockHash: $blockHash, contractAddress: $contractAddress, _as: $_as, _point: $_point){
         value
         proof{

@@ -17,7 +17,7 @@ export class Client {
     this._client = new GraphQLClient(config);
   }
 
-  async getIsActive (blockHash: string, contractAddress: string, _point: number): Promise<any> {
+  async getIsActive (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { isActive } = await this._client.query(
       gql(queries.isActive),
       { blockHash, contractAddress, _point }
@@ -26,7 +26,7 @@ export class Client {
     return isActive;
   }
 
-  async getGetKeyRevisionNumber (blockHash: string, contractAddress: string, _point: number): Promise<any> {
+  async getGetKeyRevisionNumber (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { getKeyRevisionNumber } = await this._client.query(
       gql(queries.getKeyRevisionNumber),
       { blockHash, contractAddress, _point }
@@ -35,7 +35,7 @@ export class Client {
     return getKeyRevisionNumber;
   }
 
-  async getHasBeenLinked (blockHash: string, contractAddress: string, _point: number): Promise<any> {
+  async getHasBeenLinked (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { hasBeenLinked } = await this._client.query(
       gql(queries.hasBeenLinked),
       { blockHash, contractAddress, _point }
@@ -44,7 +44,7 @@ export class Client {
     return hasBeenLinked;
   }
 
-  async getIsLive (blockHash: string, contractAddress: string, _point: number): Promise<any> {
+  async getIsLive (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { isLive } = await this._client.query(
       gql(queries.isLive),
       { blockHash, contractAddress, _point }
@@ -53,7 +53,7 @@ export class Client {
     return isLive;
   }
 
-  async getGetContinuityNumber (blockHash: string, contractAddress: string, _point: number): Promise<any> {
+  async getGetContinuityNumber (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { getContinuityNumber } = await this._client.query(
       gql(queries.getContinuityNumber),
       { blockHash, contractAddress, _point }
@@ -62,7 +62,7 @@ export class Client {
     return getContinuityNumber;
   }
 
-  async getGetSpawnCount (blockHash: string, contractAddress: string, _point: number): Promise<any> {
+  async getGetSpawnCount (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { getSpawnCount } = await this._client.query(
       gql(queries.getSpawnCount),
       { blockHash, contractAddress, _point }
@@ -71,7 +71,7 @@ export class Client {
     return getSpawnCount;
   }
 
-  async getHasSponsor (blockHash: string, contractAddress: string, _point: number): Promise<any> {
+  async getHasSponsor (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { hasSponsor } = await this._client.query(
       gql(queries.hasSponsor),
       { blockHash, contractAddress, _point }
@@ -80,7 +80,7 @@ export class Client {
     return hasSponsor;
   }
 
-  async getGetSponsor (blockHash: string, contractAddress: string, _point: number): Promise<any> {
+  async getGetSponsor (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { getSponsor } = await this._client.query(
       gql(queries.getSponsor),
       { blockHash, contractAddress, _point }
@@ -89,7 +89,7 @@ export class Client {
     return getSponsor;
   }
 
-  async getIsSponsor (blockHash: string, contractAddress: string, _point: number, _sponsor: number): Promise<any> {
+  async getIsSponsor (blockHash: string, contractAddress: string, _point: bigint, _sponsor: bigint): Promise<any> {
     const { isSponsor } = await this._client.query(
       gql(queries.isSponsor),
       { blockHash, contractAddress, _point, _sponsor }
@@ -98,7 +98,7 @@ export class Client {
     return isSponsor;
   }
 
-  async getGetSponsoringCount (blockHash: string, contractAddress: string, _sponsor: number): Promise<any> {
+  async getGetSponsoringCount (blockHash: string, contractAddress: string, _sponsor: bigint): Promise<any> {
     const { getSponsoringCount } = await this._client.query(
       gql(queries.getSponsoringCount),
       { blockHash, contractAddress, _sponsor }
@@ -107,7 +107,7 @@ export class Client {
     return getSponsoringCount;
   }
 
-  async getIsEscaping (blockHash: string, contractAddress: string, _point: number): Promise<any> {
+  async getIsEscaping (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { isEscaping } = await this._client.query(
       gql(queries.isEscaping),
       { blockHash, contractAddress, _point }
@@ -116,7 +116,7 @@ export class Client {
     return isEscaping;
   }
 
-  async getGetEscapeRequest (blockHash: string, contractAddress: string, _point: number): Promise<any> {
+  async getGetEscapeRequest (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { getEscapeRequest } = await this._client.query(
       gql(queries.getEscapeRequest),
       { blockHash, contractAddress, _point }
@@ -125,7 +125,7 @@ export class Client {
     return getEscapeRequest;
   }
 
-  async getIsRequestingEscapeTo (blockHash: string, contractAddress: string, _point: number, _sponsor: number): Promise<any> {
+  async getIsRequestingEscapeTo (blockHash: string, contractAddress: string, _point: bigint, _sponsor: bigint): Promise<any> {
     const { isRequestingEscapeTo } = await this._client.query(
       gql(queries.isRequestingEscapeTo),
       { blockHash, contractAddress, _point, _sponsor }
@@ -134,7 +134,7 @@ export class Client {
     return isRequestingEscapeTo;
   }
 
-  async getGetEscapeRequestsCount (blockHash: string, contractAddress: string, _sponsor: number): Promise<any> {
+  async getGetEscapeRequestsCount (blockHash: string, contractAddress: string, _sponsor: bigint): Promise<any> {
     const { getEscapeRequestsCount } = await this._client.query(
       gql(queries.getEscapeRequestsCount),
       { blockHash, contractAddress, _sponsor }
@@ -143,7 +143,7 @@ export class Client {
     return getEscapeRequestsCount;
   }
 
-  async getGetOwner (blockHash: string, contractAddress: string, _point: number): Promise<any> {
+  async getGetOwner (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { getOwner } = await this._client.query(
       gql(queries.getOwner),
       { blockHash, contractAddress, _point }
@@ -152,7 +152,7 @@ export class Client {
     return getOwner;
   }
 
-  async getIsOwner (blockHash: string, contractAddress: string, _point: number, _address: string): Promise<any> {
+  async getIsOwner (blockHash: string, contractAddress: string, _point: bigint, _address: string): Promise<any> {
     const { isOwner } = await this._client.query(
       gql(queries.isOwner),
       { blockHash, contractAddress, _point, _address }
@@ -179,7 +179,7 @@ export class Client {
     return getOwnedPointAtIndex;
   }
 
-  async getGetManagementProxy (blockHash: string, contractAddress: string, _point: number): Promise<any> {
+  async getGetManagementProxy (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { getManagementProxy } = await this._client.query(
       gql(queries.getManagementProxy),
       { blockHash, contractAddress, _point }
@@ -188,7 +188,7 @@ export class Client {
     return getManagementProxy;
   }
 
-  async getIsManagementProxy (blockHash: string, contractAddress: string, _point: number, _proxy: string): Promise<any> {
+  async getIsManagementProxy (blockHash: string, contractAddress: string, _point: bigint, _proxy: string): Promise<any> {
     const { isManagementProxy } = await this._client.query(
       gql(queries.isManagementProxy),
       { blockHash, contractAddress, _point, _proxy }
@@ -197,7 +197,7 @@ export class Client {
     return isManagementProxy;
   }
 
-  async getCanManage (blockHash: string, contractAddress: string, _point: number, _who: string): Promise<any> {
+  async getCanManage (blockHash: string, contractAddress: string, _point: bigint, _who: string): Promise<any> {
     const { canManage } = await this._client.query(
       gql(queries.canManage),
       { blockHash, contractAddress, _point, _who }
@@ -215,7 +215,7 @@ export class Client {
     return getManagerForCount;
   }
 
-  async getGetSpawnProxy (blockHash: string, contractAddress: string, _point: number): Promise<any> {
+  async getGetSpawnProxy (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { getSpawnProxy } = await this._client.query(
       gql(queries.getSpawnProxy),
       { blockHash, contractAddress, _point }
@@ -224,7 +224,7 @@ export class Client {
     return getSpawnProxy;
   }
 
-  async getIsSpawnProxy (blockHash: string, contractAddress: string, _point: number, _proxy: string): Promise<any> {
+  async getIsSpawnProxy (blockHash: string, contractAddress: string, _point: bigint, _proxy: string): Promise<any> {
     const { isSpawnProxy } = await this._client.query(
       gql(queries.isSpawnProxy),
       { blockHash, contractAddress, _point, _proxy }
@@ -233,7 +233,7 @@ export class Client {
     return isSpawnProxy;
   }
 
-  async getCanSpawnAs (blockHash: string, contractAddress: string, _point: number, _who: string): Promise<any> {
+  async getCanSpawnAs (blockHash: string, contractAddress: string, _point: bigint, _who: string): Promise<any> {
     const { canSpawnAs } = await this._client.query(
       gql(queries.canSpawnAs),
       { blockHash, contractAddress, _point, _who }
@@ -251,7 +251,7 @@ export class Client {
     return getSpawningForCount;
   }
 
-  async getGetVotingProxy (blockHash: string, contractAddress: string, _point: number): Promise<any> {
+  async getGetVotingProxy (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { getVotingProxy } = await this._client.query(
       gql(queries.getVotingProxy),
       { blockHash, contractAddress, _point }
@@ -260,7 +260,7 @@ export class Client {
     return getVotingProxy;
   }
 
-  async getIsVotingProxy (blockHash: string, contractAddress: string, _point: number, _proxy: string): Promise<any> {
+  async getIsVotingProxy (blockHash: string, contractAddress: string, _point: bigint, _proxy: string): Promise<any> {
     const { isVotingProxy } = await this._client.query(
       gql(queries.isVotingProxy),
       { blockHash, contractAddress, _point, _proxy }
@@ -269,7 +269,7 @@ export class Client {
     return isVotingProxy;
   }
 
-  async getCanVoteAs (blockHash: string, contractAddress: string, _point: number, _who: string): Promise<any> {
+  async getCanVoteAs (blockHash: string, contractAddress: string, _point: bigint, _who: string): Promise<any> {
     const { canVoteAs } = await this._client.query(
       gql(queries.canVoteAs),
       { blockHash, contractAddress, _point, _who }
@@ -287,7 +287,7 @@ export class Client {
     return getVotingForCount;
   }
 
-  async getGetTransferProxy (blockHash: string, contractAddress: string, _point: number): Promise<any> {
+  async getGetTransferProxy (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { getTransferProxy } = await this._client.query(
       gql(queries.getTransferProxy),
       { blockHash, contractAddress, _point }
@@ -296,7 +296,7 @@ export class Client {
     return getTransferProxy;
   }
 
-  async getIsTransferProxy (blockHash: string, contractAddress: string, _point: number, _proxy: string): Promise<any> {
+  async getIsTransferProxy (blockHash: string, contractAddress: string, _point: bigint, _proxy: string): Promise<any> {
     const { isTransferProxy } = await this._client.query(
       gql(queries.isTransferProxy),
       { blockHash, contractAddress, _point, _proxy }
@@ -305,7 +305,7 @@ export class Client {
     return isTransferProxy;
   }
 
-  async getCanTransfer (blockHash: string, contractAddress: string, _point: number, _who: string): Promise<any> {
+  async getCanTransfer (blockHash: string, contractAddress: string, _point: bigint, _who: string): Promise<any> {
     const { canTransfer } = await this._client.query(
       gql(queries.canTransfer),
       { blockHash, contractAddress, _point, _who }
@@ -368,7 +368,7 @@ export class Client {
     return hasVotedOnDocumentPoll;
   }
 
-  async getFindClaim (blockHash: string, contractAddress: string, _whose: number, _protocol: string, _claim: string): Promise<any> {
+  async getFindClaim (blockHash: string, contractAddress: string, _whose: bigint, _protocol: string, _claim: string): Promise<any> {
     const { findClaim } = await this._client.query(
       gql(queries.findClaim),
       { blockHash, contractAddress, _whose, _protocol, _claim }
@@ -485,7 +485,7 @@ export class Client {
     return tokenURI;
   }
 
-  async getGetSpawnLimit (blockHash: string, contractAddress: string, _point: number, _time: bigint): Promise<any> {
+  async getGetSpawnLimit (blockHash: string, contractAddress: string, _point: bigint, _time: bigint): Promise<any> {
     const { getSpawnLimit } = await this._client.query(
       gql(queries.getSpawnLimit),
       { blockHash, contractAddress, _point, _time }
@@ -494,7 +494,7 @@ export class Client {
     return getSpawnLimit;
   }
 
-  async getCanEscapeTo (blockHash: string, contractAddress: string, _point: number, _sponsor: number): Promise<any> {
+  async getCanEscapeTo (blockHash: string, contractAddress: string, _point: bigint, _sponsor: bigint): Promise<any> {
     const { canEscapeTo } = await this._client.query(
       gql(queries.canEscapeTo),
       { blockHash, contractAddress, _point, _sponsor }
@@ -503,7 +503,7 @@ export class Client {
     return canEscapeTo;
   }
 
-  async getCanSend (blockHash: string, contractAddress: string, _as: number, _point: number): Promise<any> {
+  async getCanSend (blockHash: string, contractAddress: string, _as: bigint, _point: bigint): Promise<any> {
     const { canSend } = await this._client.query(
       gql(queries.canSend),
       { blockHash, contractAddress, _as, _point }
@@ -512,7 +512,7 @@ export class Client {
     return canSend;
   }
 
-  async getGetPool (blockHash: string, contractAddress: string, _point: number): Promise<any> {
+  async getGetPool (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { getPool } = await this._client.query(
       gql(queries.getPool),
       { blockHash, contractAddress, _point }

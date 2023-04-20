@@ -1,4 +1,4 @@
-query isOwner($blockHash: String!, $contractAddress: String!, $_point: Int!, $_address: String!){
+query isOwner($blockHash: String!, $contractAddress: String!, $_point: BigInt!, $_address: String!){
     isOwner(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point, _address: $_address){
         value
         proof{

@@ -1,0 +1,8 @@
+query getRemainingStars($blockHash: String!, $contractAddress: String!, $_participant: String!){
+    getRemainingStars(blockHash: $blockHash, contractAddress: $contractAddress, _participant: $_participant){
+        value
+        proof{
+            data
+        }
+    }
+}

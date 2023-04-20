@@ -1,13 +1,5 @@
 # censures-watcher
 
-## Currently unsupported queries
-
-The watcher was generated in `eth_call` mode and does not support the following queries in its current state:
-
-* `getCensuring(uint16 _whose) returns (uint32[] cens)`
-
-* `getCensuredBy(uint16 _who) returns (uint16[] cens)`
-
 ## Setup
 
 * Run the following command to install required packages:

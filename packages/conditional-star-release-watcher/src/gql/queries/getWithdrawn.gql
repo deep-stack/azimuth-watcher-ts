@@ -1,0 +1,8 @@
+query getWithdrawn($blockHash: String!, $contractAddress: String!, $_participant: String!){
+    getWithdrawn(blockHash: $blockHash, contractAddress: $contractAddress, _participant: $_participant){
+        value
+        proof{
+            data
+        }
+    }
+}

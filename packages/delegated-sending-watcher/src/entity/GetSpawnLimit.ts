@@ -20,14 +20,14 @@ export class GetSpawnLimit {
   @Column('varchar', { length: 42 })
     contractAddress!: string;
 
-  @Column('integer')
-    _point!: number;
+  @Column('numeric', { transformer: bigintTransformer })
+    _point!: bigint;
 
   @Column('numeric', { transformer: bigintTransformer })
     _time!: bigint;
 
-  @Column('integer')
-    value!: number;
+  @Column('numeric', { transformer: bigintTransformer })
+    value!: bigint;
 
   @Column('text', { nullable: true })
     proof!: string;

@@ -7,9 +7,11 @@
   ],
   "scripts": {
     "build": "lerna run build --stream",
-    "lint": "lerna run lint --stream -- --max-warnings=0"
+    "lint": "lerna run lint --stream -- --max-warnings=0",
+    "prepare": "husky install"
   },
   "devDependencies": {
+    "husky": "^7.0.2",
     "lerna": "^6.6.1"
   }
 }

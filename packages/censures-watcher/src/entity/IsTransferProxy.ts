@@ -3,6 +3,7 @@
 //
 
 import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm';
+import { bigintTransformer } from '@cerc-io/util';
 
 @Entity()
 @Index(['blockHash', 'contractAddress', '_point', '_proxy'], { unique: true })
@@ -19,8 +20,8 @@ export class IsTransferProxy {
   @Column('varchar', { length: 42 })
     contractAddress!: string;
 
-  @Column('integer')
-    _point!: number;
+  @Column('numeric', { transformer: bigintTransformer })
+    _point!: bigint;
 
   @Column('varchar', { length: 42 })
     _proxy!: string;

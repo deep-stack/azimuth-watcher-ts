@@ -111,7 +111,7 @@ export class Database implements DatabaseInterface {
     return this._baseDatabase.close();
   }
 
-  async getIsActive ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number }): Promise<IsActive | undefined> {
+  async getIsActive ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<IsActive | undefined> {
     return this._conn.getRepository(IsActive)
       .findOne({
         blockHash,
@@ -120,7 +120,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getGetKeyRevisionNumber ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number }): Promise<GetKeyRevisionNumber | undefined> {
+  async getGetKeyRevisionNumber ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<GetKeyRevisionNumber | undefined> {
     return this._conn.getRepository(GetKeyRevisionNumber)
       .findOne({
         blockHash,
@@ -129,7 +129,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getHasBeenLinked ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number }): Promise<HasBeenLinked | undefined> {
+  async getHasBeenLinked ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<HasBeenLinked | undefined> {
     return this._conn.getRepository(HasBeenLinked)
       .findOne({
         blockHash,
@@ -138,7 +138,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getIsLive ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number }): Promise<IsLive | undefined> {
+  async getIsLive ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<IsLive | undefined> {
     return this._conn.getRepository(IsLive)
       .findOne({
         blockHash,
@@ -147,7 +147,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getGetContinuityNumber ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number }): Promise<GetContinuityNumber | undefined> {
+  async getGetContinuityNumber ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<GetContinuityNumber | undefined> {
     return this._conn.getRepository(GetContinuityNumber)
       .findOne({
         blockHash,
@@ -156,7 +156,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getGetSpawnCount ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number }): Promise<GetSpawnCount | undefined> {
+  async getGetSpawnCount ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<GetSpawnCount | undefined> {
     return this._conn.getRepository(GetSpawnCount)
       .findOne({
         blockHash,
@@ -165,7 +165,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getHasSponsor ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number }): Promise<HasSponsor | undefined> {
+  async getHasSponsor ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<HasSponsor | undefined> {
     return this._conn.getRepository(HasSponsor)
       .findOne({
         blockHash,
@@ -174,7 +174,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getGetSponsor ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number }): Promise<GetSponsor | undefined> {
+  async getGetSponsor ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<GetSponsor | undefined> {
     return this._conn.getRepository(GetSponsor)
       .findOne({
         blockHash,
@@ -183,7 +183,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getIsSponsor ({ blockHash, contractAddress, _point, _sponsor }: { blockHash: string, contractAddress: string, _point: number, _sponsor: number }): Promise<IsSponsor | undefined> {
+  async getIsSponsor ({ blockHash, contractAddress, _point, _sponsor }: { blockHash: string, contractAddress: string, _point: bigint, _sponsor: bigint }): Promise<IsSponsor | undefined> {
     return this._conn.getRepository(IsSponsor)
       .findOne({
         blockHash,
@@ -193,7 +193,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getGetSponsoringCount ({ blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: number }): Promise<GetSponsoringCount | undefined> {
+  async getGetSponsoringCount ({ blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: bigint }): Promise<GetSponsoringCount | undefined> {
     return this._conn.getRepository(GetSponsoringCount)
       .findOne({
         blockHash,
@@ -202,7 +202,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getIsEscaping ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number }): Promise<IsEscaping | undefined> {
+  async getIsEscaping ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<IsEscaping | undefined> {
     return this._conn.getRepository(IsEscaping)
       .findOne({
         blockHash,
@@ -211,7 +211,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getGetEscapeRequest ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number }): Promise<GetEscapeRequest | undefined> {
+  async getGetEscapeRequest ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<GetEscapeRequest | undefined> {
     return this._conn.getRepository(GetEscapeRequest)
       .findOne({
         blockHash,
@@ -220,7 +220,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getIsRequestingEscapeTo ({ blockHash, contractAddress, _point, _sponsor }: { blockHash: string, contractAddress: string, _point: number, _sponsor: number }): Promise<IsRequestingEscapeTo | undefined> {
+  async getIsRequestingEscapeTo ({ blockHash, contractAddress, _point, _sponsor }: { blockHash: string, contractAddress: string, _point: bigint, _sponsor: bigint }): Promise<IsRequestingEscapeTo | undefined> {
     return this._conn.getRepository(IsRequestingEscapeTo)
       .findOne({
         blockHash,
@@ -230,7 +230,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getGetEscapeRequestsCount ({ blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: number }): Promise<GetEscapeRequestsCount | undefined> {
+  async getGetEscapeRequestsCount ({ blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: bigint }): Promise<GetEscapeRequestsCount | undefined> {
     return this._conn.getRepository(GetEscapeRequestsCount)
       .findOne({
         blockHash,
@@ -239,7 +239,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getGetOwner ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number }): Promise<GetOwner | undefined> {
+  async getGetOwner ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<GetOwner | undefined> {
     return this._conn.getRepository(GetOwner)
       .findOne({
         blockHash,
@@ -248,7 +248,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getIsOwner ({ blockHash, contractAddress, _point, _address }: { blockHash: string, contractAddress: string, _point: number, _address: string }): Promise<IsOwner | undefined> {
+  async getIsOwner ({ blockHash, contractAddress, _point, _address }: { blockHash: string, contractAddress: string, _point: bigint, _address: string }): Promise<IsOwner | undefined> {
     return this._conn.getRepository(IsOwner)
       .findOne({
         blockHash,
@@ -277,7 +277,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getGetManagementProxy ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number }): Promise<GetManagementProxy | undefined> {
+  async getGetManagementProxy ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<GetManagementProxy | undefined> {
     return this._conn.getRepository(GetManagementProxy)
       .findOne({
         blockHash,
@@ -286,7 +286,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getIsManagementProxy ({ blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: number, _proxy: string }): Promise<IsManagementProxy | undefined> {
+  async getIsManagementProxy ({ blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: bigint, _proxy: string }): Promise<IsManagementProxy | undefined> {
     return this._conn.getRepository(IsManagementProxy)
       .findOne({
         blockHash,
@@ -296,7 +296,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getCanManage ({ blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: number, _who: string }): Promise<CanManage | undefined> {
+  async getCanManage ({ blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: bigint, _who: string }): Promise<CanManage | undefined> {
     return this._conn.getRepository(CanManage)
       .findOne({
         blockHash,
@@ -315,7 +315,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getGetSpawnProxy ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number }): Promise<GetSpawnProxy | undefined> {
+  async getGetSpawnProxy ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<GetSpawnProxy | undefined> {
     return this._conn.getRepository(GetSpawnProxy)
       .findOne({
         blockHash,
@@ -324,7 +324,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getIsSpawnProxy ({ blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: number, _proxy: string }): Promise<IsSpawnProxy | undefined> {
+  async getIsSpawnProxy ({ blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: bigint, _proxy: string }): Promise<IsSpawnProxy | undefined> {
     return this._conn.getRepository(IsSpawnProxy)
       .findOne({
         blockHash,
@@ -334,7 +334,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getCanSpawnAs ({ blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: number, _who: string }): Promise<CanSpawnAs | undefined> {
+  async getCanSpawnAs ({ blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: bigint, _who: string }): Promise<CanSpawnAs | undefined> {
     return this._conn.getRepository(CanSpawnAs)
       .findOne({
         blockHash,
@@ -353,7 +353,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getGetVotingProxy ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number }): Promise<GetVotingProxy | undefined> {
+  async getGetVotingProxy ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<GetVotingProxy | undefined> {
     return this._conn.getRepository(GetVotingProxy)
       .findOne({
         blockHash,
@@ -362,7 +362,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getIsVotingProxy ({ blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: number, _proxy: string }): Promise<IsVotingProxy | undefined> {
+  async getIsVotingProxy ({ blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: bigint, _proxy: string }): Promise<IsVotingProxy | undefined> {
     return this._conn.getRepository(IsVotingProxy)
       .findOne({
         blockHash,
@@ -372,7 +372,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getCanVoteAs ({ blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: number, _who: string }): Promise<CanVoteAs | undefined> {
+  async getCanVoteAs ({ blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: bigint, _who: string }): Promise<CanVoteAs | undefined> {
     return this._conn.getRepository(CanVoteAs)
       .findOne({
         blockHash,
@@ -391,7 +391,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getGetTransferProxy ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number }): Promise<GetTransferProxy | undefined> {
+  async getGetTransferProxy ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<GetTransferProxy | undefined> {
     return this._conn.getRepository(GetTransferProxy)
       .findOne({
         blockHash,
@@ -400,7 +400,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getIsTransferProxy ({ blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: number, _proxy: string }): Promise<IsTransferProxy | undefined> {
+  async getIsTransferProxy ({ blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: bigint, _proxy: string }): Promise<IsTransferProxy | undefined> {
     return this._conn.getRepository(IsTransferProxy)
       .findOne({
         blockHash,
@@ -410,7 +410,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getCanTransfer ({ blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: number, _who: string }): Promise<CanTransfer | undefined> {
+  async getCanTransfer ({ blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: bigint, _who: string }): Promise<CanTransfer | undefined> {
     return this._conn.getRepository(CanTransfer)
       .findOne({
         blockHash,
@@ -475,7 +475,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getFindClaim ({ blockHash, contractAddress, _whose, _protocol, _claim }: { blockHash: string, contractAddress: string, _whose: number, _protocol: string, _claim: string }): Promise<FindClaim | undefined> {
+  async getFindClaim ({ blockHash, contractAddress, _whose, _protocol, _claim }: { blockHash: string, contractAddress: string, _whose: bigint, _protocol: string, _claim: string }): Promise<FindClaim | undefined> {
     return this._conn.getRepository(FindClaim)
       .findOne({
         blockHash,
@@ -594,7 +594,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getGetSpawnLimit ({ blockHash, contractAddress, _point, _time }: { blockHash: string, contractAddress: string, _point: number, _time: bigint }): Promise<GetSpawnLimit | undefined> {
+  async getGetSpawnLimit ({ blockHash, contractAddress, _point, _time }: { blockHash: string, contractAddress: string, _point: bigint, _time: bigint }): Promise<GetSpawnLimit | undefined> {
     return this._conn.getRepository(GetSpawnLimit)
       .findOne({
         blockHash,
@@ -604,7 +604,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getCanEscapeTo ({ blockHash, contractAddress, _point, _sponsor }: { blockHash: string, contractAddress: string, _point: number, _sponsor: number }): Promise<CanEscapeTo | undefined> {
+  async getCanEscapeTo ({ blockHash, contractAddress, _point, _sponsor }: { blockHash: string, contractAddress: string, _point: bigint, _sponsor: bigint }): Promise<CanEscapeTo | undefined> {
     return this._conn.getRepository(CanEscapeTo)
       .findOne({
         blockHash,
@@ -614,7 +614,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getCanSend ({ blockHash, contractAddress, _as, _point }: { blockHash: string, contractAddress: string, _as: number, _point: number }): Promise<CanSend | undefined> {
+  async getCanSend ({ blockHash, contractAddress, _as, _point }: { blockHash: string, contractAddress: string, _as: bigint, _point: bigint }): Promise<CanSend | undefined> {
     return this._conn.getRepository(CanSend)
       .findOne({
         blockHash,
@@ -624,7 +624,7 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getGetPool ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: number }): Promise<GetPool | undefined> {
+  async getGetPool ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<GetPool | undefined> {
     return this._conn.getRepository(GetPool)
       .findOne({
         blockHash,

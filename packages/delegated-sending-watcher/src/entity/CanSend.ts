@@ -3,6 +3,7 @@
 //
 
 import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm';
+import { bigintTransformer } from '@cerc-io/util';
 
 @Entity()
 @Index(['blockHash', 'contractAddress', '_as', '_point'], { unique: true })
@@ -19,11 +20,11 @@ export class CanSend {
   @Column('varchar', { length: 42 })
     contractAddress!: string;
 
-  @Column('integer')
-    _as!: number;
+  @Column('numeric', { transformer: bigintTransformer })
+    _as!: bigint;
 
-  @Column('integer')
-    _point!: number;
+  @Column('numeric', { transformer: bigintTransformer })
+    _point!: bigint;
 
   @Column('boolean')
     value!: boolean;

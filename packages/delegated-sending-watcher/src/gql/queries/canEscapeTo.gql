@@ -1,4 +1,4 @@
-query canEscapeTo($blockHash: String!, $contractAddress: String!, $_point: Int!, $_sponsor: Int!){
+query canEscapeTo($blockHash: String!, $contractAddress: String!, $_point: BigInt!, $_sponsor: BigInt!){
     canEscapeTo(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point, _sponsor: $_sponsor){
         value
         proof{

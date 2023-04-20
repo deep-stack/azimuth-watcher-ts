@@ -1,4 +1,4 @@
-query getEscapeRequestsCount($blockHash: String!, $contractAddress: String!, $_sponsor: Int!){
+query getEscapeRequestsCount($blockHash: String!, $contractAddress: String!, $_sponsor: BigInt!){
     getEscapeRequestsCount(blockHash: $blockHash, contractAddress: $contractAddress, _sponsor: $_sponsor){
         value
         proof{

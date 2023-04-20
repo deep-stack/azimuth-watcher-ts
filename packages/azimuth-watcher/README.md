@@ -6,25 +6,6 @@ The watcher was generated in `eth_call` mode and does not support the following 
 
 * `getKeys(uint32 _point) returns (bytes32 crypt, bytes32 auth, uint32 suite, uint32 revision)`
 
-* `getSpawned(uint32 _point) returns (uint32[] spawned)`
-
-* `getSponsoring(uint32 _sponsor) returns (uint32[] sponsees)`
-
-* `getEscapeRequests(uint32 _sponsor) returns (uint32[] requests)`
-
-* `getOwnedPoints(address _whose) returns (uint32[] ownedPoints)`
-
-* `getOwnedPointAtIndex(address _whose, uint256 _index) returns (uint32 point)`
-
-* `getManagerFor(address _proxy) returns (uint32[] mfor)`
-
-* `getSpawningFor(address _proxy) returns (uint32[] sfor)`
-
-* `getVotingFor(address _proxy) returns (uint32[] vfor)`
-
-* `getTransferringFor(address _proxy) returns (uint32[] tfor)`
-
-
 ## Setup
 
 * Run the following command to install required packages:

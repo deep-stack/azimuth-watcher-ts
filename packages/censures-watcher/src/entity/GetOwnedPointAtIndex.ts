@@ -26,8 +26,8 @@ export class GetOwnedPointAtIndex {
   @Column('numeric', { transformer: bigintTransformer })
     _index!: bigint;
 
-  @Column('integer')
-    value!: number;
+  @Column('numeric', { transformer: bigintTransformer })
+    value!: bigint;
 
   @Column('text', { nullable: true })
     proof!: string;

@@ -1,0 +1,8 @@
+query getOwnedPoints($blockHash: String!, $contractAddress: String!, $_whose: String!){
+    getOwnedPoints(blockHash: $blockHash, contractAddress: $contractAddress, _whose: $_whose){
+        value
+        proof{
+            data
+        }
+    }
+}

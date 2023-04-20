@@ -20,15 +20,12 @@ import { SyncStatus } from './entity/SyncStatus';
 import { StateSyncStatus } from './entity/StateSyncStatus';
 import { BlockProgress } from './entity/BlockProgress';
 import { State } from './entity/State';
-import { GetUpgradeProposals } from './entity/GetUpgradeProposals';
 import { GetUpgradeProposalCount } from './entity/GetUpgradeProposalCount';
-import { GetDocumentProposals } from './entity/GetDocumentProposals';
 import { GetDocumentProposalCount } from './entity/GetDocumentProposalCount';
 import { HasVotedOnUpgradePoll } from './entity/HasVotedOnUpgradePoll';
 import { HasVotedOnDocumentPoll } from './entity/HasVotedOnDocumentPoll';
-import { GetDocumentMajorities } from './entity/GetDocumentMajorities';
 
-export const ENTITIES = [GetUpgradeProposals, GetUpgradeProposalCount, GetDocumentMajorities, GetDocumentProposals, GetDocumentProposalCount, HasVotedOnUpgradePoll, HasVotedOnDocumentPoll];
+export const ENTITIES = [GetUpgradeProposalCount, GetDocumentProposalCount, HasVotedOnUpgradePoll, HasVotedOnDocumentPoll];
 
 export class Database implements DatabaseInterface {
   _config: ConnectionOptions;
@@ -61,32 +58,8 @@ export class Database implements DatabaseInterface {
     return this._baseDatabase.close();
   }
 
-  async getGetUpgradeProposals ({ blockHash, contractAddress }: { blockHash: string, contractAddress: string }): Promise<GetUpgradeProposals | undefined> {
-    return this._conn.getRepository(GetUpgradeProposals)
-      .findOne({
-        blockHash,
-        contractAddress
-      });
-  }
-
   async getGetUpgradeProposalCount ({ blockHash, contractAddress }: { blockHash: string, contractAddress: string }): Promise<GetUpgradeProposalCount | undefined> {
     return this._conn.getRepository(GetUpgradeProposalCount)
-      .findOne({
-        blockHash,
-        contractAddress
-      });
-  }
-
-  async getGetDocumentProposals ({ blockHash, contractAddress }: { blockHash: string, contractAddress: string }): Promise<GetDocumentProposals | undefined> {
-    return this._conn.getRepository(GetDocumentProposals)
-      .findOne({
-        blockHash,
-        contractAddress
-      });
-  }
-
-  async getGetDocumentMajorities ({ blockHash, contractAddress }: { blockHash: string, contractAddress: string }): Promise<GetDocumentMajorities | undefined> {
-    return this._conn.getRepository(GetDocumentMajorities)
       .findOne({
         blockHash,
         contractAddress
@@ -121,26 +94,8 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async saveGetUpgradeProposals ({ blockHash, blockNumber, contractAddress, value, proof }: DeepPartial<GetUpgradeProposals>): Promise<GetUpgradeProposals> {
-    const repo = this._conn.getRepository(GetUpgradeProposals);
-    const entity = repo.create({ blockHash, blockNumber, contractAddress, value, proof });
-    return repo.save(entity);
-  }
-
   async saveGetUpgradeProposalCount ({ blockHash, blockNumber, contractAddress, value, proof }: DeepPartial<GetUpgradeProposalCount>): Promise<GetUpgradeProposalCount> {
     const repo = this._conn.getRepository(GetUpgradeProposalCount);
-    const entity = repo.create({ blockHash, blockNumber, contractAddress, value, proof });
-    return repo.save(entity);
-  }
-
-  async saveGetDocumentProposals ({ blockHash, blockNumber, contractAddress, value, proof }: DeepPartial<GetDocumentProposals>): Promise<GetDocumentProposals> {
-    const repo = this._conn.getRepository(GetDocumentProposals);
-    const entity = repo.create({ blockHash, blockNumber, contractAddress, value, proof });
-    return repo.save(entity);
-  }
-
-  async saveGetDocumentMajorities ({ blockHash, blockNumber, contractAddress, value, proof }: DeepPartial<GetDocumentMajorities>): Promise<GetDocumentMajorities> {
-    const repo = this._conn.getRepository(GetDocumentMajorities);
     const entity = repo.create({ blockHash, blockNumber, contractAddress, value, proof });
     return repo.save(entity);
   }
@@ -368,9 +323,6 @@ export class Database implements DatabaseInterface {
   }
 
   _setPropColMaps (): void {
-    this._propColMaps.GetUpgradeProposals = this._getPropertyColumnMapForEntity('GetUpgradeProposals');
-    this._propColMaps.GetDocumentProposals = this._getPropertyColumnMapForEntity('GetDocumentProposals');
-    this._propColMaps.GetDocumentMajorities = this._getPropertyColumnMapForEntity('GetDocumentMajorities');
     this._propColMaps.GetUpgradeProposalCount = this._getPropertyColumnMapForEntity('GetUpgradeProposalCount');
     this._propColMaps.GetDocumentProposalCount = this._getPropertyColumnMapForEntity('GetDocumentProposalCount');
     this._propColMaps.HasVotedOnUpgradePoll = this._getPropertyColumnMapForEntity('HasVotedOnUpgradePoll');

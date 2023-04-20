@@ -94,7 +94,7 @@ export class Indexer implements IndexerInterface {
     return getResultEvent(event);
   }
 
-  async isActive (blockHash: string, contractAddress: string, _point: number): Promise<ValueResult> {
+  async isActive (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
     const entity = await this._db.getIsActive({ blockHash, contractAddress, _point });
     if (entity) {
       log('isActive: db hit.');
@@ -123,7 +123,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async getKeyRevisionNumber (blockHash: string, contractAddress: string, _point: number): Promise<ValueResult> {
+  async getKeyRevisionNumber (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
     const entity = await this._db.getGetKeyRevisionNumber({ blockHash, contractAddress, _point });
     if (entity) {
       log('getKeyRevisionNumber: db hit.');
@@ -143,7 +143,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getKeyRevisionNumber(_point, { blockTag: blockHash });
+    let value = await contract.getKeyRevisionNumber(_point, { blockTag: blockHash });
+    value = value.toString();
+    value = BigInt(value);
 
     const result: ValueResult = { value };
 
@@ -152,7 +154,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async hasBeenLinked (blockHash: string, contractAddress: string, _point: number): Promise<ValueResult> {
+  async hasBeenLinked (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
     const entity = await this._db.getHasBeenLinked({ blockHash, contractAddress, _point });
     if (entity) {
       log('hasBeenLinked: db hit.');
@@ -181,7 +183,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async isLive (blockHash: string, contractAddress: string, _point: number): Promise<ValueResult> {
+  async isLive (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
     const entity = await this._db.getIsLive({ blockHash, contractAddress, _point });
     if (entity) {
       log('isLive: db hit.');
@@ -210,7 +212,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async getContinuityNumber (blockHash: string, contractAddress: string, _point: number): Promise<ValueResult> {
+  async getContinuityNumber (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
     const entity = await this._db.getGetContinuityNumber({ blockHash, contractAddress, _point });
     if (entity) {
       log('getContinuityNumber: db hit.');
@@ -230,7 +232,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getContinuityNumber(_point, { blockTag: blockHash });
+    let value = await contract.getContinuityNumber(_point, { blockTag: blockHash });
+    value = value.toString();
+    value = BigInt(value);
 
     const result: ValueResult = { value };
 
@@ -239,7 +243,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async getSpawnCount (blockHash: string, contractAddress: string, _point: number): Promise<ValueResult> {
+  async getSpawnCount (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
     const entity = await this._db.getGetSpawnCount({ blockHash, contractAddress, _point });
     if (entity) {
       log('getSpawnCount: db hit.');
@@ -259,7 +263,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getSpawnCount(_point, { blockTag: blockHash });
+    let value = await contract.getSpawnCount(_point, { blockTag: blockHash });
+    value = value.toString();
+    value = BigInt(value);
 
     const result: ValueResult = { value };
 
@@ -268,7 +274,25 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async hasSponsor (blockHash: string, contractAddress: string, _point: number): Promise<ValueResult> {
+  async getSpawned (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
+    log('getSpawned: db miss, fetching from upstream server');
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    const abi = this._abiMap.get(KIND_ECLIPTIC);
+    assert(abi);
+
+    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
+    let value = await contract.getSpawned(_point, { blockTag: blockHash });
+    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
+
+    const result: ValueResult = { value };
+
+    return result;
+  }
+
+  async hasSponsor (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
     const entity = await this._db.getHasSponsor({ blockHash, contractAddress, _point });
     if (entity) {
       log('hasSponsor: db hit.');
@@ -297,7 +321,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async getSponsor (blockHash: string, contractAddress: string, _point: number): Promise<ValueResult> {
+  async getSponsor (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
     const entity = await this._db.getGetSponsor({ blockHash, contractAddress, _point });
     if (entity) {
       log('getSponsor: db hit.');
@@ -317,7 +341,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getSponsor(_point, { blockTag: blockHash });
+    let value = await contract.getSponsor(_point, { blockTag: blockHash });
+    value = value.toString();
+    value = BigInt(value);
 
     const result: ValueResult = { value };
 
@@ -326,7 +352,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async isSponsor (blockHash: string, contractAddress: string, _point: number, _sponsor: number): Promise<ValueResult> {
+  async isSponsor (blockHash: string, contractAddress: string, _point: bigint, _sponsor: bigint): Promise<ValueResult> {
     const entity = await this._db.getIsSponsor({ blockHash, contractAddress, _point, _sponsor });
     if (entity) {
       log('isSponsor: db hit.');
@@ -355,7 +381,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async getSponsoringCount (blockHash: string, contractAddress: string, _sponsor: number): Promise<ValueResult> {
+  async getSponsoringCount (blockHash: string, contractAddress: string, _sponsor: bigint): Promise<ValueResult> {
     const entity = await this._db.getGetSponsoringCount({ blockHash, contractAddress, _sponsor });
     if (entity) {
       log('getSponsoringCount: db hit.');
@@ -386,7 +412,25 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async isEscaping (blockHash: string, contractAddress: string, _point: number): Promise<ValueResult> {
+  async getSponsoring (blockHash: string, contractAddress: string, _sponsor: bigint): Promise<ValueResult> {
+    log('getSponsoring: db miss, fetching from upstream server');
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    const abi = this._abiMap.get(KIND_ECLIPTIC);
+    assert(abi);
+
+    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
+    let value = await contract.getSponsoring(_sponsor, { blockTag: blockHash });
+    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
+
+    const result: ValueResult = { value };
+
+    return result;
+  }
+
+  async isEscaping (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
     const entity = await this._db.getIsEscaping({ blockHash, contractAddress, _point });
     if (entity) {
       log('isEscaping: db hit.');
@@ -415,7 +459,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async getEscapeRequest (blockHash: string, contractAddress: string, _point: number): Promise<ValueResult> {
+  async getEscapeRequest (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
     const entity = await this._db.getGetEscapeRequest({ blockHash, contractAddress, _point });
     if (entity) {
       log('getEscapeRequest: db hit.');
@@ -435,7 +479,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getEscapeRequest(_point, { blockTag: blockHash });
+    let value = await contract.getEscapeRequest(_point, { blockTag: blockHash });
+    value = value.toString();
+    value = BigInt(value);
 
     const result: ValueResult = { value };
 
@@ -444,7 +490,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async isRequestingEscapeTo (blockHash: string, contractAddress: string, _point: number, _sponsor: number): Promise<ValueResult> {
+  async isRequestingEscapeTo (blockHash: string, contractAddress: string, _point: bigint, _sponsor: bigint): Promise<ValueResult> {
     const entity = await this._db.getIsRequestingEscapeTo({ blockHash, contractAddress, _point, _sponsor });
     if (entity) {
       log('isRequestingEscapeTo: db hit.');
@@ -473,7 +519,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async getEscapeRequestsCount (blockHash: string, contractAddress: string, _sponsor: number): Promise<ValueResult> {
+  async getEscapeRequestsCount (blockHash: string, contractAddress: string, _sponsor: bigint): Promise<ValueResult> {
     const entity = await this._db.getGetEscapeRequestsCount({ blockHash, contractAddress, _sponsor });
     if (entity) {
       log('getEscapeRequestsCount: db hit.');
@@ -504,7 +550,25 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async getOwner (blockHash: string, contractAddress: string, _point: number): Promise<ValueResult> {
+  async getEscapeRequests (blockHash: string, contractAddress: string, _sponsor: bigint): Promise<ValueResult> {
+    log('getEscapeRequests: db miss, fetching from upstream server');
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    const abi = this._abiMap.get(KIND_ECLIPTIC);
+    assert(abi);
+
+    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
+    let value = await contract.getEscapeRequests(_sponsor, { blockTag: blockHash });
+    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
+
+    const result: ValueResult = { value };
+
+    return result;
+  }
+
+  async getOwner (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
     const entity = await this._db.getGetOwner({ blockHash, contractAddress, _point });
     if (entity) {
       log('getOwner: db hit.');
@@ -533,7 +597,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async isOwner (blockHash: string, contractAddress: string, _point: number, _address: string): Promise<ValueResult> {
+  async isOwner (blockHash: string, contractAddress: string, _point: bigint, _address: string): Promise<ValueResult> {
     const entity = await this._db.getIsOwner({ blockHash, contractAddress, _point, _address });
     if (entity) {
       log('isOwner: db hit.');
@@ -593,6 +657,24 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
+  async getOwnedPoints (blockHash: string, contractAddress: string, _whose: string): Promise<ValueResult> {
+    log('getOwnedPoints: db miss, fetching from upstream server');
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    const abi = this._abiMap.get(KIND_ECLIPTIC);
+    assert(abi);
+
+    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
+    let value = await contract.getOwnedPoints(_whose, { blockTag: blockHash });
+    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
+
+    const result: ValueResult = { value };
+
+    return result;
+  }
+
   async getOwnedPointAtIndex (blockHash: string, contractAddress: string, _whose: string, _index: bigint): Promise<ValueResult> {
     const entity = await this._db.getGetOwnedPointAtIndex({ blockHash, contractAddress, _whose, _index });
     if (entity) {
@@ -613,7 +695,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getOwnedPointAtIndex(_whose, _index, { blockTag: blockHash });
+    let value = await contract.getOwnedPointAtIndex(_whose, _index, { blockTag: blockHash });
+    value = value.toString();
+    value = BigInt(value);
 
     const result: ValueResult = { value };
 
@@ -622,7 +706,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async getManagementProxy (blockHash: string, contractAddress: string, _point: number): Promise<ValueResult> {
+  async getManagementProxy (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
     const entity = await this._db.getGetManagementProxy({ blockHash, contractAddress, _point });
     if (entity) {
       log('getManagementProxy: db hit.');
@@ -651,7 +735,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async isManagementProxy (blockHash: string, contractAddress: string, _point: number, _proxy: string): Promise<ValueResult> {
+  async isManagementProxy (blockHash: string, contractAddress: string, _point: bigint, _proxy: string): Promise<ValueResult> {
     const entity = await this._db.getIsManagementProxy({ blockHash, contractAddress, _point, _proxy });
     if (entity) {
       log('isManagementProxy: db hit.');
@@ -680,7 +764,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async canManage (blockHash: string, contractAddress: string, _point: number, _who: string): Promise<ValueResult> {
+  async canManage (blockHash: string, contractAddress: string, _point: bigint, _who: string): Promise<ValueResult> {
     const entity = await this._db.getCanManage({ blockHash, contractAddress, _point, _who });
     if (entity) {
       log('canManage: db hit.');
@@ -740,7 +824,25 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async getSpawnProxy (blockHash: string, contractAddress: string, _point: number): Promise<ValueResult> {
+  async getManagerFor (blockHash: string, contractAddress: string, _proxy: string): Promise<ValueResult> {
+    log('getManagerFor: db miss, fetching from upstream server');
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    const abi = this._abiMap.get(KIND_ECLIPTIC);
+    assert(abi);
+
+    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
+    let value = await contract.getManagerFor(_proxy, { blockTag: blockHash });
+    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
+
+    const result: ValueResult = { value };
+
+    return result;
+  }
+
+  async getSpawnProxy (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
     const entity = await this._db.getGetSpawnProxy({ blockHash, contractAddress, _point });
     if (entity) {
       log('getSpawnProxy: db hit.');
@@ -769,7 +871,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async isSpawnProxy (blockHash: string, contractAddress: string, _point: number, _proxy: string): Promise<ValueResult> {
+  async isSpawnProxy (blockHash: string, contractAddress: string, _point: bigint, _proxy: string): Promise<ValueResult> {
     const entity = await this._db.getIsSpawnProxy({ blockHash, contractAddress, _point, _proxy });
     if (entity) {
       log('isSpawnProxy: db hit.');
@@ -798,7 +900,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async canSpawnAs (blockHash: string, contractAddress: string, _point: number, _who: string): Promise<ValueResult> {
+  async canSpawnAs (blockHash: string, contractAddress: string, _point: bigint, _who: string): Promise<ValueResult> {
     const entity = await this._db.getCanSpawnAs({ blockHash, contractAddress, _point, _who });
     if (entity) {
       log('canSpawnAs: db hit.');
@@ -858,7 +960,25 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async getVotingProxy (blockHash: string, contractAddress: string, _point: number): Promise<ValueResult> {
+  async getSpawningFor (blockHash: string, contractAddress: string, _proxy: string): Promise<ValueResult> {
+    log('getSpawningFor: db miss, fetching from upstream server');
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    const abi = this._abiMap.get(KIND_ECLIPTIC);
+    assert(abi);
+
+    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
+    let value = await contract.getSpawningFor(_proxy, { blockTag: blockHash });
+    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
+
+    const result: ValueResult = { value };
+
+    return result;
+  }
+
+  async getVotingProxy (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
     const entity = await this._db.getGetVotingProxy({ blockHash, contractAddress, _point });
     if (entity) {
       log('getVotingProxy: db hit.');
@@ -887,7 +1007,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async isVotingProxy (blockHash: string, contractAddress: string, _point: number, _proxy: string): Promise<ValueResult> {
+  async isVotingProxy (blockHash: string, contractAddress: string, _point: bigint, _proxy: string): Promise<ValueResult> {
     const entity = await this._db.getIsVotingProxy({ blockHash, contractAddress, _point, _proxy });
     if (entity) {
       log('isVotingProxy: db hit.');
@@ -916,7 +1036,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async canVoteAs (blockHash: string, contractAddress: string, _point: number, _who: string): Promise<ValueResult> {
+  async canVoteAs (blockHash: string, contractAddress: string, _point: bigint, _who: string): Promise<ValueResult> {
     const entity = await this._db.getCanVoteAs({ blockHash, contractAddress, _point, _who });
     if (entity) {
       log('canVoteAs: db hit.');
@@ -976,7 +1096,25 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async getTransferProxy (blockHash: string, contractAddress: string, _point: number): Promise<ValueResult> {
+  async getVotingFor (blockHash: string, contractAddress: string, _proxy: string): Promise<ValueResult> {
+    log('getVotingFor: db miss, fetching from upstream server');
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    const abi = this._abiMap.get(KIND_ECLIPTIC);
+    assert(abi);
+
+    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
+    let value = await contract.getVotingFor(_proxy, { blockTag: blockHash });
+    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
+
+    const result: ValueResult = { value };
+
+    return result;
+  }
+
+  async getTransferProxy (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
     const entity = await this._db.getGetTransferProxy({ blockHash, contractAddress, _point });
     if (entity) {
       log('getTransferProxy: db hit.');
@@ -1005,7 +1143,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async isTransferProxy (blockHash: string, contractAddress: string, _point: number, _proxy: string): Promise<ValueResult> {
+  async isTransferProxy (blockHash: string, contractAddress: string, _point: bigint, _proxy: string): Promise<ValueResult> {
     const entity = await this._db.getIsTransferProxy({ blockHash, contractAddress, _point, _proxy });
     if (entity) {
       log('isTransferProxy: db hit.');
@@ -1034,7 +1172,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async canTransfer (blockHash: string, contractAddress: string, _point: number, _who: string): Promise<ValueResult> {
+  async canTransfer (blockHash: string, contractAddress: string, _point: bigint, _who: string): Promise<ValueResult> {
     const entity = await this._db.getCanTransfer({ blockHash, contractAddress, _point, _who });
     if (entity) {
       log('canTransfer: db hit.');
@@ -1094,6 +1232,24 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
+  async getTransferringFor (blockHash: string, contractAddress: string, _proxy: string): Promise<ValueResult> {
+    log('getTransferringFor: db miss, fetching from upstream server');
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    const abi = this._abiMap.get(KIND_ECLIPTIC);
+    assert(abi);
+
+    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
+    let value = await contract.getTransferringFor(_proxy, { blockTag: blockHash });
+    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
+
+    const result: ValueResult = { value };
+
+    return result;
+  }
+
   async isOperator (blockHash: string, contractAddress: string, _owner: string, _operator: string): Promise<ValueResult> {
     const entity = await this._db.getIsOperator({ blockHash, contractAddress, _owner, _operator });
     if (entity) {
@@ -1119,6 +1275,23 @@ export class Indexer implements IndexerInterface {
     const result: ValueResult = { value };
 
     await this._db.saveIsOperator({ blockHash, blockNumber, contractAddress, _owner, _operator, value: result.value, proof: JSONbigNative.stringify(result.proof) });
+
+    return result;
+  }
+
+  async getUpgradeProposals (blockHash: string, contractAddress: string): Promise<ValueResult> {
+    log('getUpgradeProposals: db miss, fetching from upstream server');
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    const abi = this._abiMap.get(KIND_ECLIPTIC);
+    assert(abi);
+
+    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
+    const value = await contract.getUpgradeProposals({ blockTag: blockHash });
+
+    const result: ValueResult = { value };
 
     return result;
   }
@@ -1154,6 +1327,23 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
+  async getDocumentProposals (blockHash: string, contractAddress: string): Promise<ValueResult> {
+    log('getDocumentProposals: db miss, fetching from upstream server');
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    const abi = this._abiMap.get(KIND_ECLIPTIC);
+    assert(abi);
+
+    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
+    const value = await contract.getDocumentProposals({ blockTag: blockHash });
+
+    const result: ValueResult = { value };
+
+    return result;
+  }
+
   async getDocumentProposalCount (blockHash: string, contractAddress: string): Promise<ValueResult> {
     const entity = await this._db.getGetDocumentProposalCount({ blockHash, contractAddress });
     if (entity) {
@@ -1181,6 +1371,23 @@ export class Indexer implements IndexerInterface {
     const result: ValueResult = { value };
 
     await this._db.saveGetDocumentProposalCount({ blockHash, blockNumber, contractAddress, value: result.value, proof: JSONbigNative.stringify(result.proof) });
+
+    return result;
+  }
+
+  async getDocumentMajorities (blockHash: string, contractAddress: string): Promise<ValueResult> {
+    log('getDocumentMajorities: db miss, fetching from upstream server');
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    const abi = this._abiMap.get(KIND_ECLIPTIC);
+    assert(abi);
+
+    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
+    const value = await contract.getDocumentMajorities({ blockTag: blockHash });
+
+    const result: ValueResult = { value };
 
     return result;
   }
@@ -1243,7 +1450,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async findClaim (blockHash: string, contractAddress: string, _whose: number, _protocol: string, _claim: string): Promise<ValueResult> {
+  async findClaim (blockHash: string, contractAddress: string, _whose: bigint, _protocol: string, _claim: string): Promise<ValueResult> {
     const entity = await this._db.getFindClaim({ blockHash, contractAddress, _whose, _protocol, _claim });
     if (entity) {
       log('findClaim: db hit.');
@@ -1628,7 +1835,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async getSpawnLimit (blockHash: string, contractAddress: string, _point: number, _time: bigint): Promise<ValueResult> {
+  async getSpawnLimit (blockHash: string, contractAddress: string, _point: bigint, _time: bigint): Promise<ValueResult> {
     const entity = await this._db.getGetSpawnLimit({ blockHash, contractAddress, _point, _time });
     if (entity) {
       log('getSpawnLimit: db hit.');
@@ -1648,7 +1855,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getSpawnLimit(_point, _time, { blockTag: blockHash });
+    let value = await contract.getSpawnLimit(_point, _time, { blockTag: blockHash });
+    value = value.toString();
+    value = BigInt(value);
 
     const result: ValueResult = { value };
 
@@ -1657,7 +1866,7 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async canEscapeTo (blockHash: string, contractAddress: string, _point: number, _sponsor: number): Promise<ValueResult> {
+  async canEscapeTo (blockHash: string, contractAddress: string, _point: bigint, _sponsor: bigint): Promise<ValueResult> {
     const entity = await this._db.getCanEscapeTo({ blockHash, contractAddress, _point, _sponsor });
     if (entity) {
       log('canEscapeTo: db hit.');

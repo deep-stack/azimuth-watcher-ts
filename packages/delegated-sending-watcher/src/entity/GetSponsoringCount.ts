@@ -20,8 +20,8 @@ export class GetSponsoringCount {
   @Column('varchar', { length: 42 })
     contractAddress!: string;
 
-  @Column('integer')
-    _sponsor!: number;
+  @Column('numeric', { transformer: bigintTransformer })
+    _sponsor!: bigint;
 
   @Column('numeric', { transformer: bigintTransformer })
     value!: bigint;

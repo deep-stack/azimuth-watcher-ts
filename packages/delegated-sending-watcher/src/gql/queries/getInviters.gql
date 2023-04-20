@@ -1,0 +1,8 @@
+query getInviters($blockHash: String!, $contractAddress: String!){
+    getInviters(blockHash: $blockHash, contractAddress: $contractAddress){
+        value
+        proof{
+            data
+        }
+    }
+}

@@ -101,22 +101,6 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         return indexer.getUpgradeProposalCount(blockHash, contractAddress);
       },
 
-      getDocumentProposalCount: (
-        _: any,
-        { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
-        __: any,
-        info: GraphQLResolveInfo
-      ): Promise<ValueResult> => {
-        log('getDocumentProposalCount', blockHash, contractAddress);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getDocumentProposalCount').inc(1);
-
-        // Set cache-control hints
-        // setGQLCacheHints(info, {}, gqlCacheConfig);
-
-        return indexer.getDocumentProposalCount(blockHash, contractAddress);
-      },
-
       getDocumentProposals: (
         _: any,
         { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
@@ -131,6 +115,22 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
         return indexer.getDocumentProposals(blockHash, contractAddress);
+      },
+
+      getDocumentProposalCount: (
+        _: any,
+        { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
+        __: any,
+        info: GraphQLResolveInfo
+      ): Promise<ValueResult> => {
+        log('getDocumentProposalCount', blockHash, contractAddress);
+        gqlTotalQueryCount.inc(1);
+        gqlQueryCount.labels('getDocumentProposalCount').inc(1);
+
+        // Set cache-control hints
+        // setGQLCacheHints(info, {}, gqlCacheConfig);
+
+        return indexer.getDocumentProposalCount(blockHash, contractAddress);
       },
 
       getDocumentMajorities: (

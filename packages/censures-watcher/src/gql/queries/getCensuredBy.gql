@@ -1,0 +1,8 @@
+query getCensuredBy($blockHash: String!, $contractAddress: String!, $_who: Int!){
+    getCensuredBy(blockHash: $blockHash, contractAddress: $contractAddress, _who: $_who){
+        value
+        proof{
+            data
+        }
+    }
+}

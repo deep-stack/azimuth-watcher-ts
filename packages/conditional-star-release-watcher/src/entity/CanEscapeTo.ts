@@ -3,6 +3,7 @@
 //
 
 import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm';
+import { bigintTransformer } from '@cerc-io/util';
 
 @Entity()
 @Index(['blockHash', 'contractAddress', '_point', '_sponsor'], { unique: true })
@@ -19,11 +20,11 @@ export class CanEscapeTo {
   @Column('varchar', { length: 42 })
     contractAddress!: string;
 
-  @Column('integer')
-    _point!: number;
+  @Column('numeric', { transformer: bigintTransformer })
+    _point!: bigint;
 
-  @Column('integer')
-    _sponsor!: number;
+  @Column('numeric', { transformer: bigintTransformer })
+    _sponsor!: bigint;
 
   @Column('boolean')
     value!: boolean;

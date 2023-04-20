@@ -15,31 +15,6 @@ type Proof {
   data: String!
 }
 
-type ResultBoolean {
-  value: Boolean!
-  proof: Proof
-}
-
-type ResultString {
-  value: String!
-  proof: Proof
-}
-
-type ResultStringArray {
-  value: [String!]
-  proof: Proof
-}
-
-type ResultInt {
-  value: Int!
-  proof: Proof
-}
-
-type ResultBigInt {
-  value: BigInt!
-  proof: Proof
-}
-
 type _Block_ {
   cid: String!
   hash: String!
@@ -109,16 +84,31 @@ type ResultState {
 type Query {
   events(blockHash: String!, contractAddress: String!, name: String): [ResultEvent!]
   eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!): [ResultEvent!]
+  getUpgradeProposals(blockHash: String!, contractAddress: String!): ResultStringArray!
   getUpgradeProposalCount(blockHash: String!, contractAddress: String!): ResultBigInt!
-  getDocumentMajorities(blockHash: String!, contractAddress: String!): ResultStringArray!
   getDocumentProposals(blockHash: String!, contractAddress: String!): ResultStringArray!
   getDocumentProposalCount(blockHash: String!, contractAddress: String!): ResultBigInt!
-  getUpgradeProposals(blockHash: String!, contractAddress: String!): ResultStringArray
+  getDocumentMajorities(blockHash: String!, contractAddress: String!): ResultStringArray!
   hasVotedOnUpgradePoll(blockHash: String!, contractAddress: String!, _galaxy: Int!, _proposal: String!): ResultBoolean!
   hasVotedOnDocumentPoll(blockHash: String!, contractAddress: String!, _galaxy: Int!, _proposal: String!): ResultBoolean!
   getSyncStatus: SyncStatus
   getStateByCID(cid: String!): ResultState
   getState(blockHash: String!, contractAddress: String!, kind: String): ResultState
+}
+
+type ResultStringArray {
+  value: [String!]!
+  proof: Proof
+}
+
+type ResultBigInt {
+  value: BigInt!
+  proof: Proof
+}
+
+type ResultBoolean {
+  value: Boolean!
+  proof: Proof
 }
 
 type Mutation {

@@ -1,4 +1,4 @@
-query canTransfer($blockHash: String!, $contractAddress: String!, $_point: Int!, $_who: String!){
+query canTransfer($blockHash: String!, $contractAddress: String!, $_point: BigInt!, $_who: String!){
     canTransfer(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point, _who: $_who){
         value
         proof{

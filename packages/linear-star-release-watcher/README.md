@@ -1,11 +1,5 @@
 # linear-star-release-watcher
 
-## Currently unsupported queries
-
-The watcher was generated in `eth_call` mode and does not support the following queries in its current state:
-
-* `getRemainingStars(address _participant) returns (uint16[] stars)`
-
 ## Setup
 
 * Run the following command to install required packages:
