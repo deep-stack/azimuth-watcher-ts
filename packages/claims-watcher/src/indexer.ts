@@ -3,8 +3,8 @@
 //
 
 import assert from 'assert';
+import { DeepPartial, FindConditions, FindManyOptions } from 'typeorm';
 import debug from 'debug';
-import { DeepPartial, FindConditions, FindManyOptions, ObjectLiteral } from 'typeorm';
 import JSONbig from 'json-bigint';
 import { ethers } from 'ethers';
 
@@ -20,8 +20,6 @@ import {
   JobQueue,
   Where,
   QueryOptions,
-  updateStateForElementaryType,
-  updateStateForMappingType,
   StateKind,
   StateStatus,
   ResultEvent,
@@ -40,6 +38,7 @@ import { StateSyncStatus } from './entity/StateSyncStatus';
 import { BlockProgress } from './entity/BlockProgress';
 import { State } from './entity/State';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const log = debug('vulcanize:indexer');
 const JSONbigNative = JSONbig({ useNativeBigInt: true });
 
@@ -105,10 +104,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('isActive: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('isActive: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -134,10 +133,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('getKeyRevisionNumber: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('getKeyRevisionNumber: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -165,10 +164,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('hasBeenLinked: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('hasBeenLinked: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -194,10 +193,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('isLive: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('isLive: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -223,10 +222,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('getContinuityNumber: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('getContinuityNumber: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -254,10 +253,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('getSpawnCount: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('getSpawnCount: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -276,9 +275,6 @@ export class Indexer implements IndexerInterface {
 
   async getSpawned (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
     log('getSpawned: db miss, fetching from upstream server');
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -303,10 +299,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('hasSponsor: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('hasSponsor: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -332,10 +328,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('getSponsor: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('getSponsor: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -363,10 +359,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('isSponsor: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('isSponsor: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -392,10 +388,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('getSponsoringCount: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('getSponsoringCount: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -414,9 +410,6 @@ export class Indexer implements IndexerInterface {
 
   async getSponsoring (blockHash: string, contractAddress: string, _sponsor: bigint): Promise<ValueResult> {
     log('getSponsoring: db miss, fetching from upstream server');
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -441,10 +434,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('isEscaping: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('isEscaping: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -470,10 +463,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('getEscapeRequest: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('getEscapeRequest: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -501,10 +494,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('isRequestingEscapeTo: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('isRequestingEscapeTo: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -530,10 +523,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('getEscapeRequestsCount: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('getEscapeRequestsCount: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -552,9 +545,6 @@ export class Indexer implements IndexerInterface {
 
   async getEscapeRequests (blockHash: string, contractAddress: string, _sponsor: bigint): Promise<ValueResult> {
     log('getEscapeRequests: db miss, fetching from upstream server');
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -579,10 +569,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('getOwner: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('getOwner: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -608,10 +598,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('isOwner: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('isOwner: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -637,10 +627,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('getOwnedPointCount: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('getOwnedPointCount: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -659,9 +649,6 @@ export class Indexer implements IndexerInterface {
 
   async getOwnedPoints (blockHash: string, contractAddress: string, _whose: string): Promise<ValueResult> {
     log('getOwnedPoints: db miss, fetching from upstream server');
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -686,10 +673,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('getOwnedPointAtIndex: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('getOwnedPointAtIndex: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -717,10 +704,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('getManagementProxy: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('getManagementProxy: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -746,10 +733,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('isManagementProxy: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('isManagementProxy: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -775,10 +762,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('canManage: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('canManage: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -804,10 +791,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('getManagerForCount: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('getManagerForCount: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -826,9 +813,6 @@ export class Indexer implements IndexerInterface {
 
   async getManagerFor (blockHash: string, contractAddress: string, _proxy: string): Promise<ValueResult> {
     log('getManagerFor: db miss, fetching from upstream server');
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -853,10 +837,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('getSpawnProxy: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('getSpawnProxy: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -882,10 +866,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('isSpawnProxy: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('isSpawnProxy: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -911,10 +895,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('canSpawnAs: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('canSpawnAs: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -940,10 +924,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('getSpawningForCount: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('getSpawningForCount: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -962,9 +946,6 @@ export class Indexer implements IndexerInterface {
 
   async getSpawningFor (blockHash: string, contractAddress: string, _proxy: string): Promise<ValueResult> {
     log('getSpawningFor: db miss, fetching from upstream server');
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -989,10 +970,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('getVotingProxy: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('getVotingProxy: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -1018,10 +999,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('isVotingProxy: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('isVotingProxy: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -1047,10 +1028,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('canVoteAs: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('canVoteAs: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -1076,10 +1057,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('getVotingForCount: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('getVotingForCount: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -1098,9 +1079,6 @@ export class Indexer implements IndexerInterface {
 
   async getVotingFor (blockHash: string, contractAddress: string, _proxy: string): Promise<ValueResult> {
     log('getVotingFor: db miss, fetching from upstream server');
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -1125,10 +1103,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('getTransferProxy: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('getTransferProxy: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -1154,10 +1132,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('isTransferProxy: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('isTransferProxy: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -1183,10 +1161,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('canTransfer: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('canTransfer: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -1212,10 +1190,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('getTransferringForCount: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('getTransferringForCount: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -1234,9 +1212,6 @@ export class Indexer implements IndexerInterface {
 
   async getTransferringFor (blockHash: string, contractAddress: string, _proxy: string): Promise<ValueResult> {
     log('getTransferringFor: db miss, fetching from upstream server');
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -1261,10 +1236,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('isOperator: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('isOperator: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -1290,10 +1265,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('findClaim: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('findClaim: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CLAIMS);
     assert(abi);
@@ -1332,7 +1307,7 @@ export class Indexer implements IndexerInterface {
     return createStateCheckpoint(this, contractAddress, blockHash);
   }
 
-  async processCanonicalBlock (blockHash: string, blockNumber: number): Promise<void> {
+  async processCanonicalBlock (blockHash: string): Promise<void> {
     console.time('time:indexer#processCanonicalBlock-finalize_auto_diffs');
     // Finalize staged diff blocks if any.
     await this._baseIndexer.finalizeDiffStaged(blockHash);
