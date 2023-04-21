@@ -66,6 +66,21 @@ type OwnershipTransferredEvent {
   newOwner: String!
 }
 
+type ResultStringArray {
+  value: [String!]!
+  proof: Proof
+}
+
+type ResultBigInt {
+  value: BigInt!
+  proof: Proof
+}
+
+type ResultBoolean {
+  value: Boolean!
+  proof: Proof
+}
+
 type SyncStatus {
   latestIndexedBlockHash: String!
   latestIndexedBlockNumber: Int!
@@ -94,21 +109,6 @@ type Query {
   getSyncStatus: SyncStatus
   getStateByCID(cid: String!): ResultState
   getState(blockHash: String!, contractAddress: String!, kind: String): ResultState
-}
-
-type ResultStringArray {
-  value: [String!]!
-  proof: Proof
-}
-
-type ResultBigInt {
-  value: BigInt!
-  proof: Proof
-}
-
-type ResultBoolean {
-  value: Boolean!
-  proof: Proof
 }
 
 type Mutation {

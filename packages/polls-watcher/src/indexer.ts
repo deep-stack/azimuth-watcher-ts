@@ -3,8 +3,8 @@
 //
 
 import assert from 'assert';
+import { DeepPartial, FindConditions, FindManyOptions } from 'typeorm';
 import debug from 'debug';
-import { DeepPartial, FindConditions, FindManyOptions, ObjectLiteral } from 'typeorm';
 import JSONbig from 'json-bigint';
 import { ethers } from 'ethers';
 
@@ -20,8 +20,6 @@ import {
   JobQueue,
   Where,
   QueryOptions,
-  updateStateForElementaryType,
-  updateStateForMappingType,
   StateKind,
   StateStatus,
   ResultEvent,
@@ -40,6 +38,7 @@ import { StateSyncStatus } from './entity/StateSyncStatus';
 import { BlockProgress } from './entity/BlockProgress';
 import { State } from './entity/State';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const log = debug('vulcanize:indexer');
 const JSONbigNative = JSONbig({ useNativeBigInt: true });
 
@@ -97,9 +96,6 @@ export class Indexer implements IndexerInterface {
   async getUpgradeProposals (blockHash: string, contractAddress: string): Promise<ValueResult> {
     log('getUpgradeProposals: db miss, fetching from upstream server');
 
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
     const abi = this._abiMap.get(KIND_POLLS);
     assert(abi);
 
@@ -122,10 +118,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('getUpgradeProposalCount: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('getUpgradeProposalCount: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_POLLS);
     assert(abi);
@@ -144,9 +140,6 @@ export class Indexer implements IndexerInterface {
 
   async getDocumentProposals (blockHash: string, contractAddress: string): Promise<ValueResult> {
     log('getDocumentProposals: db miss, fetching from upstream server');
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
 
     const abi = this._abiMap.get(KIND_POLLS);
     assert(abi);
@@ -170,10 +163,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('getDocumentProposalCount: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('getDocumentProposalCount: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_POLLS);
     assert(abi);
@@ -192,9 +185,6 @@ export class Indexer implements IndexerInterface {
 
   async getDocumentMajorities (blockHash: string, contractAddress: string): Promise<ValueResult> {
     log('getDocumentMajorities: db miss, fetching from upstream server');
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
 
     const abi = this._abiMap.get(KIND_POLLS);
     assert(abi);
@@ -218,10 +208,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('hasVotedOnUpgradePoll: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('hasVotedOnUpgradePoll: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_POLLS);
     assert(abi);
@@ -247,10 +237,10 @@ export class Indexer implements IndexerInterface {
       };
     }
 
-    log('hasVotedOnDocumentPoll: db miss, fetching from upstream server');
-
     const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
     const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('hasVotedOnDocumentPoll: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_POLLS);
     assert(abi);
@@ -289,7 +279,7 @@ export class Indexer implements IndexerInterface {
     return createStateCheckpoint(this, contractAddress, blockHash);
   }
 
-  async processCanonicalBlock (blockHash: string, blockNumber: number): Promise<void> {
+  async processCanonicalBlock (blockHash: string): Promise<void> {
     console.time('time:indexer#processCanonicalBlock-finalize_auto_diffs');
     // Finalize staged diff blocks if any.
     await this._baseIndexer.finalizeDiffStaged(blockHash);
