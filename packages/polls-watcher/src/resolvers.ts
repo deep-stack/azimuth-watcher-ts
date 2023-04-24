@@ -6,18 +6,20 @@ import assert from 'assert';
 import BigInt from 'apollo-type-bigint';
 import debug from 'debug';
 import Decimal from 'decimal.js';
-import { GraphQLResolveInfo, GraphQLScalarType } from 'graphql';
+import {
+  GraphQLScalarType,
+  GraphQLResolveInfo
+} from 'graphql';
 
 import {
   ValueResult,
-  BlockHeight,
   gqlTotalQueryCount,
   gqlQueryCount,
-  jsonBigIntStringReplacer,
   getResultState,
-  setGQLCacheHints,
   IndexerInterface,
-  EventWatcher
+  EventWatcher,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setGQLCacheHints
 } from '@cerc-io/util';
 
 import { Indexer } from './indexer';
@@ -27,6 +29,7 @@ const log = debug('vulcanize:resolver');
 export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher: EventWatcher): Promise<any> => {
   const indexer = indexerArg as Indexer;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const gqlCacheConfig = indexer.serverConfig.gqlCache;
 
   return {
@@ -72,7 +75,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getUpgradeProposals: (
         _: any,
         { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getUpgradeProposals', blockHash, contractAddress);
@@ -88,7 +93,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getUpgradeProposalCount: (
         _: any,
         { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getUpgradeProposalCount', blockHash, contractAddress);
@@ -104,7 +111,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getDocumentProposals: (
         _: any,
         { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getDocumentProposals', blockHash, contractAddress);
@@ -120,7 +129,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getDocumentProposalCount: (
         _: any,
         { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getDocumentProposalCount', blockHash, contractAddress);
@@ -136,7 +147,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getDocumentMajorities: (
         _: any,
         { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getDocumentMajorities', blockHash, contractAddress);
@@ -152,7 +165,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       hasVotedOnUpgradePoll: (
         _: any,
         { blockHash, contractAddress, _galaxy, _proposal }: { blockHash: string, contractAddress: string, _galaxy: number, _proposal: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('hasVotedOnUpgradePoll', blockHash, contractAddress, _galaxy, _proposal);
@@ -168,7 +183,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       hasVotedOnDocumentPoll: (
         _: any,
         { blockHash, contractAddress, _galaxy, _proposal }: { blockHash: string, contractAddress: string, _galaxy: number, _proposal: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('hasVotedOnDocumentPoll', blockHash, contractAddress, _galaxy, _proposal);

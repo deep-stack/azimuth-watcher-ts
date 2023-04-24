@@ -6,18 +6,20 @@ import assert from 'assert';
 import BigInt from 'apollo-type-bigint';
 import debug from 'debug';
 import Decimal from 'decimal.js';
-import { GraphQLResolveInfo, GraphQLScalarType } from 'graphql';
+import {
+  GraphQLScalarType,
+  GraphQLResolveInfo
+} from 'graphql';
 
 import {
   ValueResult,
-  BlockHeight,
   gqlTotalQueryCount,
   gqlQueryCount,
-  jsonBigIntStringReplacer,
   getResultState,
-  setGQLCacheHints,
   IndexerInterface,
-  EventWatcher
+  EventWatcher,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setGQLCacheHints
 } from '@cerc-io/util';
 
 import { Indexer } from './indexer';
@@ -27,6 +29,7 @@ const log = debug('vulcanize:resolver');
 export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher: EventWatcher): Promise<any> => {
   const indexer = indexerArg as Indexer;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const gqlCacheConfig = indexer.serverConfig.gqlCache;
 
   return {
@@ -72,7 +75,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       isActive: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isActive', blockHash, contractAddress, _point);
@@ -88,7 +93,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getKeyRevisionNumber: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getKeyRevisionNumber', blockHash, contractAddress, _point);
@@ -104,7 +111,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       hasBeenLinked: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('hasBeenLinked', blockHash, contractAddress, _point);
@@ -120,7 +129,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       isLive: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isLive', blockHash, contractAddress, _point);
@@ -136,7 +147,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getContinuityNumber: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getContinuityNumber', blockHash, contractAddress, _point);
@@ -152,7 +165,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getSpawnCount: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getSpawnCount', blockHash, contractAddress, _point);
@@ -168,7 +183,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getSpawned: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getSpawned', blockHash, contractAddress, _point);
@@ -184,7 +201,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       hasSponsor: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('hasSponsor', blockHash, contractAddress, _point);
@@ -200,7 +219,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getSponsor: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getSponsor', blockHash, contractAddress, _point);
@@ -216,7 +237,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       isSponsor: (
         _: any,
         { blockHash, contractAddress, _point, _sponsor }: { blockHash: string, contractAddress: string, _point: bigint, _sponsor: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isSponsor', blockHash, contractAddress, _point, _sponsor);
@@ -232,7 +255,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getSponsoringCount: (
         _: any,
         { blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getSponsoringCount', blockHash, contractAddress, _sponsor);
@@ -248,7 +273,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getSponsoring: (
         _: any,
         { blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getSponsoring', blockHash, contractAddress, _sponsor);
@@ -264,7 +291,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       isEscaping: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isEscaping', blockHash, contractAddress, _point);
@@ -280,7 +309,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getEscapeRequest: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getEscapeRequest', blockHash, contractAddress, _point);
@@ -296,7 +327,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       isRequestingEscapeTo: (
         _: any,
         { blockHash, contractAddress, _point, _sponsor }: { blockHash: string, contractAddress: string, _point: bigint, _sponsor: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isRequestingEscapeTo', blockHash, contractAddress, _point, _sponsor);
@@ -312,7 +345,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getEscapeRequestsCount: (
         _: any,
         { blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getEscapeRequestsCount', blockHash, contractAddress, _sponsor);
@@ -328,7 +363,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getEscapeRequests: (
         _: any,
         { blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getEscapeRequests', blockHash, contractAddress, _sponsor);
@@ -344,7 +381,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getOwner: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getOwner', blockHash, contractAddress, _point);
@@ -360,7 +399,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       isOwner: (
         _: any,
         { blockHash, contractAddress, _point, _address }: { blockHash: string, contractAddress: string, _point: bigint, _address: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isOwner', blockHash, contractAddress, _point, _address);
@@ -376,7 +417,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getOwnedPointCount: (
         _: any,
         { blockHash, contractAddress, _whose }: { blockHash: string, contractAddress: string, _whose: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getOwnedPointCount', blockHash, contractAddress, _whose);
@@ -392,7 +435,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getOwnedPoints: (
         _: any,
         { blockHash, contractAddress, _whose }: { blockHash: string, contractAddress: string, _whose: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getOwnedPoints', blockHash, contractAddress, _whose);
@@ -408,7 +453,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getOwnedPointAtIndex: (
         _: any,
         { blockHash, contractAddress, _whose, _index }: { blockHash: string, contractAddress: string, _whose: string, _index: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getOwnedPointAtIndex', blockHash, contractAddress, _whose, _index);
@@ -424,7 +471,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getManagementProxy: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getManagementProxy', blockHash, contractAddress, _point);
@@ -440,7 +489,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       isManagementProxy: (
         _: any,
         { blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: bigint, _proxy: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isManagementProxy', blockHash, contractAddress, _point, _proxy);
@@ -456,7 +507,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       canManage: (
         _: any,
         { blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: bigint, _who: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('canManage', blockHash, contractAddress, _point, _who);
@@ -472,7 +525,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getManagerForCount: (
         _: any,
         { blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getManagerForCount', blockHash, contractAddress, _proxy);
@@ -488,7 +543,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getManagerFor: (
         _: any,
         { blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getManagerFor', blockHash, contractAddress, _proxy);
@@ -504,7 +561,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getSpawnProxy: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getSpawnProxy', blockHash, contractAddress, _point);
@@ -520,7 +579,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       isSpawnProxy: (
         _: any,
         { blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: bigint, _proxy: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isSpawnProxy', blockHash, contractAddress, _point, _proxy);
@@ -536,7 +597,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       canSpawnAs: (
         _: any,
         { blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: bigint, _who: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('canSpawnAs', blockHash, contractAddress, _point, _who);
@@ -552,7 +615,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getSpawningForCount: (
         _: any,
         { blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getSpawningForCount', blockHash, contractAddress, _proxy);
@@ -568,7 +633,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getSpawningFor: (
         _: any,
         { blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getSpawningFor', blockHash, contractAddress, _proxy);
@@ -584,7 +651,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getVotingProxy: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getVotingProxy', blockHash, contractAddress, _point);
@@ -600,7 +669,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       isVotingProxy: (
         _: any,
         { blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: bigint, _proxy: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isVotingProxy', blockHash, contractAddress, _point, _proxy);
@@ -616,7 +687,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       canVoteAs: (
         _: any,
         { blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: bigint, _who: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('canVoteAs', blockHash, contractAddress, _point, _who);
@@ -632,7 +705,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getVotingForCount: (
         _: any,
         { blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getVotingForCount', blockHash, contractAddress, _proxy);
@@ -648,7 +723,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getVotingFor: (
         _: any,
         { blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getVotingFor', blockHash, contractAddress, _proxy);
@@ -664,7 +741,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getTransferProxy: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getTransferProxy', blockHash, contractAddress, _point);
@@ -680,7 +759,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       isTransferProxy: (
         _: any,
         { blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: bigint, _proxy: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isTransferProxy', blockHash, contractAddress, _point, _proxy);
@@ -696,7 +777,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       canTransfer: (
         _: any,
         { blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: bigint, _who: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('canTransfer', blockHash, contractAddress, _point, _who);
@@ -712,7 +795,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getTransferringForCount: (
         _: any,
         { blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getTransferringForCount', blockHash, contractAddress, _proxy);
@@ -728,7 +813,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getTransferringFor: (
         _: any,
         { blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getTransferringFor', blockHash, contractAddress, _proxy);
@@ -744,7 +831,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       isOperator: (
         _: any,
         { blockHash, contractAddress, _owner, _operator }: { blockHash: string, contractAddress: string, _owner: string, _operator: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isOperator', blockHash, contractAddress, _owner, _operator);
@@ -760,7 +849,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getUpgradeProposals: (
         _: any,
         { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getUpgradeProposals', blockHash, contractAddress);
@@ -776,7 +867,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getUpgradeProposalCount: (
         _: any,
         { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getUpgradeProposalCount', blockHash, contractAddress);
@@ -792,7 +885,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getDocumentProposals: (
         _: any,
         { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getDocumentProposals', blockHash, contractAddress);
@@ -808,7 +903,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getDocumentProposalCount: (
         _: any,
         { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getDocumentProposalCount', blockHash, contractAddress);
@@ -824,7 +921,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getDocumentMajorities: (
         _: any,
         { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getDocumentMajorities', blockHash, contractAddress);
@@ -840,7 +939,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       hasVotedOnUpgradePoll: (
         _: any,
         { blockHash, contractAddress, _galaxy, _proposal }: { blockHash: string, contractAddress: string, _galaxy: number, _proposal: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('hasVotedOnUpgradePoll', blockHash, contractAddress, _galaxy, _proposal);
@@ -856,7 +957,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       hasVotedOnDocumentPoll: (
         _: any,
         { blockHash, contractAddress, _galaxy, _proposal }: { blockHash: string, contractAddress: string, _galaxy: number, _proposal: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('hasVotedOnDocumentPoll', blockHash, contractAddress, _galaxy, _proposal);
@@ -872,7 +975,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       findClaim: (
         _: any,
         { blockHash, contractAddress, _whose, _protocol, _claim }: { blockHash: string, contractAddress: string, _whose: bigint, _protocol: string, _claim: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('findClaim', blockHash, contractAddress, _whose, _protocol, _claim);
@@ -888,7 +993,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       supportsInterface: (
         _: any,
         { blockHash, contractAddress, _interfaceId }: { blockHash: string, contractAddress: string, _interfaceId: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('supportsInterface', blockHash, contractAddress, _interfaceId);
@@ -904,7 +1011,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       balanceOf: (
         _: any,
         { blockHash, contractAddress, _owner }: { blockHash: string, contractAddress: string, _owner: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('balanceOf', blockHash, contractAddress, _owner);
@@ -920,7 +1029,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       ownerOf: (
         _: any,
         { blockHash, contractAddress, _tokenId }: { blockHash: string, contractAddress: string, _tokenId: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('ownerOf', blockHash, contractAddress, _tokenId);
@@ -936,7 +1047,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       exists: (
         _: any,
         { blockHash, contractAddress, _tokenId }: { blockHash: string, contractAddress: string, _tokenId: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('exists', blockHash, contractAddress, _tokenId);
@@ -952,7 +1065,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getApproved: (
         _: any,
         { blockHash, contractAddress, _tokenId }: { blockHash: string, contractAddress: string, _tokenId: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getApproved', blockHash, contractAddress, _tokenId);
@@ -968,7 +1083,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       isApprovedForAll: (
         _: any,
         { blockHash, contractAddress, _owner, _operator }: { blockHash: string, contractAddress: string, _owner: string, _operator: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isApprovedForAll', blockHash, contractAddress, _owner, _operator);
@@ -984,7 +1101,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       totalSupply: (
         _: any,
         { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('totalSupply', blockHash, contractAddress);
@@ -1000,7 +1119,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       tokenOfOwnerByIndex: (
         _: any,
         { blockHash, contractAddress, _owner, _index }: { blockHash: string, contractAddress: string, _owner: string, _index: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('tokenOfOwnerByIndex', blockHash, contractAddress, _owner, _index);
@@ -1016,7 +1137,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       tokenByIndex: (
         _: any,
         { blockHash, contractAddress, _index }: { blockHash: string, contractAddress: string, _index: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('tokenByIndex', blockHash, contractAddress, _index);
@@ -1032,7 +1155,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       name: (
         _: any,
         { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('name', blockHash, contractAddress);
@@ -1048,7 +1173,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       symbol: (
         _: any,
         { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('symbol', blockHash, contractAddress);
@@ -1064,7 +1191,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       tokenURI: (
         _: any,
         { blockHash, contractAddress, _tokenId }: { blockHash: string, contractAddress: string, _tokenId: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('tokenURI', blockHash, contractAddress, _tokenId);
@@ -1080,7 +1209,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getSpawnLimit: (
         _: any,
         { blockHash, contractAddress, _point, _time }: { blockHash: string, contractAddress: string, _point: bigint, _time: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getSpawnLimit', blockHash, contractAddress, _point, _time);
@@ -1096,7 +1227,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       canEscapeTo: (
         _: any,
         { blockHash, contractAddress, _point, _sponsor }: { blockHash: string, contractAddress: string, _point: bigint, _sponsor: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('canEscapeTo', blockHash, contractAddress, _point, _sponsor);
@@ -1112,7 +1245,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       canSend: (
         _: any,
         { blockHash, contractAddress, _as, _point }: { blockHash: string, contractAddress: string, _as: bigint, _point: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('canSend', blockHash, contractAddress, _as, _point);
@@ -1128,7 +1263,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getPool: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getPool', blockHash, contractAddress, _point);
@@ -1144,7 +1281,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       canReceive: (
         _: any,
         { blockHash, contractAddress, _recipient }: { blockHash: string, contractAddress: string, _recipient: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('canReceive', blockHash, contractAddress, _recipient);
@@ -1160,7 +1299,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getPoolStars: (
         _: any,
         { blockHash, contractAddress, _who }: { blockHash: string, contractAddress: string, _who: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getPoolStars', blockHash, contractAddress, _who);
@@ -1176,7 +1317,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getInviters: (
         _: any,
         { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getInviters', blockHash, contractAddress);
@@ -1192,7 +1335,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
       getInvited: (
         _: any,
         { blockHash, contractAddress, _who }: { blockHash: string, contractAddress: string, _who: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getInvited', blockHash, contractAddress, _who);

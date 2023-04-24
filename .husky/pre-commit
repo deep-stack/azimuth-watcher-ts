@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# TODO: Remove comment after fixing lint warnings in codegen generated watchers
-# yarn lint
+yarn lint
