@@ -66,6 +66,18 @@ type ResultBoolean {
   proof: Proof
 }
 
+type ResultGetKeysType {
+  value: GetKeysType!
+  proof: Proof
+}
+
+type GetKeysType {
+  value0: String!
+  value1: String!
+  value2: BigInt!
+  value3: BigInt!
+}
+
 type ResultBigInt {
   value: BigInt!
   proof: Proof
@@ -101,6 +113,18 @@ type ResultBooleanArray {
   proof: Proof
 }
 
+type ResultGetConditionsStateType {
+  value: GetConditionsStateType!
+  proof: Proof
+}
+
+type GetConditionsStateType {
+  value0: [String!]!
+  value1: [BigInt!]!
+  value2: [BigInt!]!
+  value3: [BigInt!]!
+}
+
 type SyncStatus {
   latestIndexedBlockHash: String!
   latestIndexedBlockNumber: Int!
@@ -120,6 +144,7 @@ type Query {
   events(blockHash: String!, contractAddress: String!, name: String): [ResultEvent!]
   eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!): [ResultEvent!]
   isActive(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultBoolean!
+  getKeys(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultGetKeysType!
   getKeyRevisionNumber(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultBigInt!
   hasBeenLinked(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultBoolean!
   isLive(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultBoolean!
@@ -193,6 +218,7 @@ type Query {
   getForfeited(blockHash: String!, contractAddress: String!, _participant: String!): ResultBooleanArray!
   hasForfeitedBatch(blockHash: String!, contractAddress: String!, _participant: String!, _batch: Int!): ResultBoolean!
   getRemainingStars(blockHash: String!, contractAddress: String!, _participant: String!): ResultIntArray!
+  getConditionsState(blockHash: String!, contractAddress: String!): ResultGetConditionsStateType!
   getSyncStatus: SyncStatus
   getStateByCID(cid: String!): ResultState
   getState(blockHash: String!, contractAddress: String!, kind: String): ResultState

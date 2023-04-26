@@ -113,11 +113,33 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isActive(_point, { blockTag: blockHash });
+    const contractResult = await contract.isActive(_point, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveIsActive({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
+
+    return result;
+  }
+
+  async getKeys (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
+    log('getKeys: db miss, fetching from upstream server');
+
+    const abi = this._abiMap.get(KIND_CONDITIONALSTARRELEASE);
+    assert(abi);
+
+    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
+    const contractResult = await contract.getKeys(_point, { blockTag: blockHash });
+
+    const value = {
+      value0: contractResult[0],
+      value1: contractResult[1],
+      value2: ethers.BigNumber.from(contractResult[2]).toBigInt(),
+      value3: ethers.BigNumber.from(contractResult[3]).toBigInt()
+    };
+
+    const result: ValueResult = { value };
 
     return result;
   }
@@ -142,9 +164,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getKeyRevisionNumber(_point, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.getKeyRevisionNumber(_point, { blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -173,8 +195,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.hasBeenLinked(_point, { blockTag: blockHash });
+    const contractResult = await contract.hasBeenLinked(_point, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveHasBeenLinked({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -202,8 +225,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isLive(_point, { blockTag: blockHash });
+    const contractResult = await contract.isLive(_point, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveIsLive({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -231,9 +255,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getContinuityNumber(_point, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.getContinuityNumber(_point, { blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -262,9 +286,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getSpawnCount(_point, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.getSpawnCount(_point, { blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -280,9 +304,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getSpawned(_point, { blockTag: blockHash });
-    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
+    const contractResult = await contract.getSpawned(_point, { blockTag: blockHash });
 
+    const value = contractResult.map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt());
     const result: ValueResult = { value };
 
     return result;
@@ -308,8 +332,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.hasSponsor(_point, { blockTag: blockHash });
+    const contractResult = await contract.hasSponsor(_point, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveHasSponsor({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -337,9 +362,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getSponsor(_point, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.getSponsor(_point, { blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -368,8 +393,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isSponsor(_point, _sponsor, { blockTag: blockHash });
+    const contractResult = await contract.isSponsor(_point, _sponsor, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveIsSponsor({ blockHash, blockNumber, contractAddress, _point, _sponsor, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -397,9 +423,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getSponsoringCount(_sponsor, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.getSponsoringCount(_sponsor, { blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -415,9 +441,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getSponsoring(_sponsor, { blockTag: blockHash });
-    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
+    const contractResult = await contract.getSponsoring(_sponsor, { blockTag: blockHash });
 
+    const value = contractResult.map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt());
     const result: ValueResult = { value };
 
     return result;
@@ -443,8 +469,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isEscaping(_point, { blockTag: blockHash });
+    const contractResult = await contract.isEscaping(_point, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveIsEscaping({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -472,9 +499,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getEscapeRequest(_point, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.getEscapeRequest(_point, { blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -503,8 +530,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isRequestingEscapeTo(_point, _sponsor, { blockTag: blockHash });
+    const contractResult = await contract.isRequestingEscapeTo(_point, _sponsor, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveIsRequestingEscapeTo({ blockHash, blockNumber, contractAddress, _point, _sponsor, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -532,9 +560,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getEscapeRequestsCount(_sponsor, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.getEscapeRequestsCount(_sponsor, { blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -550,9 +578,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getEscapeRequests(_sponsor, { blockTag: blockHash });
-    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
+    const contractResult = await contract.getEscapeRequests(_sponsor, { blockTag: blockHash });
 
+    const value = contractResult.map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt());
     const result: ValueResult = { value };
 
     return result;
@@ -578,8 +606,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getOwner(_point, { blockTag: blockHash });
+    const contractResult = await contract.getOwner(_point, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveGetOwner({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -607,8 +636,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isOwner(_point, _address, { blockTag: blockHash });
+    const contractResult = await contract.isOwner(_point, _address, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveIsOwner({ blockHash, blockNumber, contractAddress, _point, _address, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -636,9 +666,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getOwnedPointCount(_whose, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.getOwnedPointCount(_whose, { blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -654,9 +684,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getOwnedPoints(_whose, { blockTag: blockHash });
-    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
+    const contractResult = await contract.getOwnedPoints(_whose, { blockTag: blockHash });
 
+    const value = contractResult.map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt());
     const result: ValueResult = { value };
 
     return result;
@@ -682,9 +712,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getOwnedPointAtIndex(_whose, _index, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.getOwnedPointAtIndex(_whose, _index, { blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -713,8 +743,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getManagementProxy(_point, { blockTag: blockHash });
+    const contractResult = await contract.getManagementProxy(_point, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveGetManagementProxy({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -742,8 +773,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isManagementProxy(_point, _proxy, { blockTag: blockHash });
+    const contractResult = await contract.isManagementProxy(_point, _proxy, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveIsManagementProxy({ blockHash, blockNumber, contractAddress, _point, _proxy, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -771,8 +803,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.canManage(_point, _who, { blockTag: blockHash });
+    const contractResult = await contract.canManage(_point, _who, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveCanManage({ blockHash, blockNumber, contractAddress, _point, _who, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -800,9 +833,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getManagerForCount(_proxy, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.getManagerForCount(_proxy, { blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -818,9 +851,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getManagerFor(_proxy, { blockTag: blockHash });
-    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
+    const contractResult = await contract.getManagerFor(_proxy, { blockTag: blockHash });
 
+    const value = contractResult.map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt());
     const result: ValueResult = { value };
 
     return result;
@@ -846,8 +879,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getSpawnProxy(_point, { blockTag: blockHash });
+    const contractResult = await contract.getSpawnProxy(_point, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveGetSpawnProxy({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -875,8 +909,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isSpawnProxy(_point, _proxy, { blockTag: blockHash });
+    const contractResult = await contract.isSpawnProxy(_point, _proxy, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveIsSpawnProxy({ blockHash, blockNumber, contractAddress, _point, _proxy, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -904,8 +939,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.canSpawnAs(_point, _who, { blockTag: blockHash });
+    const contractResult = await contract.canSpawnAs(_point, _who, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveCanSpawnAs({ blockHash, blockNumber, contractAddress, _point, _who, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -933,9 +969,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getSpawningForCount(_proxy, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.getSpawningForCount(_proxy, { blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -951,9 +987,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getSpawningFor(_proxy, { blockTag: blockHash });
-    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
+    const contractResult = await contract.getSpawningFor(_proxy, { blockTag: blockHash });
 
+    const value = contractResult.map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt());
     const result: ValueResult = { value };
 
     return result;
@@ -979,8 +1015,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getVotingProxy(_point, { blockTag: blockHash });
+    const contractResult = await contract.getVotingProxy(_point, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveGetVotingProxy({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1008,8 +1045,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isVotingProxy(_point, _proxy, { blockTag: blockHash });
+    const contractResult = await contract.isVotingProxy(_point, _proxy, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveIsVotingProxy({ blockHash, blockNumber, contractAddress, _point, _proxy, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1037,8 +1075,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.canVoteAs(_point, _who, { blockTag: blockHash });
+    const contractResult = await contract.canVoteAs(_point, _who, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveCanVoteAs({ blockHash, blockNumber, contractAddress, _point, _who, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1066,9 +1105,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getVotingForCount(_proxy, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.getVotingForCount(_proxy, { blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -1084,9 +1123,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getVotingFor(_proxy, { blockTag: blockHash });
-    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
+    const contractResult = await contract.getVotingFor(_proxy, { blockTag: blockHash });
 
+    const value = contractResult.map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt());
     const result: ValueResult = { value };
 
     return result;
@@ -1112,8 +1151,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getTransferProxy(_point, { blockTag: blockHash });
+    const contractResult = await contract.getTransferProxy(_point, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveGetTransferProxy({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1141,8 +1181,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isTransferProxy(_point, _proxy, { blockTag: blockHash });
+    const contractResult = await contract.isTransferProxy(_point, _proxy, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveIsTransferProxy({ blockHash, blockNumber, contractAddress, _point, _proxy, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1170,8 +1211,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.canTransfer(_point, _who, { blockTag: blockHash });
+    const contractResult = await contract.canTransfer(_point, _who, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveCanTransfer({ blockHash, blockNumber, contractAddress, _point, _who, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1199,9 +1241,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getTransferringForCount(_proxy, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.getTransferringForCount(_proxy, { blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -1217,9 +1259,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getTransferringFor(_proxy, { blockTag: blockHash });
-    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
+    const contractResult = await contract.getTransferringFor(_proxy, { blockTag: blockHash });
 
+    const value = contractResult.map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt());
     const result: ValueResult = { value };
 
     return result;
@@ -1245,8 +1287,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isOperator(_owner, _operator, { blockTag: blockHash });
+    const contractResult = await contract.isOperator(_owner, _operator, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveIsOperator({ blockHash, blockNumber, contractAddress, _owner, _operator, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1261,8 +1304,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getUpgradeProposals({ blockTag: blockHash });
+    const contractResult = await contract.getUpgradeProposals({ blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     return result;
@@ -1288,9 +1332,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getUpgradeProposalCount({ blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.getUpgradeProposalCount({ blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -1306,8 +1350,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getDocumentProposals({ blockTag: blockHash });
+    const contractResult = await contract.getDocumentProposals({ blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     return result;
@@ -1333,9 +1378,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getDocumentProposalCount({ blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.getDocumentProposalCount({ blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -1351,8 +1396,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getDocumentMajorities({ blockTag: blockHash });
+    const contractResult = await contract.getDocumentMajorities({ blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     return result;
@@ -1378,8 +1424,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.hasVotedOnUpgradePoll(_galaxy, _proposal, { blockTag: blockHash });
+    const contractResult = await contract.hasVotedOnUpgradePoll(_galaxy, _proposal, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveHasVotedOnUpgradePoll({ blockHash, blockNumber, contractAddress, _galaxy, _proposal, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1407,8 +1454,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.hasVotedOnDocumentPoll(_galaxy, _proposal, { blockTag: blockHash });
+    const contractResult = await contract.hasVotedOnDocumentPoll(_galaxy, _proposal, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveHasVotedOnDocumentPoll({ blockHash, blockNumber, contractAddress, _galaxy, _proposal, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1436,8 +1484,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.findClaim(_whose, _protocol, _claim, { blockTag: blockHash });
+    const contractResult = await contract.findClaim(_whose, _protocol, _claim, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveFindClaim({ blockHash, blockNumber, contractAddress, _whose, _protocol, _claim, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1465,8 +1514,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.supportsInterface(_interfaceId, { blockTag: blockHash });
+    const contractResult = await contract.supportsInterface(_interfaceId, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveSupportsInterface({ blockHash, blockNumber, contractAddress, _interfaceId, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1494,9 +1544,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.balanceOf(_owner, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.balanceOf(_owner, { blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -1525,8 +1575,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.ownerOf(_tokenId, { blockTag: blockHash });
+    const contractResult = await contract.ownerOf(_tokenId, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveOwnerOf({ blockHash, blockNumber, contractAddress, _tokenId, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1554,8 +1605,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.exists(_tokenId, { blockTag: blockHash });
+    const contractResult = await contract.exists(_tokenId, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveExists({ blockHash, blockNumber, contractAddress, _tokenId, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1583,8 +1635,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getApproved(_tokenId, { blockTag: blockHash });
+    const contractResult = await contract.getApproved(_tokenId, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveGetApproved({ blockHash, blockNumber, contractAddress, _tokenId, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1612,8 +1665,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isApprovedForAll(_owner, _operator, { blockTag: blockHash });
+    const contractResult = await contract.isApprovedForAll(_owner, _operator, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveIsApprovedForAll({ blockHash, blockNumber, contractAddress, _owner, _operator, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1641,9 +1695,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.totalSupply({ blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.totalSupply({ blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -1672,9 +1726,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.tokenOfOwnerByIndex(_owner, _index, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.tokenOfOwnerByIndex(_owner, _index, { blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -1703,9 +1757,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.tokenByIndex(_index, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.tokenByIndex(_index, { blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -1734,8 +1788,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.name({ blockTag: blockHash });
+    const contractResult = await contract.name({ blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveName({ blockHash, blockNumber, contractAddress, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1763,8 +1818,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.symbol({ blockTag: blockHash });
+    const contractResult = await contract.symbol({ blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveSymbol({ blockHash, blockNumber, contractAddress, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1792,8 +1848,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.tokenURI(_tokenId, { blockTag: blockHash });
+    const contractResult = await contract.tokenURI(_tokenId, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveTokenURI({ blockHash, blockNumber, contractAddress, _tokenId, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1821,9 +1878,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getSpawnLimit(_point, _time, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.getSpawnLimit(_point, _time, { blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -1852,8 +1909,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.canEscapeTo(_point, _sponsor, { blockTag: blockHash });
+    const contractResult = await contract.canEscapeTo(_point, _sponsor, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveCanEscapeTo({ blockHash, blockNumber, contractAddress, _point, _sponsor, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1881,8 +1939,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.withdrawLimit(_participant, _batch, { blockTag: blockHash });
+    const contractResult = await contract.withdrawLimit(_participant, _batch, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveWithdrawLimit({ blockHash, blockNumber, contractAddress, _participant, _batch, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1910,8 +1969,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.verifyBalance(_participant, { blockTag: blockHash });
+    const contractResult = await contract.verifyBalance(_participant, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveVerifyBalance({ blockHash, blockNumber, contractAddress, _participant, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1926,8 +1986,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getBatches(_participant, { blockTag: blockHash });
+    const contractResult = await contract.getBatches(_participant, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     return result;
@@ -1953,8 +2014,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getBatch(_participant, _batch, { blockTag: blockHash });
+    const contractResult = await contract.getBatch(_participant, _batch, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveGetBatch({ blockHash, blockNumber, contractAddress, _participant, _batch, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1969,8 +2031,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getWithdrawn(_participant, { blockTag: blockHash });
+    const contractResult = await contract.getWithdrawn(_participant, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     return result;
@@ -1996,8 +2059,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getWithdrawnFromBatch(_participant, _batch, { blockTag: blockHash });
+    const contractResult = await contract.getWithdrawnFromBatch(_participant, _batch, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveGetWithdrawnFromBatch({ blockHash, blockNumber, contractAddress, _participant, _batch, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -2012,8 +2076,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getForfeited(_participant, { blockTag: blockHash });
+    const contractResult = await contract.getForfeited(_participant, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     return result;
@@ -2039,8 +2104,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.hasForfeitedBatch(_participant, _batch, { blockTag: blockHash });
+    const contractResult = await contract.hasForfeitedBatch(_participant, _batch, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveHasForfeitedBatch({ blockHash, blockNumber, contractAddress, _participant, _batch, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -2055,7 +2121,29 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getRemainingStars(_participant, { blockTag: blockHash });
+    const contractResult = await contract.getRemainingStars(_participant, { blockTag: blockHash });
+
+    const value = contractResult;
+    const result: ValueResult = { value };
+
+    return result;
+  }
+
+  async getConditionsState (blockHash: string, contractAddress: string): Promise<ValueResult> {
+    log('getConditionsState: db miss, fetching from upstream server');
+
+    const abi = this._abiMap.get(KIND_CONDITIONALSTARRELEASE);
+    assert(abi);
+
+    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
+    const contractResult = await contract.getConditionsState({ blockTag: blockHash });
+
+    const value = {
+      value0: contractResult[0],
+      value1: contractResult[1].map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt()),
+      value2: contractResult[2].map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt()),
+      value3: contractResult[3].map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt())
+    };
 
     const result: ValueResult = { value };
 

@@ -90,6 +90,24 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         return indexer.isActive(blockHash, contractAddress, _point);
       },
 
+      getKeys: (
+        _: any,
+        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        info: GraphQLResolveInfo
+      ): Promise<ValueResult> => {
+        log('getKeys', blockHash, contractAddress, _point);
+        gqlTotalQueryCount.inc(1);
+        gqlQueryCount.labels('getKeys').inc(1);
+
+        // Set cache-control hints
+        // setGQLCacheHints(info, {}, gqlCacheConfig);
+
+        return indexer.getKeys(blockHash, contractAddress, _point);
+      },
+
       getKeyRevisionNumber: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
@@ -1402,6 +1420,24 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
         return indexer.getRemainingStars(blockHash, contractAddress, _participant);
+      },
+
+      getConditionsState: (
+        _: any,
+        { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        __: any,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        info: GraphQLResolveInfo
+      ): Promise<ValueResult> => {
+        log('getConditionsState', blockHash, contractAddress);
+        gqlTotalQueryCount.inc(1);
+        gqlQueryCount.labels('getConditionsState').inc(1);
+
+        // Set cache-control hints
+        // setGQLCacheHints(info, {}, gqlCacheConfig);
+
+        return indexer.getConditionsState(blockHash, contractAddress);
       },
 
       events: async (_: any, { blockHash, contractAddress, name }: { blockHash: string, contractAddress: string, name?: string }) => {

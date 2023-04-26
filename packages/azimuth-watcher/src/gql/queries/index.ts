@@ -4,6 +4,7 @@ import path from 'path';
 export const events = fs.readFileSync(path.join(__dirname, 'events.gql'), 'utf8');
 export const eventsInRange = fs.readFileSync(path.join(__dirname, 'eventsInRange.gql'), 'utf8');
 export const isActive = fs.readFileSync(path.join(__dirname, 'isActive.gql'), 'utf8');
+export const getKeys = fs.readFileSync(path.join(__dirname, 'getKeys.gql'), 'utf8');
 export const getKeyRevisionNumber = fs.readFileSync(path.join(__dirname, 'getKeyRevisionNumber.gql'), 'utf8');
 export const hasBeenLinked = fs.readFileSync(path.join(__dirname, 'hasBeenLinked.gql'), 'utf8');
 export const isLive = fs.readFileSync(path.join(__dirname, 'isLive.gql'), 'utf8');

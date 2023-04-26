@@ -4,6 +4,7 @@ import path from 'path';
 export const events = fs.readFileSync(path.join(__dirname, 'events.gql'), 'utf8');
 export const eventsInRange = fs.readFileSync(path.join(__dirname, 'eventsInRange.gql'), 'utf8');
 export const isActive = fs.readFileSync(path.join(__dirname, 'isActive.gql'), 'utf8');
+export const getKeys = fs.readFileSync(path.join(__dirname, 'getKeys.gql'), 'utf8');
 export const getKeyRevisionNumber = fs.readFileSync(path.join(__dirname, 'getKeyRevisionNumber.gql'), 'utf8');
 export const hasBeenLinked = fs.readFileSync(path.join(__dirname, 'hasBeenLinked.gql'), 'utf8');
 export const isLive = fs.readFileSync(path.join(__dirname, 'isLive.gql'), 'utf8');
@@ -77,6 +78,7 @@ export const getWithdrawnFromBatch = fs.readFileSync(path.join(__dirname, 'getWi
 export const getForfeited = fs.readFileSync(path.join(__dirname, 'getForfeited.gql'), 'utf8');
 export const hasForfeitedBatch = fs.readFileSync(path.join(__dirname, 'hasForfeitedBatch.gql'), 'utf8');
 export const getRemainingStars = fs.readFileSync(path.join(__dirname, 'getRemainingStars.gql'), 'utf8');
+export const getConditionsState = fs.readFileSync(path.join(__dirname, 'getConditionsState.gql'), 'utf8');
 export const getSyncStatus = fs.readFileSync(path.join(__dirname, 'getSyncStatus.gql'), 'utf8');
 export const getStateByCID = fs.readFileSync(path.join(__dirname, 'getStateByCID.gql'), 'utf8');
 export const getState = fs.readFileSync(path.join(__dirname, 'getState.gql'), 'utf8');

@@ -1,11 +1,5 @@
 # azimuth-watcher
 
-## Currently unsupported queries
-
-The watcher was generated in `eth_call` mode and does not support the following queries in its current state:
-
-* `getKeys(uint32 _point) returns (bytes32 crypt, bytes32 auth, uint32 suite, uint32 revision)`
-
 ## Setup
 
 * Run the following command to install required packages:

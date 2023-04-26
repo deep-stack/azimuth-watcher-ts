@@ -26,6 +26,15 @@ export class Client {
     return isActive;
   }
 
+  async getGetKeys (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
+    const { getKeys } = await this._client.query(
+      gql(queries.getKeys),
+      { blockHash, contractAddress, _point }
+    );
+
+    return getKeys;
+  }
+
   async getGetKeyRevisionNumber (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { getKeyRevisionNumber } = await this._client.query(
       gql(queries.getKeyRevisionNumber),

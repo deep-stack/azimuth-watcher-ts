@@ -1,0 +1,13 @@
+query getKeys($blockHash: String!, $contractAddress: String!, $_point: BigInt!){
+    getKeys(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point){
+        value{
+            value0
+            value1
+            value2
+            value3
+        }
+        proof{
+            data
+        }
+    }
+}

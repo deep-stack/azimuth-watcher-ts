@@ -21,6 +21,7 @@ import { StateSyncStatus } from './entity/StateSyncStatus';
 import { BlockProgress } from './entity/BlockProgress';
 import { State } from './entity/State';
 import { IsActive } from './entity/IsActive';
+import { GetKeys } from './entity/GetKeys';
 import { GetKeyRevisionNumber } from './entity/GetKeyRevisionNumber';
 import { HasBeenLinked } from './entity/HasBeenLinked';
 import { IsLive } from './entity/IsLive';
@@ -80,7 +81,7 @@ import { GetBatch } from './entity/GetBatch';
 import { GetWithdrawnFromBatch } from './entity/GetWithdrawnFromBatch';
 import { HasForfeitedBatch } from './entity/HasForfeitedBatch';
 
-export const ENTITIES = [IsActive, GetKeyRevisionNumber, HasBeenLinked, IsLive, GetContinuityNumber, GetSpawnCount, HasSponsor, GetSponsor, IsSponsor, GetSponsoringCount, IsEscaping, GetEscapeRequest, IsRequestingEscapeTo, GetEscapeRequestsCount, GetOwner, IsOwner, GetOwnedPointCount, GetOwnedPointAtIndex, GetManagementProxy, IsManagementProxy, CanManage, GetManagerForCount, GetSpawnProxy, IsSpawnProxy, CanSpawnAs, GetSpawningForCount, GetVotingProxy, IsVotingProxy, CanVoteAs, GetVotingForCount, GetTransferProxy, IsTransferProxy, CanTransfer, GetTransferringForCount, IsOperator, GetUpgradeProposalCount, GetDocumentProposalCount, HasVotedOnUpgradePoll, HasVotedOnDocumentPoll, FindClaim, SupportsInterface, BalanceOf, OwnerOf, Exists, GetApproved, IsApprovedForAll, TotalSupply, TokenOfOwnerByIndex, TokenByIndex, Name, Symbol, TokenURI, GetSpawnLimit, CanEscapeTo, WithdrawLimit, VerifyBalance, GetBatch, GetWithdrawnFromBatch, HasForfeitedBatch];
+export const ENTITIES = [IsActive, GetKeys, GetKeyRevisionNumber, HasBeenLinked, IsLive, GetContinuityNumber, GetSpawnCount, HasSponsor, GetSponsor, IsSponsor, GetSponsoringCount, IsEscaping, GetEscapeRequest, IsRequestingEscapeTo, GetEscapeRequestsCount, GetOwner, IsOwner, GetOwnedPointCount, GetOwnedPointAtIndex, GetManagementProxy, IsManagementProxy, CanManage, GetManagerForCount, GetSpawnProxy, IsSpawnProxy, CanSpawnAs, GetSpawningForCount, GetVotingProxy, IsVotingProxy, CanVoteAs, GetVotingForCount, GetTransferProxy, IsTransferProxy, CanTransfer, GetTransferringForCount, IsOperator, GetUpgradeProposalCount, GetDocumentProposalCount, HasVotedOnUpgradePoll, HasVotedOnDocumentPoll, FindClaim, SupportsInterface, BalanceOf, OwnerOf, Exists, GetApproved, IsApprovedForAll, TotalSupply, TokenOfOwnerByIndex, TokenByIndex, Name, Symbol, TokenURI, GetSpawnLimit, CanEscapeTo, WithdrawLimit, VerifyBalance, GetBatch, GetWithdrawnFromBatch, HasForfeitedBatch];
 
 export class Database implements DatabaseInterface {
   _config: ConnectionOptions;
@@ -115,6 +116,15 @@ export class Database implements DatabaseInterface {
 
   async getIsActive ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<IsActive | undefined> {
     return this._conn.getRepository(IsActive)
+      .findOne({
+        blockHash,
+        contractAddress,
+        _point
+      });
+  }
+
+  async getGetKeys ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<GetKeys | undefined> {
+    return this._conn.getRepository(GetKeys)
       .findOne({
         blockHash,
         contractAddress,
@@ -667,6 +677,12 @@ export class Database implements DatabaseInterface {
 
   async saveIsActive ({ blockHash, blockNumber, contractAddress, _point, value, proof }: DeepPartial<IsActive>): Promise<IsActive> {
     const repo = this._conn.getRepository(IsActive);
+    const entity = repo.create({ blockHash, blockNumber, contractAddress, _point, value, proof });
+    return repo.save(entity);
+  }
+
+  async saveGetKeys ({ blockHash, blockNumber, contractAddress, _point, value, proof }: DeepPartial<GetKeys>): Promise<GetKeys> {
+    const repo = this._conn.getRepository(GetKeys);
     const entity = repo.create({ blockHash, blockNumber, contractAddress, _point, value, proof });
     return repo.save(entity);
   }
@@ -1226,6 +1242,7 @@ export class Database implements DatabaseInterface {
 
   _setPropColMaps (): void {
     this._propColMaps.IsActive = this._getPropertyColumnMapForEntity('IsActive');
+    this._propColMaps.GetKeys = this._getPropertyColumnMapForEntity('GetKeys');
     this._propColMaps.GetKeyRevisionNumber = this._getPropertyColumnMapForEntity('GetKeyRevisionNumber');
     this._propColMaps.HasBeenLinked = this._getPropertyColumnMapForEntity('HasBeenLinked');
     this._propColMaps.IsLive = this._getPropertyColumnMapForEntity('IsLive');
