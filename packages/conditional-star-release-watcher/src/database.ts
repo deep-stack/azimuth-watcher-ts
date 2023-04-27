@@ -22,11 +22,16 @@ import { BlockProgress } from './entity/BlockProgress';
 import { State } from './entity/State';
 import { WithdrawLimit } from './entity/WithdrawLimit';
 import { VerifyBalance } from './entity/VerifyBalance';
+import { GetBatches } from './entity/GetBatches';
 import { GetBatch } from './entity/GetBatch';
+import { GetWithdrawn } from './entity/GetWithdrawn';
 import { GetWithdrawnFromBatch } from './entity/GetWithdrawnFromBatch';
+import { GetForfeited } from './entity/GetForfeited';
 import { HasForfeitedBatch } from './entity/HasForfeitedBatch';
+import { GetRemainingStars } from './entity/GetRemainingStars';
+import { GetConditionsState } from './entity/GetConditionsState';
 
-export const ENTITIES = [WithdrawLimit, VerifyBalance, GetBatch, GetWithdrawnFromBatch, HasForfeitedBatch];
+export const ENTITIES = [WithdrawLimit, VerifyBalance, GetBatches, GetBatch, GetWithdrawn, GetWithdrawnFromBatch, GetForfeited, HasForfeitedBatch, GetRemainingStars, GetConditionsState];
 
 export class Database implements DatabaseInterface {
   _config: ConnectionOptions;
@@ -78,6 +83,15 @@ export class Database implements DatabaseInterface {
       });
   }
 
+  async getGetBatches ({ blockHash, contractAddress, _participant }: { blockHash: string, contractAddress: string, _participant: string }): Promise<GetBatches | undefined> {
+    return this._conn.getRepository(GetBatches)
+      .findOne({
+        blockHash,
+        contractAddress,
+        _participant
+      });
+  }
+
   async getGetBatch ({ blockHash, contractAddress, _participant, _batch }: { blockHash: string, contractAddress: string, _participant: string, _batch: number }): Promise<GetBatch | undefined> {
     return this._conn.getRepository(GetBatch)
       .findOne({
@@ -85,6 +99,15 @@ export class Database implements DatabaseInterface {
         contractAddress,
         _participant,
         _batch
+      });
+  }
+
+  async getGetWithdrawn ({ blockHash, contractAddress, _participant }: { blockHash: string, contractAddress: string, _participant: string }): Promise<GetWithdrawn | undefined> {
+    return this._conn.getRepository(GetWithdrawn)
+      .findOne({
+        blockHash,
+        contractAddress,
+        _participant
       });
   }
 
@@ -98,6 +121,15 @@ export class Database implements DatabaseInterface {
       });
   }
 
+  async getGetForfeited ({ blockHash, contractAddress, _participant }: { blockHash: string, contractAddress: string, _participant: string }): Promise<GetForfeited | undefined> {
+    return this._conn.getRepository(GetForfeited)
+      .findOne({
+        blockHash,
+        contractAddress,
+        _participant
+      });
+  }
+
   async getHasForfeitedBatch ({ blockHash, contractAddress, _participant, _batch }: { blockHash: string, contractAddress: string, _participant: string, _batch: number }): Promise<HasForfeitedBatch | undefined> {
     return this._conn.getRepository(HasForfeitedBatch)
       .findOne({
@@ -105,6 +137,23 @@ export class Database implements DatabaseInterface {
         contractAddress,
         _participant,
         _batch
+      });
+  }
+
+  async getGetRemainingStars ({ blockHash, contractAddress, _participant }: { blockHash: string, contractAddress: string, _participant: string }): Promise<GetRemainingStars | undefined> {
+    return this._conn.getRepository(GetRemainingStars)
+      .findOne({
+        blockHash,
+        contractAddress,
+        _participant
+      });
+  }
+
+  async getGetConditionsState ({ blockHash, contractAddress }: { blockHash: string, contractAddress: string }): Promise<GetConditionsState | undefined> {
+    return this._conn.getRepository(GetConditionsState)
+      .findOne({
+        blockHash,
+        contractAddress
       });
   }
 
@@ -120,9 +169,21 @@ export class Database implements DatabaseInterface {
     return repo.save(entity);
   }
 
+  async saveGetBatches ({ blockHash, blockNumber, contractAddress, _participant, value, proof }: DeepPartial<GetBatches>): Promise<GetBatches> {
+    const repo = this._conn.getRepository(GetBatches);
+    const entity = repo.create({ blockHash, blockNumber, contractAddress, _participant, value, proof });
+    return repo.save(entity);
+  }
+
   async saveGetBatch ({ blockHash, blockNumber, contractAddress, _participant, _batch, value, proof }: DeepPartial<GetBatch>): Promise<GetBatch> {
     const repo = this._conn.getRepository(GetBatch);
     const entity = repo.create({ blockHash, blockNumber, contractAddress, _participant, _batch, value, proof });
+    return repo.save(entity);
+  }
+
+  async saveGetWithdrawn ({ blockHash, blockNumber, contractAddress, _participant, value, proof }: DeepPartial<GetWithdrawn>): Promise<GetWithdrawn> {
+    const repo = this._conn.getRepository(GetWithdrawn);
+    const entity = repo.create({ blockHash, blockNumber, contractAddress, _participant, value, proof });
     return repo.save(entity);
   }
 
@@ -132,9 +193,27 @@ export class Database implements DatabaseInterface {
     return repo.save(entity);
   }
 
+  async saveGetForfeited ({ blockHash, blockNumber, contractAddress, _participant, value, proof }: DeepPartial<GetForfeited>): Promise<GetForfeited> {
+    const repo = this._conn.getRepository(GetForfeited);
+    const entity = repo.create({ blockHash, blockNumber, contractAddress, _participant, value, proof });
+    return repo.save(entity);
+  }
+
   async saveHasForfeitedBatch ({ blockHash, blockNumber, contractAddress, _participant, _batch, value, proof }: DeepPartial<HasForfeitedBatch>): Promise<HasForfeitedBatch> {
     const repo = this._conn.getRepository(HasForfeitedBatch);
     const entity = repo.create({ blockHash, blockNumber, contractAddress, _participant, _batch, value, proof });
+    return repo.save(entity);
+  }
+
+  async saveGetRemainingStars ({ blockHash, blockNumber, contractAddress, _participant, value, proof }: DeepPartial<GetRemainingStars>): Promise<GetRemainingStars> {
+    const repo = this._conn.getRepository(GetRemainingStars);
+    const entity = repo.create({ blockHash, blockNumber, contractAddress, _participant, value, proof });
+    return repo.save(entity);
+  }
+
+  async saveGetConditionsState ({ blockHash, blockNumber, contractAddress, value0, value1, value2, value3, proof }: DeepPartial<GetConditionsState>): Promise<GetConditionsState> {
+    const repo = this._conn.getRepository(GetConditionsState);
+    const entity = repo.create({ blockHash, blockNumber, contractAddress, value0, value1, value2, value3, proof });
     return repo.save(entity);
   }
 
@@ -345,8 +424,13 @@ export class Database implements DatabaseInterface {
   _setPropColMaps (): void {
     this._propColMaps.WithdrawLimit = this._getPropertyColumnMapForEntity('WithdrawLimit');
     this._propColMaps.VerifyBalance = this._getPropertyColumnMapForEntity('VerifyBalance');
+    this._propColMaps.GetBatches = this._getPropertyColumnMapForEntity('GetBatches');
     this._propColMaps.GetBatch = this._getPropertyColumnMapForEntity('GetBatch');
+    this._propColMaps.GetWithdrawn = this._getPropertyColumnMapForEntity('GetWithdrawn');
     this._propColMaps.GetWithdrawnFromBatch = this._getPropertyColumnMapForEntity('GetWithdrawnFromBatch');
+    this._propColMaps.GetForfeited = this._getPropertyColumnMapForEntity('GetForfeited');
     this._propColMaps.HasForfeitedBatch = this._getPropertyColumnMapForEntity('HasForfeitedBatch');
+    this._propColMaps.GetRemainingStars = this._getPropertyColumnMapForEntity('GetRemainingStars');
+    this._propColMaps.GetConditionsState = this._getPropertyColumnMapForEntity('GetConditionsState');
   }
 }

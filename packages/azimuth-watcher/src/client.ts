@@ -80,6 +80,15 @@ export class Client {
     return getSpawnCount;
   }
 
+  async getGetSpawned (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
+    const { getSpawned } = await this._client.query(
+      gql(queries.getSpawned),
+      { blockHash, contractAddress, _point }
+    );
+
+    return getSpawned;
+  }
+
   async getHasSponsor (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { hasSponsor } = await this._client.query(
       gql(queries.hasSponsor),
@@ -114,6 +123,15 @@ export class Client {
     );
 
     return getSponsoringCount;
+  }
+
+  async getGetSponsoring (blockHash: string, contractAddress: string, _sponsor: bigint): Promise<any> {
+    const { getSponsoring } = await this._client.query(
+      gql(queries.getSponsoring),
+      { blockHash, contractAddress, _sponsor }
+    );
+
+    return getSponsoring;
   }
 
   async getIsEscaping (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
@@ -152,6 +170,15 @@ export class Client {
     return getEscapeRequestsCount;
   }
 
+  async getGetEscapeRequests (blockHash: string, contractAddress: string, _sponsor: bigint): Promise<any> {
+    const { getEscapeRequests } = await this._client.query(
+      gql(queries.getEscapeRequests),
+      { blockHash, contractAddress, _sponsor }
+    );
+
+    return getEscapeRequests;
+  }
+
   async getGetOwner (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { getOwner } = await this._client.query(
       gql(queries.getOwner),
@@ -177,6 +204,15 @@ export class Client {
     );
 
     return getOwnedPointCount;
+  }
+
+  async getGetOwnedPoints (blockHash: string, contractAddress: string, _whose: string): Promise<any> {
+    const { getOwnedPoints } = await this._client.query(
+      gql(queries.getOwnedPoints),
+      { blockHash, contractAddress, _whose }
+    );
+
+    return getOwnedPoints;
   }
 
   async getGetOwnedPointAtIndex (blockHash: string, contractAddress: string, _whose: string, _index: bigint): Promise<any> {
@@ -224,6 +260,15 @@ export class Client {
     return getManagerForCount;
   }
 
+  async getGetManagerFor (blockHash: string, contractAddress: string, _proxy: string): Promise<any> {
+    const { getManagerFor } = await this._client.query(
+      gql(queries.getManagerFor),
+      { blockHash, contractAddress, _proxy }
+    );
+
+    return getManagerFor;
+  }
+
   async getGetSpawnProxy (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { getSpawnProxy } = await this._client.query(
       gql(queries.getSpawnProxy),
@@ -258,6 +303,15 @@ export class Client {
     );
 
     return getSpawningForCount;
+  }
+
+  async getGetSpawningFor (blockHash: string, contractAddress: string, _proxy: string): Promise<any> {
+    const { getSpawningFor } = await this._client.query(
+      gql(queries.getSpawningFor),
+      { blockHash, contractAddress, _proxy }
+    );
+
+    return getSpawningFor;
   }
 
   async getGetVotingProxy (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
@@ -296,6 +350,15 @@ export class Client {
     return getVotingForCount;
   }
 
+  async getGetVotingFor (blockHash: string, contractAddress: string, _proxy: string): Promise<any> {
+    const { getVotingFor } = await this._client.query(
+      gql(queries.getVotingFor),
+      { blockHash, contractAddress, _proxy }
+    );
+
+    return getVotingFor;
+  }
+
   async getGetTransferProxy (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
     const { getTransferProxy } = await this._client.query(
       gql(queries.getTransferProxy),
@@ -330,6 +393,15 @@ export class Client {
     );
 
     return getTransferringForCount;
+  }
+
+  async getGetTransferringFor (blockHash: string, contractAddress: string, _proxy: string): Promise<any> {
+    const { getTransferringFor } = await this._client.query(
+      gql(queries.getTransferringFor),
+      { blockHash, contractAddress, _proxy }
+    );
+
+    return getTransferringFor;
   }
 
   async getIsOperator (blockHash: string, contractAddress: string, _owner: string, _operator: string): Promise<any> {

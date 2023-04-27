@@ -27,37 +27,45 @@ import { HasBeenLinked } from './entity/HasBeenLinked';
 import { IsLive } from './entity/IsLive';
 import { GetContinuityNumber } from './entity/GetContinuityNumber';
 import { GetSpawnCount } from './entity/GetSpawnCount';
+import { GetSpawned } from './entity/GetSpawned';
 import { HasSponsor } from './entity/HasSponsor';
 import { GetSponsor } from './entity/GetSponsor';
 import { IsSponsor } from './entity/IsSponsor';
 import { GetSponsoringCount } from './entity/GetSponsoringCount';
+import { GetSponsoring } from './entity/GetSponsoring';
 import { IsEscaping } from './entity/IsEscaping';
 import { GetEscapeRequest } from './entity/GetEscapeRequest';
 import { IsRequestingEscapeTo } from './entity/IsRequestingEscapeTo';
 import { GetEscapeRequestsCount } from './entity/GetEscapeRequestsCount';
+import { GetEscapeRequests } from './entity/GetEscapeRequests';
 import { GetOwner } from './entity/GetOwner';
 import { IsOwner } from './entity/IsOwner';
 import { GetOwnedPointCount } from './entity/GetOwnedPointCount';
+import { GetOwnedPoints } from './entity/GetOwnedPoints';
 import { GetOwnedPointAtIndex } from './entity/GetOwnedPointAtIndex';
 import { GetManagementProxy } from './entity/GetManagementProxy';
 import { IsManagementProxy } from './entity/IsManagementProxy';
 import { CanManage } from './entity/CanManage';
 import { GetManagerForCount } from './entity/GetManagerForCount';
+import { GetManagerFor } from './entity/GetManagerFor';
 import { GetSpawnProxy } from './entity/GetSpawnProxy';
 import { IsSpawnProxy } from './entity/IsSpawnProxy';
 import { CanSpawnAs } from './entity/CanSpawnAs';
 import { GetSpawningForCount } from './entity/GetSpawningForCount';
+import { GetSpawningFor } from './entity/GetSpawningFor';
 import { GetVotingProxy } from './entity/GetVotingProxy';
 import { IsVotingProxy } from './entity/IsVotingProxy';
 import { CanVoteAs } from './entity/CanVoteAs';
 import { GetVotingForCount } from './entity/GetVotingForCount';
+import { GetVotingFor } from './entity/GetVotingFor';
 import { GetTransferProxy } from './entity/GetTransferProxy';
 import { IsTransferProxy } from './entity/IsTransferProxy';
 import { CanTransfer } from './entity/CanTransfer';
 import { GetTransferringForCount } from './entity/GetTransferringForCount';
+import { GetTransferringFor } from './entity/GetTransferringFor';
 import { IsOperator } from './entity/IsOperator';
 
-export const ENTITIES = [IsActive, GetKeys, GetKeyRevisionNumber, HasBeenLinked, IsLive, GetContinuityNumber, GetSpawnCount, HasSponsor, GetSponsor, IsSponsor, GetSponsoringCount, IsEscaping, GetEscapeRequest, IsRequestingEscapeTo, GetEscapeRequestsCount, GetOwner, IsOwner, GetOwnedPointCount, GetOwnedPointAtIndex, GetManagementProxy, IsManagementProxy, CanManage, GetManagerForCount, GetSpawnProxy, IsSpawnProxy, CanSpawnAs, GetSpawningForCount, GetVotingProxy, IsVotingProxy, CanVoteAs, GetVotingForCount, GetTransferProxy, IsTransferProxy, CanTransfer, GetTransferringForCount, IsOperator];
+export const ENTITIES = [IsActive, GetKeys, GetKeyRevisionNumber, HasBeenLinked, IsLive, GetContinuityNumber, GetSpawnCount, GetSpawned, HasSponsor, GetSponsor, IsSponsor, GetSponsoringCount, GetSponsoring, IsEscaping, GetEscapeRequest, IsRequestingEscapeTo, GetEscapeRequestsCount, GetEscapeRequests, GetOwner, IsOwner, GetOwnedPointCount, GetOwnedPoints, GetOwnedPointAtIndex, GetManagementProxy, IsManagementProxy, CanManage, GetManagerForCount, GetManagerFor, GetSpawnProxy, IsSpawnProxy, CanSpawnAs, GetSpawningForCount, GetSpawningFor, GetVotingProxy, IsVotingProxy, CanVoteAs, GetVotingForCount, GetVotingFor, GetTransferProxy, IsTransferProxy, CanTransfer, GetTransferringForCount, GetTransferringFor, IsOperator];
 
 export class Database implements DatabaseInterface {
   _config: ConnectionOptions;
@@ -153,6 +161,15 @@ export class Database implements DatabaseInterface {
       });
   }
 
+  async getGetSpawned ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<GetSpawned | undefined> {
+    return this._conn.getRepository(GetSpawned)
+      .findOne({
+        blockHash,
+        contractAddress,
+        _point
+      });
+  }
+
   async getHasSponsor ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<HasSponsor | undefined> {
     return this._conn.getRepository(HasSponsor)
       .findOne({
@@ -183,6 +200,15 @@ export class Database implements DatabaseInterface {
 
   async getGetSponsoringCount ({ blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: bigint }): Promise<GetSponsoringCount | undefined> {
     return this._conn.getRepository(GetSponsoringCount)
+      .findOne({
+        blockHash,
+        contractAddress,
+        _sponsor
+      });
+  }
+
+  async getGetSponsoring ({ blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: bigint }): Promise<GetSponsoring | undefined> {
+    return this._conn.getRepository(GetSponsoring)
       .findOne({
         blockHash,
         contractAddress,
@@ -227,6 +253,15 @@ export class Database implements DatabaseInterface {
       });
   }
 
+  async getGetEscapeRequests ({ blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: bigint }): Promise<GetEscapeRequests | undefined> {
+    return this._conn.getRepository(GetEscapeRequests)
+      .findOne({
+        blockHash,
+        contractAddress,
+        _sponsor
+      });
+  }
+
   async getGetOwner ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<GetOwner | undefined> {
     return this._conn.getRepository(GetOwner)
       .findOne({
@@ -248,6 +283,15 @@ export class Database implements DatabaseInterface {
 
   async getGetOwnedPointCount ({ blockHash, contractAddress, _whose }: { blockHash: string, contractAddress: string, _whose: string }): Promise<GetOwnedPointCount | undefined> {
     return this._conn.getRepository(GetOwnedPointCount)
+      .findOne({
+        blockHash,
+        contractAddress,
+        _whose
+      });
+  }
+
+  async getGetOwnedPoints ({ blockHash, contractAddress, _whose }: { blockHash: string, contractAddress: string, _whose: string }): Promise<GetOwnedPoints | undefined> {
+    return this._conn.getRepository(GetOwnedPoints)
       .findOne({
         blockHash,
         contractAddress,
@@ -303,6 +347,15 @@ export class Database implements DatabaseInterface {
       });
   }
 
+  async getGetManagerFor ({ blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string }): Promise<GetManagerFor | undefined> {
+    return this._conn.getRepository(GetManagerFor)
+      .findOne({
+        blockHash,
+        contractAddress,
+        _proxy
+      });
+  }
+
   async getGetSpawnProxy ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<GetSpawnProxy | undefined> {
     return this._conn.getRepository(GetSpawnProxy)
       .findOne({
@@ -334,6 +387,15 @@ export class Database implements DatabaseInterface {
 
   async getGetSpawningForCount ({ blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string }): Promise<GetSpawningForCount | undefined> {
     return this._conn.getRepository(GetSpawningForCount)
+      .findOne({
+        blockHash,
+        contractAddress,
+        _proxy
+      });
+  }
+
+  async getGetSpawningFor ({ blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string }): Promise<GetSpawningFor | undefined> {
+    return this._conn.getRepository(GetSpawningFor)
       .findOne({
         blockHash,
         contractAddress,
@@ -379,6 +441,15 @@ export class Database implements DatabaseInterface {
       });
   }
 
+  async getGetVotingFor ({ blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string }): Promise<GetVotingFor | undefined> {
+    return this._conn.getRepository(GetVotingFor)
+      .findOne({
+        blockHash,
+        contractAddress,
+        _proxy
+      });
+  }
+
   async getGetTransferProxy ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<GetTransferProxy | undefined> {
     return this._conn.getRepository(GetTransferProxy)
       .findOne({
@@ -410,6 +481,15 @@ export class Database implements DatabaseInterface {
 
   async getGetTransferringForCount ({ blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string }): Promise<GetTransferringForCount | undefined> {
     return this._conn.getRepository(GetTransferringForCount)
+      .findOne({
+        blockHash,
+        contractAddress,
+        _proxy
+      });
+  }
+
+  async getGetTransferringFor ({ blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string }): Promise<GetTransferringFor | undefined> {
+    return this._conn.getRepository(GetTransferringFor)
       .findOne({
         blockHash,
         contractAddress,
@@ -469,6 +549,12 @@ export class Database implements DatabaseInterface {
     return repo.save(entity);
   }
 
+  async saveGetSpawned ({ blockHash, blockNumber, contractAddress, _point, value, proof }: DeepPartial<GetSpawned>): Promise<GetSpawned> {
+    const repo = this._conn.getRepository(GetSpawned);
+    const entity = repo.create({ blockHash, blockNumber, contractAddress, _point, value, proof });
+    return repo.save(entity);
+  }
+
   async saveHasSponsor ({ blockHash, blockNumber, contractAddress, _point, value, proof }: DeepPartial<HasSponsor>): Promise<HasSponsor> {
     const repo = this._conn.getRepository(HasSponsor);
     const entity = repo.create({ blockHash, blockNumber, contractAddress, _point, value, proof });
@@ -489,6 +575,12 @@ export class Database implements DatabaseInterface {
 
   async saveGetSponsoringCount ({ blockHash, blockNumber, contractAddress, _sponsor, value, proof }: DeepPartial<GetSponsoringCount>): Promise<GetSponsoringCount> {
     const repo = this._conn.getRepository(GetSponsoringCount);
+    const entity = repo.create({ blockHash, blockNumber, contractAddress, _sponsor, value, proof });
+    return repo.save(entity);
+  }
+
+  async saveGetSponsoring ({ blockHash, blockNumber, contractAddress, _sponsor, value, proof }: DeepPartial<GetSponsoring>): Promise<GetSponsoring> {
+    const repo = this._conn.getRepository(GetSponsoring);
     const entity = repo.create({ blockHash, blockNumber, contractAddress, _sponsor, value, proof });
     return repo.save(entity);
   }
@@ -517,6 +609,12 @@ export class Database implements DatabaseInterface {
     return repo.save(entity);
   }
 
+  async saveGetEscapeRequests ({ blockHash, blockNumber, contractAddress, _sponsor, value, proof }: DeepPartial<GetEscapeRequests>): Promise<GetEscapeRequests> {
+    const repo = this._conn.getRepository(GetEscapeRequests);
+    const entity = repo.create({ blockHash, blockNumber, contractAddress, _sponsor, value, proof });
+    return repo.save(entity);
+  }
+
   async saveGetOwner ({ blockHash, blockNumber, contractAddress, _point, value, proof }: DeepPartial<GetOwner>): Promise<GetOwner> {
     const repo = this._conn.getRepository(GetOwner);
     const entity = repo.create({ blockHash, blockNumber, contractAddress, _point, value, proof });
@@ -531,6 +629,12 @@ export class Database implements DatabaseInterface {
 
   async saveGetOwnedPointCount ({ blockHash, blockNumber, contractAddress, _whose, value, proof }: DeepPartial<GetOwnedPointCount>): Promise<GetOwnedPointCount> {
     const repo = this._conn.getRepository(GetOwnedPointCount);
+    const entity = repo.create({ blockHash, blockNumber, contractAddress, _whose, value, proof });
+    return repo.save(entity);
+  }
+
+  async saveGetOwnedPoints ({ blockHash, blockNumber, contractAddress, _whose, value, proof }: DeepPartial<GetOwnedPoints>): Promise<GetOwnedPoints> {
+    const repo = this._conn.getRepository(GetOwnedPoints);
     const entity = repo.create({ blockHash, blockNumber, contractAddress, _whose, value, proof });
     return repo.save(entity);
   }
@@ -565,6 +669,12 @@ export class Database implements DatabaseInterface {
     return repo.save(entity);
   }
 
+  async saveGetManagerFor ({ blockHash, blockNumber, contractAddress, _proxy, value, proof }: DeepPartial<GetManagerFor>): Promise<GetManagerFor> {
+    const repo = this._conn.getRepository(GetManagerFor);
+    const entity = repo.create({ blockHash, blockNumber, contractAddress, _proxy, value, proof });
+    return repo.save(entity);
+  }
+
   async saveGetSpawnProxy ({ blockHash, blockNumber, contractAddress, _point, value, proof }: DeepPartial<GetSpawnProxy>): Promise<GetSpawnProxy> {
     const repo = this._conn.getRepository(GetSpawnProxy);
     const entity = repo.create({ blockHash, blockNumber, contractAddress, _point, value, proof });
@@ -585,6 +695,12 @@ export class Database implements DatabaseInterface {
 
   async saveGetSpawningForCount ({ blockHash, blockNumber, contractAddress, _proxy, value, proof }: DeepPartial<GetSpawningForCount>): Promise<GetSpawningForCount> {
     const repo = this._conn.getRepository(GetSpawningForCount);
+    const entity = repo.create({ blockHash, blockNumber, contractAddress, _proxy, value, proof });
+    return repo.save(entity);
+  }
+
+  async saveGetSpawningFor ({ blockHash, blockNumber, contractAddress, _proxy, value, proof }: DeepPartial<GetSpawningFor>): Promise<GetSpawningFor> {
+    const repo = this._conn.getRepository(GetSpawningFor);
     const entity = repo.create({ blockHash, blockNumber, contractAddress, _proxy, value, proof });
     return repo.save(entity);
   }
@@ -613,6 +729,12 @@ export class Database implements DatabaseInterface {
     return repo.save(entity);
   }
 
+  async saveGetVotingFor ({ blockHash, blockNumber, contractAddress, _proxy, value, proof }: DeepPartial<GetVotingFor>): Promise<GetVotingFor> {
+    const repo = this._conn.getRepository(GetVotingFor);
+    const entity = repo.create({ blockHash, blockNumber, contractAddress, _proxy, value, proof });
+    return repo.save(entity);
+  }
+
   async saveGetTransferProxy ({ blockHash, blockNumber, contractAddress, _point, value, proof }: DeepPartial<GetTransferProxy>): Promise<GetTransferProxy> {
     const repo = this._conn.getRepository(GetTransferProxy);
     const entity = repo.create({ blockHash, blockNumber, contractAddress, _point, value, proof });
@@ -633,6 +755,12 @@ export class Database implements DatabaseInterface {
 
   async saveGetTransferringForCount ({ blockHash, blockNumber, contractAddress, _proxy, value, proof }: DeepPartial<GetTransferringForCount>): Promise<GetTransferringForCount> {
     const repo = this._conn.getRepository(GetTransferringForCount);
+    const entity = repo.create({ blockHash, blockNumber, contractAddress, _proxy, value, proof });
+    return repo.save(entity);
+  }
+
+  async saveGetTransferringFor ({ blockHash, blockNumber, contractAddress, _proxy, value, proof }: DeepPartial<GetTransferringFor>): Promise<GetTransferringFor> {
+    const repo = this._conn.getRepository(GetTransferringFor);
     const entity = repo.create({ blockHash, blockNumber, contractAddress, _proxy, value, proof });
     return repo.save(entity);
   }
@@ -855,34 +983,42 @@ export class Database implements DatabaseInterface {
     this._propColMaps.IsLive = this._getPropertyColumnMapForEntity('IsLive');
     this._propColMaps.GetContinuityNumber = this._getPropertyColumnMapForEntity('GetContinuityNumber');
     this._propColMaps.GetSpawnCount = this._getPropertyColumnMapForEntity('GetSpawnCount');
+    this._propColMaps.GetSpawned = this._getPropertyColumnMapForEntity('GetSpawned');
     this._propColMaps.HasSponsor = this._getPropertyColumnMapForEntity('HasSponsor');
     this._propColMaps.GetSponsor = this._getPropertyColumnMapForEntity('GetSponsor');
     this._propColMaps.IsSponsor = this._getPropertyColumnMapForEntity('IsSponsor');
     this._propColMaps.GetSponsoringCount = this._getPropertyColumnMapForEntity('GetSponsoringCount');
+    this._propColMaps.GetSponsoring = this._getPropertyColumnMapForEntity('GetSponsoring');
     this._propColMaps.IsEscaping = this._getPropertyColumnMapForEntity('IsEscaping');
     this._propColMaps.GetEscapeRequest = this._getPropertyColumnMapForEntity('GetEscapeRequest');
     this._propColMaps.IsRequestingEscapeTo = this._getPropertyColumnMapForEntity('IsRequestingEscapeTo');
     this._propColMaps.GetEscapeRequestsCount = this._getPropertyColumnMapForEntity('GetEscapeRequestsCount');
+    this._propColMaps.GetEscapeRequests = this._getPropertyColumnMapForEntity('GetEscapeRequests');
     this._propColMaps.GetOwner = this._getPropertyColumnMapForEntity('GetOwner');
     this._propColMaps.IsOwner = this._getPropertyColumnMapForEntity('IsOwner');
     this._propColMaps.GetOwnedPointCount = this._getPropertyColumnMapForEntity('GetOwnedPointCount');
+    this._propColMaps.GetOwnedPoints = this._getPropertyColumnMapForEntity('GetOwnedPoints');
     this._propColMaps.GetOwnedPointAtIndex = this._getPropertyColumnMapForEntity('GetOwnedPointAtIndex');
     this._propColMaps.GetManagementProxy = this._getPropertyColumnMapForEntity('GetManagementProxy');
     this._propColMaps.IsManagementProxy = this._getPropertyColumnMapForEntity('IsManagementProxy');
     this._propColMaps.CanManage = this._getPropertyColumnMapForEntity('CanManage');
     this._propColMaps.GetManagerForCount = this._getPropertyColumnMapForEntity('GetManagerForCount');
+    this._propColMaps.GetManagerFor = this._getPropertyColumnMapForEntity('GetManagerFor');
     this._propColMaps.GetSpawnProxy = this._getPropertyColumnMapForEntity('GetSpawnProxy');
     this._propColMaps.IsSpawnProxy = this._getPropertyColumnMapForEntity('IsSpawnProxy');
     this._propColMaps.CanSpawnAs = this._getPropertyColumnMapForEntity('CanSpawnAs');
     this._propColMaps.GetSpawningForCount = this._getPropertyColumnMapForEntity('GetSpawningForCount');
+    this._propColMaps.GetSpawningFor = this._getPropertyColumnMapForEntity('GetSpawningFor');
     this._propColMaps.GetVotingProxy = this._getPropertyColumnMapForEntity('GetVotingProxy');
     this._propColMaps.IsVotingProxy = this._getPropertyColumnMapForEntity('IsVotingProxy');
     this._propColMaps.CanVoteAs = this._getPropertyColumnMapForEntity('CanVoteAs');
     this._propColMaps.GetVotingForCount = this._getPropertyColumnMapForEntity('GetVotingForCount');
+    this._propColMaps.GetVotingFor = this._getPropertyColumnMapForEntity('GetVotingFor');
     this._propColMaps.GetTransferProxy = this._getPropertyColumnMapForEntity('GetTransferProxy');
     this._propColMaps.IsTransferProxy = this._getPropertyColumnMapForEntity('IsTransferProxy');
     this._propColMaps.CanTransfer = this._getPropertyColumnMapForEntity('CanTransfer');
     this._propColMaps.GetTransferringForCount = this._getPropertyColumnMapForEntity('GetTransferringForCount');
+    this._propColMaps.GetTransferringFor = this._getPropertyColumnMapForEntity('GetTransferringFor');
     this._propColMaps.IsOperator = this._getPropertyColumnMapForEntity('IsOperator');
   }
 }

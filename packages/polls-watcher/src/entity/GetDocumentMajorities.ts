@@ -19,7 +19,7 @@ export class GetDocumentMajorities {
   @Column('varchar', { length: 42 })
     contractAddress!: string;
 
-  @Column('simple-array', { nullable: false })
+  @Column('varchar', { array: true })
     value!: string[];
 
   @Column('text', { nullable: true })

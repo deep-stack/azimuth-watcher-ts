@@ -318,6 +318,19 @@ export class Indexer implements IndexerInterface {
   }
 
   async getSpawned (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
+    const entity = await this._db.getGetSpawned({ blockHash, contractAddress, _point });
+    if (entity) {
+      log('getSpawned: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
     log('getSpawned: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_AZIMUTH);
@@ -328,6 +341,8 @@ export class Indexer implements IndexerInterface {
 
     const value = contractResult.map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt());
     const result: ValueResult = { value };
+
+    await this._db.saveGetSpawned({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }
@@ -455,6 +470,19 @@ export class Indexer implements IndexerInterface {
   }
 
   async getSponsoring (blockHash: string, contractAddress: string, _sponsor: bigint): Promise<ValueResult> {
+    const entity = await this._db.getGetSponsoring({ blockHash, contractAddress, _sponsor });
+    if (entity) {
+      log('getSponsoring: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
     log('getSponsoring: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_AZIMUTH);
@@ -465,6 +493,8 @@ export class Indexer implements IndexerInterface {
 
     const value = contractResult.map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt());
     const result: ValueResult = { value };
+
+    await this._db.saveGetSponsoring({ blockHash, blockNumber, contractAddress, _sponsor, value: result.value, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }
@@ -592,6 +622,19 @@ export class Indexer implements IndexerInterface {
   }
 
   async getEscapeRequests (blockHash: string, contractAddress: string, _sponsor: bigint): Promise<ValueResult> {
+    const entity = await this._db.getGetEscapeRequests({ blockHash, contractAddress, _sponsor });
+    if (entity) {
+      log('getEscapeRequests: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
     log('getEscapeRequests: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_AZIMUTH);
@@ -602,6 +645,8 @@ export class Indexer implements IndexerInterface {
 
     const value = contractResult.map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt());
     const result: ValueResult = { value };
+
+    await this._db.saveGetEscapeRequests({ blockHash, blockNumber, contractAddress, _sponsor, value: result.value, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }
@@ -698,6 +743,19 @@ export class Indexer implements IndexerInterface {
   }
 
   async getOwnedPoints (blockHash: string, contractAddress: string, _whose: string): Promise<ValueResult> {
+    const entity = await this._db.getGetOwnedPoints({ blockHash, contractAddress, _whose });
+    if (entity) {
+      log('getOwnedPoints: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
     log('getOwnedPoints: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_AZIMUTH);
@@ -708,6 +766,8 @@ export class Indexer implements IndexerInterface {
 
     const value = contractResult.map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt());
     const result: ValueResult = { value };
+
+    await this._db.saveGetOwnedPoints({ blockHash, blockNumber, contractAddress, _whose, value: result.value, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }
@@ -865,6 +925,19 @@ export class Indexer implements IndexerInterface {
   }
 
   async getManagerFor (blockHash: string, contractAddress: string, _proxy: string): Promise<ValueResult> {
+    const entity = await this._db.getGetManagerFor({ blockHash, contractAddress, _proxy });
+    if (entity) {
+      log('getManagerFor: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
     log('getManagerFor: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_AZIMUTH);
@@ -875,6 +948,8 @@ export class Indexer implements IndexerInterface {
 
     const value = contractResult.map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt());
     const result: ValueResult = { value };
+
+    await this._db.saveGetManagerFor({ blockHash, blockNumber, contractAddress, _proxy, value: result.value, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }
@@ -1001,6 +1076,19 @@ export class Indexer implements IndexerInterface {
   }
 
   async getSpawningFor (blockHash: string, contractAddress: string, _proxy: string): Promise<ValueResult> {
+    const entity = await this._db.getGetSpawningFor({ blockHash, contractAddress, _proxy });
+    if (entity) {
+      log('getSpawningFor: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
     log('getSpawningFor: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_AZIMUTH);
@@ -1011,6 +1099,8 @@ export class Indexer implements IndexerInterface {
 
     const value = contractResult.map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt());
     const result: ValueResult = { value };
+
+    await this._db.saveGetSpawningFor({ blockHash, blockNumber, contractAddress, _proxy, value: result.value, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }
@@ -1137,6 +1227,19 @@ export class Indexer implements IndexerInterface {
   }
 
   async getVotingFor (blockHash: string, contractAddress: string, _proxy: string): Promise<ValueResult> {
+    const entity = await this._db.getGetVotingFor({ blockHash, contractAddress, _proxy });
+    if (entity) {
+      log('getVotingFor: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
     log('getVotingFor: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_AZIMUTH);
@@ -1147,6 +1250,8 @@ export class Indexer implements IndexerInterface {
 
     const value = contractResult.map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt());
     const result: ValueResult = { value };
+
+    await this._db.saveGetVotingFor({ blockHash, blockNumber, contractAddress, _proxy, value: result.value, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }
@@ -1273,6 +1378,19 @@ export class Indexer implements IndexerInterface {
   }
 
   async getTransferringFor (blockHash: string, contractAddress: string, _proxy: string): Promise<ValueResult> {
+    const entity = await this._db.getGetTransferringFor({ blockHash, contractAddress, _proxy });
+    if (entity) {
+      log('getTransferringFor: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
     log('getTransferringFor: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_AZIMUTH);
@@ -1283,6 +1401,8 @@ export class Indexer implements IndexerInterface {
 
     const value = contractResult.map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt());
     const result: ValueResult = { value };
+
+    await this._db.saveGetTransferringFor({ blockHash, blockNumber, contractAddress, _proxy, value: result.value, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }

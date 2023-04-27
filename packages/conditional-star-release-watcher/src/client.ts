@@ -35,6 +35,15 @@ export class Client {
     return verifyBalance;
   }
 
+  async getGetBatches (blockHash: string, contractAddress: string, _participant: string): Promise<any> {
+    const { getBatches } = await this._client.query(
+      gql(queries.getBatches),
+      { blockHash, contractAddress, _participant }
+    );
+
+    return getBatches;
+  }
+
   async getGetBatch (blockHash: string, contractAddress: string, _participant: string, _batch: number): Promise<any> {
     const { getBatch } = await this._client.query(
       gql(queries.getBatch),
@@ -42,6 +51,15 @@ export class Client {
     );
 
     return getBatch;
+  }
+
+  async getGetWithdrawn (blockHash: string, contractAddress: string, _participant: string): Promise<any> {
+    const { getWithdrawn } = await this._client.query(
+      gql(queries.getWithdrawn),
+      { blockHash, contractAddress, _participant }
+    );
+
+    return getWithdrawn;
   }
 
   async getGetWithdrawnFromBatch (blockHash: string, contractAddress: string, _participant: string, _batch: number): Promise<any> {
@@ -53,6 +71,15 @@ export class Client {
     return getWithdrawnFromBatch;
   }
 
+  async getGetForfeited (blockHash: string, contractAddress: string, _participant: string): Promise<any> {
+    const { getForfeited } = await this._client.query(
+      gql(queries.getForfeited),
+      { blockHash, contractAddress, _participant }
+    );
+
+    return getForfeited;
+  }
+
   async getHasForfeitedBatch (blockHash: string, contractAddress: string, _participant: string, _batch: number): Promise<any> {
     const { hasForfeitedBatch } = await this._client.query(
       gql(queries.hasForfeitedBatch),
@@ -60,6 +87,24 @@ export class Client {
     );
 
     return hasForfeitedBatch;
+  }
+
+  async getGetRemainingStars (blockHash: string, contractAddress: string, _participant: string): Promise<any> {
+    const { getRemainingStars } = await this._client.query(
+      gql(queries.getRemainingStars),
+      { blockHash, contractAddress, _participant }
+    );
+
+    return getRemainingStars;
+  }
+
+  async getGetConditionsState (blockHash: string, contractAddress: string): Promise<any> {
+    const { getConditionsState } = await this._client.query(
+      gql(queries.getConditionsState),
+      { blockHash, contractAddress }
+    );
+
+    return getConditionsState;
   }
 
   async getEvents (blockHash: string, contractAddress: string, name: string): Promise<any> {

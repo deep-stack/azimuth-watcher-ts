@@ -22,10 +22,7 @@ export class GetForfeited {
   @Column('varchar', { length: 42 })
     _participant!: string;
 
-  @Column('boolean', {
-    array: true,
-    nullable: true
-  })
+  @Column('boolean', { array: true })
     value!: boolean[];
 
   @Column('text', { nullable: true })

@@ -21,9 +21,11 @@ import { StateSyncStatus } from './entity/StateSyncStatus';
 import { BlockProgress } from './entity/BlockProgress';
 import { State } from './entity/State';
 import { GetCensuringCount } from './entity/GetCensuringCount';
+import { GetCensuring } from './entity/GetCensuring';
 import { GetCensuredByCount } from './entity/GetCensuredByCount';
+import { GetCensuredBy } from './entity/GetCensuredBy';
 
-export const ENTITIES = [GetCensuringCount, GetCensuredByCount];
+export const ENTITIES = [GetCensuringCount, GetCensuring, GetCensuredByCount, GetCensuredBy];
 
 export class Database implements DatabaseInterface {
   _config: ConnectionOptions;
@@ -65,8 +67,26 @@ export class Database implements DatabaseInterface {
       });
   }
 
+  async getGetCensuring ({ blockHash, contractAddress, _whose }: { blockHash: string, contractAddress: string, _whose: number }): Promise<GetCensuring | undefined> {
+    return this._conn.getRepository(GetCensuring)
+      .findOne({
+        blockHash,
+        contractAddress,
+        _whose
+      });
+  }
+
   async getGetCensuredByCount ({ blockHash, contractAddress, _who }: { blockHash: string, contractAddress: string, _who: number }): Promise<GetCensuredByCount | undefined> {
     return this._conn.getRepository(GetCensuredByCount)
+      .findOne({
+        blockHash,
+        contractAddress,
+        _who
+      });
+  }
+
+  async getGetCensuredBy ({ blockHash, contractAddress, _who }: { blockHash: string, contractAddress: string, _who: number }): Promise<GetCensuredBy | undefined> {
+    return this._conn.getRepository(GetCensuredBy)
       .findOne({
         blockHash,
         contractAddress,
@@ -80,8 +100,20 @@ export class Database implements DatabaseInterface {
     return repo.save(entity);
   }
 
+  async saveGetCensuring ({ blockHash, blockNumber, contractAddress, _whose, value, proof }: DeepPartial<GetCensuring>): Promise<GetCensuring> {
+    const repo = this._conn.getRepository(GetCensuring);
+    const entity = repo.create({ blockHash, blockNumber, contractAddress, _whose, value, proof });
+    return repo.save(entity);
+  }
+
   async saveGetCensuredByCount ({ blockHash, blockNumber, contractAddress, _who, value, proof }: DeepPartial<GetCensuredByCount>): Promise<GetCensuredByCount> {
     const repo = this._conn.getRepository(GetCensuredByCount);
+    const entity = repo.create({ blockHash, blockNumber, contractAddress, _who, value, proof });
+    return repo.save(entity);
+  }
+
+  async saveGetCensuredBy ({ blockHash, blockNumber, contractAddress, _who, value, proof }: DeepPartial<GetCensuredBy>): Promise<GetCensuredBy> {
+    const repo = this._conn.getRepository(GetCensuredBy);
     const entity = repo.create({ blockHash, blockNumber, contractAddress, _who, value, proof });
     return repo.save(entity);
   }
@@ -292,6 +324,8 @@ export class Database implements DatabaseInterface {
 
   _setPropColMaps (): void {
     this._propColMaps.GetCensuringCount = this._getPropertyColumnMapForEntity('GetCensuringCount');
+    this._propColMaps.GetCensuring = this._getPropertyColumnMapForEntity('GetCensuring');
     this._propColMaps.GetCensuredByCount = this._getPropertyColumnMapForEntity('GetCensuredByCount');
+    this._propColMaps.GetCensuredBy = this._getPropertyColumnMapForEntity('GetCensuredBy');
   }
 }

@@ -26,6 +26,15 @@ export class Client {
     return getCensuringCount;
   }
 
+  async getGetCensuring (blockHash: string, contractAddress: string, _whose: number): Promise<any> {
+    const { getCensuring } = await this._client.query(
+      gql(queries.getCensuring),
+      { blockHash, contractAddress, _whose }
+    );
+
+    return getCensuring;
+  }
+
   async getGetCensuredByCount (blockHash: string, contractAddress: string, _who: number): Promise<any> {
     const { getCensuredByCount } = await this._client.query(
       gql(queries.getCensuredByCount),
@@ -33,6 +42,15 @@ export class Client {
     );
 
     return getCensuredByCount;
+  }
+
+  async getGetCensuredBy (blockHash: string, contractAddress: string, _who: number): Promise<any> {
+    const { getCensuredBy } = await this._client.query(
+      gql(queries.getCensuredBy),
+      { blockHash, contractAddress, _who }
+    );
+
+    return getCensuredBy;
   }
 
   async getEvents (blockHash: string, contractAddress: string, name: string): Promise<any> {

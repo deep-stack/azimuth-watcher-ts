@@ -3,10 +3,11 @@
 //
 
 import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm';
+import { bigintArrayTransformer } from '@cerc-io/util';
 
 @Entity()
-@Index(['blockHash', 'contractAddress'], { unique: true })
-export class GetUpgradeProposals {
+@Index(['blockHash', 'contractAddress', '_proxy'], { unique: true })
+export class GetSpawningFor {
   @PrimaryGeneratedColumn()
     id!: number;
 
@@ -19,8 +20,11 @@ export class GetUpgradeProposals {
   @Column('varchar', { length: 42 })
     contractAddress!: string;
 
-  @Column('varchar', { array: true })
-    value!: string[];
+  @Column('varchar', { length: 42 })
+    _proxy!: string;
+
+  @Column('numeric', { array: true, transformer: bigintArrayTransformer })
+    value!: bigint[];
 
   @Column('text', { nullable: true })
     proof!: string;

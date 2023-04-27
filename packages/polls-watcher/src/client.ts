@@ -17,6 +17,15 @@ export class Client {
     this._client = new GraphQLClient(config);
   }
 
+  async getGetUpgradeProposals (blockHash: string, contractAddress: string): Promise<any> {
+    const { getUpgradeProposals } = await this._client.query(
+      gql(queries.getUpgradeProposals),
+      { blockHash, contractAddress }
+    );
+
+    return getUpgradeProposals;
+  }
+
   async getGetUpgradeProposalCount (blockHash: string, contractAddress: string): Promise<any> {
     const { getUpgradeProposalCount } = await this._client.query(
       gql(queries.getUpgradeProposalCount),
@@ -26,6 +35,15 @@ export class Client {
     return getUpgradeProposalCount;
   }
 
+  async getGetDocumentProposals (blockHash: string, contractAddress: string): Promise<any> {
+    const { getDocumentProposals } = await this._client.query(
+      gql(queries.getDocumentProposals),
+      { blockHash, contractAddress }
+    );
+
+    return getDocumentProposals;
+  }
+
   async getGetDocumentProposalCount (blockHash: string, contractAddress: string): Promise<any> {
     const { getDocumentProposalCount } = await this._client.query(
       gql(queries.getDocumentProposalCount),
@@ -33,6 +51,15 @@ export class Client {
     );
 
     return getDocumentProposalCount;
+  }
+
+  async getGetDocumentMajorities (blockHash: string, contractAddress: string): Promise<any> {
+    const { getDocumentMajorities } = await this._client.query(
+      gql(queries.getDocumentMajorities),
+      { blockHash, contractAddress }
+    );
+
+    return getDocumentMajorities;
   }
 
   async getHasVotedOnUpgradePoll (blockHash: string, contractAddress: string, _galaxy: number, _proposal: string): Promise<any> {

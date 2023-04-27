@@ -22,8 +22,9 @@ import { BlockProgress } from './entity/BlockProgress';
 import { State } from './entity/State';
 import { WithdrawLimit } from './entity/WithdrawLimit';
 import { VerifyBalance } from './entity/VerifyBalance';
+import { GetRemainingStars } from './entity/GetRemainingStars';
 
-export const ENTITIES = [WithdrawLimit, VerifyBalance];
+export const ENTITIES = [WithdrawLimit, VerifyBalance, GetRemainingStars];
 
 export class Database implements DatabaseInterface {
   _config: ConnectionOptions;
@@ -74,6 +75,15 @@ export class Database implements DatabaseInterface {
       });
   }
 
+  async getGetRemainingStars ({ blockHash, contractAddress, _participant }: { blockHash: string, contractAddress: string, _participant: string }): Promise<GetRemainingStars | undefined> {
+    return this._conn.getRepository(GetRemainingStars)
+      .findOne({
+        blockHash,
+        contractAddress,
+        _participant
+      });
+  }
+
   async saveWithdrawLimit ({ blockHash, blockNumber, contractAddress, _participant, value, proof }: DeepPartial<WithdrawLimit>): Promise<WithdrawLimit> {
     const repo = this._conn.getRepository(WithdrawLimit);
     const entity = repo.create({ blockHash, blockNumber, contractAddress, _participant, value, proof });
@@ -82,6 +92,12 @@ export class Database implements DatabaseInterface {
 
   async saveVerifyBalance ({ blockHash, blockNumber, contractAddress, _participant, value, proof }: DeepPartial<VerifyBalance>): Promise<VerifyBalance> {
     const repo = this._conn.getRepository(VerifyBalance);
+    const entity = repo.create({ blockHash, blockNumber, contractAddress, _participant, value, proof });
+    return repo.save(entity);
+  }
+
+  async saveGetRemainingStars ({ blockHash, blockNumber, contractAddress, _participant, value, proof }: DeepPartial<GetRemainingStars>): Promise<GetRemainingStars> {
+    const repo = this._conn.getRepository(GetRemainingStars);
     const entity = repo.create({ blockHash, blockNumber, contractAddress, _participant, value, proof });
     return repo.save(entity);
   }
@@ -293,5 +309,6 @@ export class Database implements DatabaseInterface {
   _setPropColMaps (): void {
     this._propColMaps.WithdrawLimit = this._getPropertyColumnMapForEntity('WithdrawLimit');
     this._propColMaps.VerifyBalance = this._getPropertyColumnMapForEntity('VerifyBalance');
+    this._propColMaps.GetRemainingStars = this._getPropertyColumnMapForEntity('GetRemainingStars');
   }
 }

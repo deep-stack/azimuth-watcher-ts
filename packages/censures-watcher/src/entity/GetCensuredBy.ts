@@ -5,8 +5,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm';
 
 @Entity()
-@Index(['blockHash', 'contractAddress'], { unique: true })
-export class GetUpgradeProposals {
+@Index(['blockHash', 'contractAddress', '_who'], { unique: true })
+export class GetCensuredBy {
   @PrimaryGeneratedColumn()
     id!: number;
 
@@ -19,8 +19,11 @@ export class GetUpgradeProposals {
   @Column('varchar', { length: 42 })
     contractAddress!: string;
 
-  @Column('varchar', { array: true })
-    value!: string[];
+  @Column('integer')
+    _who!: number;
+
+  @Column('integer', { array: true })
+    value!: number[];
 
   @Column('text', { nullable: true })
     proof!: string;

@@ -154,6 +154,19 @@ export class Indexer implements IndexerInterface {
   }
 
   async getBatches (blockHash: string, contractAddress: string, _participant: string): Promise<ValueResult> {
+    const entity = await this._db.getGetBatches({ blockHash, contractAddress, _participant });
+    if (entity) {
+      log('getBatches: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
     log('getBatches: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CONDITIONALSTARRELEASE);
@@ -164,6 +177,8 @@ export class Indexer implements IndexerInterface {
 
     const value = contractResult;
     const result: ValueResult = { value };
+
+    await this._db.saveGetBatches({ blockHash, blockNumber, contractAddress, _participant, value: result.value, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }
@@ -199,6 +214,19 @@ export class Indexer implements IndexerInterface {
   }
 
   async getWithdrawn (blockHash: string, contractAddress: string, _participant: string): Promise<ValueResult> {
+    const entity = await this._db.getGetWithdrawn({ blockHash, contractAddress, _participant });
+    if (entity) {
+      log('getWithdrawn: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
     log('getWithdrawn: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CONDITIONALSTARRELEASE);
@@ -209,6 +237,8 @@ export class Indexer implements IndexerInterface {
 
     const value = contractResult;
     const result: ValueResult = { value };
+
+    await this._db.saveGetWithdrawn({ blockHash, blockNumber, contractAddress, _participant, value: result.value, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }
@@ -244,6 +274,19 @@ export class Indexer implements IndexerInterface {
   }
 
   async getForfeited (blockHash: string, contractAddress: string, _participant: string): Promise<ValueResult> {
+    const entity = await this._db.getGetForfeited({ blockHash, contractAddress, _participant });
+    if (entity) {
+      log('getForfeited: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
     log('getForfeited: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CONDITIONALSTARRELEASE);
@@ -254,6 +297,8 @@ export class Indexer implements IndexerInterface {
 
     const value = contractResult;
     const result: ValueResult = { value };
+
+    await this._db.saveGetForfeited({ blockHash, blockNumber, contractAddress, _participant, value: result.value, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }
@@ -289,6 +334,19 @@ export class Indexer implements IndexerInterface {
   }
 
   async getRemainingStars (blockHash: string, contractAddress: string, _participant: string): Promise<ValueResult> {
+    const entity = await this._db.getGetRemainingStars({ blockHash, contractAddress, _participant });
+    if (entity) {
+      log('getRemainingStars: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
     log('getRemainingStars: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CONDITIONALSTARRELEASE);
@@ -300,10 +358,30 @@ export class Indexer implements IndexerInterface {
     const value = contractResult;
     const result: ValueResult = { value };
 
+    await this._db.saveGetRemainingStars({ blockHash, blockNumber, contractAddress, _participant, value: result.value, proof: JSONbigNative.stringify(result.proof) });
+
     return result;
   }
 
   async getConditionsState (blockHash: string, contractAddress: string): Promise<ValueResult> {
+    const entity = await this._db.getGetConditionsState({ blockHash, contractAddress });
+    if (entity) {
+      log('getConditionsState: db hit.');
+
+      return {
+        value: {
+          value0: entity.value0,
+          value1: entity.value1,
+          value2: entity.value2,
+          value3: entity.value3
+        },
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
     log('getConditionsState: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CONDITIONALSTARRELEASE);
@@ -320,6 +398,8 @@ export class Indexer implements IndexerInterface {
     };
 
     const result: ValueResult = { value };
+
+    await this._db.saveGetConditionsState({ blockHash, blockNumber, contractAddress, value0: value.value0, value1: value.value1, value2: value.value2, value3: value.value3, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }

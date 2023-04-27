@@ -22,10 +22,7 @@ export class GetBatches {
   @Column('varchar', { length: 42 })
     _participant!: string;
 
-  @Column('integer', {
-    array: true,
-    nullable: false
-  })
+  @Column('integer', { array: true })
     value!: number[];
 
   @Column('text', { nullable: true })

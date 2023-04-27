@@ -94,6 +94,19 @@ export class Indexer implements IndexerInterface {
   }
 
   async getUpgradeProposals (blockHash: string, contractAddress: string): Promise<ValueResult> {
+    const entity = await this._db.getGetUpgradeProposals({ blockHash, contractAddress });
+    if (entity) {
+      log('getUpgradeProposals: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
     log('getUpgradeProposals: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_POLLS);
@@ -104,6 +117,8 @@ export class Indexer implements IndexerInterface {
 
     const value = contractResult;
     const result: ValueResult = { value };
+
+    await this._db.saveGetUpgradeProposals({ blockHash, blockNumber, contractAddress, value: result.value, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }
@@ -140,6 +155,19 @@ export class Indexer implements IndexerInterface {
   }
 
   async getDocumentProposals (blockHash: string, contractAddress: string): Promise<ValueResult> {
+    const entity = await this._db.getGetDocumentProposals({ blockHash, contractAddress });
+    if (entity) {
+      log('getDocumentProposals: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
     log('getDocumentProposals: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_POLLS);
@@ -150,6 +178,8 @@ export class Indexer implements IndexerInterface {
 
     const value = contractResult;
     const result: ValueResult = { value };
+
+    await this._db.saveGetDocumentProposals({ blockHash, blockNumber, contractAddress, value: result.value, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }
@@ -186,6 +216,19 @@ export class Indexer implements IndexerInterface {
   }
 
   async getDocumentMajorities (blockHash: string, contractAddress: string): Promise<ValueResult> {
+    const entity = await this._db.getGetDocumentMajorities({ blockHash, contractAddress });
+    if (entity) {
+      log('getDocumentMajorities: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
     log('getDocumentMajorities: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_POLLS);
@@ -196,6 +239,8 @@ export class Indexer implements IndexerInterface {
 
     const value = contractResult;
     const result: ValueResult = { value };
+
+    await this._db.saveGetDocumentMajorities({ blockHash, blockNumber, contractAddress, value: result.value, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }

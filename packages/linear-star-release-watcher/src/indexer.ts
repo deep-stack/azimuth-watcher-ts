@@ -154,6 +154,19 @@ export class Indexer implements IndexerInterface {
   }
 
   async getRemainingStars (blockHash: string, contractAddress: string, _participant: string): Promise<ValueResult> {
+    const entity = await this._db.getGetRemainingStars({ blockHash, contractAddress, _participant });
+    if (entity) {
+      log('getRemainingStars: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
     log('getRemainingStars: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_LINEARSTARRELEASE);
@@ -164,6 +177,8 @@ export class Indexer implements IndexerInterface {
 
     const value = contractResult;
     const result: ValueResult = { value };
+
+    await this._db.saveGetRemainingStars({ blockHash, blockNumber, contractAddress, _participant, value: result.value, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }

@@ -125,6 +125,19 @@ export class Indexer implements IndexerInterface {
   }
 
   async getCensuring (blockHash: string, contractAddress: string, _whose: number): Promise<ValueResult> {
+    const entity = await this._db.getGetCensuring({ blockHash, contractAddress, _whose });
+    if (entity) {
+      log('getCensuring: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
     log('getCensuring: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CENSURES);
@@ -135,6 +148,8 @@ export class Indexer implements IndexerInterface {
 
     const value = contractResult.map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt());
     const result: ValueResult = { value };
+
+    await this._db.saveGetCensuring({ blockHash, blockNumber, contractAddress, _whose, value: result.value, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }
@@ -171,6 +186,19 @@ export class Indexer implements IndexerInterface {
   }
 
   async getCensuredBy (blockHash: string, contractAddress: string, _who: number): Promise<ValueResult> {
+    const entity = await this._db.getGetCensuredBy({ blockHash, contractAddress, _who });
+    if (entity) {
+      log('getCensuredBy: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
     log('getCensuredBy: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_CENSURES);
@@ -181,6 +209,8 @@ export class Indexer implements IndexerInterface {
 
     const value = contractResult;
     const result: ValueResult = { value };
+
+    await this._db.saveGetCensuredBy({ blockHash, blockNumber, contractAddress, _who, value: result.value, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }

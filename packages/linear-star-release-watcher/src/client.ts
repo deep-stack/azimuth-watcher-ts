@@ -35,6 +35,15 @@ export class Client {
     return verifyBalance;
   }
 
+  async getGetRemainingStars (blockHash: string, contractAddress: string, _participant: string): Promise<any> {
+    const { getRemainingStars } = await this._client.query(
+      gql(queries.getRemainingStars),
+      { blockHash, contractAddress, _participant }
+    );
+
+    return getRemainingStars;
+  }
+
   async getEvents (blockHash: string, contractAddress: string, name: string): Promise<any> {
     const { events } = await this._client.query(
       gql(queries.events),
