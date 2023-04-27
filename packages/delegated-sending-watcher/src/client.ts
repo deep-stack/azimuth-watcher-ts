@@ -26,15 +26,6 @@ export class Client {
     return canSend;
   }
 
-  async getGetPool (blockHash: string, contractAddress: string, _point: bigint): Promise<any> {
-    const { getPool } = await this._client.query(
-      gql(queries.getPool),
-      { blockHash, contractAddress, _point }
-    );
-
-    return getPool;
-  }
-
   async getCanReceive (blockHash: string, contractAddress: string, _recipient: string): Promise<any> {
     const { canReceive } = await this._client.query(
       gql(queries.canReceive),

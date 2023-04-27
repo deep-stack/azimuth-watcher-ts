@@ -1,8 +1,0 @@
-query getPoolStars($blockHash: String!, $contractAddress: String!, $_who: BigInt!){
-    getPoolStars(blockHash: $blockHash, contractAddress: $contractAddress, _who: $_who){
-        value
-        proof{
-            data
-        }
-    }
-}

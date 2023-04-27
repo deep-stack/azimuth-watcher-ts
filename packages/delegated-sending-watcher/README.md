@@ -1,16 +1,6 @@
 # delegated-sending-watcher
 
-## Currently unsupported queries
-
-The watcher was generated in `eth_call` mode and does not support the following queries in its current state:
-
-* `getPoolStars(uint32 _who) returns (uint16[] stars)`
-
-* `getInviters() returns (uint32[] invs)`
-
-* `getInvited(uint32 _who) returns (uint32[] invd)`
-
-* `getPool(uint32 _point) returns (uint32 pool)`
+This watcher has been generated based on the `DelegatedSending` contract deployed at [0xf6b461fe1ad4bd2ce25b23fe0aff2ac19b3dfa76](https://etherscan.io/address/0xf6b461fe1ad4bd2ce25b23fe0aff2ac19b3dfa76#code#L1)
 
 ## Setup
 

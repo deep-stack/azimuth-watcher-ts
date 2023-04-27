@@ -123,37 +123,6 @@ export class Indexer implements IndexerInterface {
     return result;
   }
 
-  async getPool (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
-    const entity = await this._db.getGetPool({ blockHash, contractAddress, _point });
-    if (entity) {
-      log('getPool: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getPool: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_DELEGATEDSENDING);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const contractResult = await contract.getPool(_point, { blockTag: blockHash });
-
-    const value = ethers.BigNumber.from(contractResult).toBigInt();
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetPool({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
   async canReceive (blockHash: string, contractAddress: string, _recipient: string): Promise<ValueResult> {
     const entity = await this._db.getCanReceive({ blockHash, contractAddress, _recipient });
     if (entity) {
@@ -180,51 +149,6 @@ export class Indexer implements IndexerInterface {
     const result: ValueResult = { value };
 
     await this._db.saveCanReceive({ blockHash, blockNumber, contractAddress, _recipient, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getPoolStars (blockHash: string, contractAddress: string, _who: bigint): Promise<ValueResult> {
-    log('getPoolStars: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_DELEGATEDSENDING);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const contractResult = await contract.getPoolStars(_who, { blockTag: blockHash });
-
-    const value = contractResult;
-    const result: ValueResult = { value };
-
-    return result;
-  }
-
-  async getInviters (blockHash: string, contractAddress: string): Promise<ValueResult> {
-    log('getInviters: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_DELEGATEDSENDING);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const contractResult = await contract.getInviters({ blockTag: blockHash });
-
-    const value = contractResult.map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt());
-    const result: ValueResult = { value };
-
-    return result;
-  }
-
-  async getInvited (blockHash: string, contractAddress: string, _who: bigint): Promise<ValueResult> {
-    log('getInvited: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_DELEGATEDSENDING);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const contractResult = await contract.getInvited(_who, { blockTag: blockHash });
-
-    const value = contractResult.map((val: ethers.BigNumber | number) => ethers.BigNumber.from(val).toBigInt());
-    const result: ValueResult = { value };
 
     return result;
   }

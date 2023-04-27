@@ -16,11 +16,6 @@ query events($blockHash: String!, $contractAddress: String!, $name: String){
         contract
         eventIndex
         event{
-            ... on PoolEvent {
-                prefix
-                who
-                size
-            }
             ... on SentEvent {
                 prefix
                 fromPool

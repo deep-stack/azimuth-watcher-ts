@@ -39,13 +39,7 @@ type ResultEvent {
   proof: Proof
 }
 
-union Event = PoolEvent | SentEvent
-
-type PoolEvent {
-  prefix: Int!
-  who: BigInt!
-  size: Int!
-}
+union Event = SentEvent
 
 type SentEvent {
   prefix: Int!
@@ -57,21 +51,6 @@ type SentEvent {
 
 type ResultBoolean {
   value: Boolean!
-  proof: Proof
-}
-
-type ResultBigInt {
-  value: BigInt!
-  proof: Proof
-}
-
-type ResultIntArray {
-  value: [Int!]!
-  proof: Proof
-}
-
-type ResultBigIntArray {
-  value: [BigInt!]!
   proof: Proof
 }
 
@@ -94,11 +73,7 @@ type Query {
   events(blockHash: String!, contractAddress: String!, name: String): [ResultEvent!]
   eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!): [ResultEvent!]
   canSend(blockHash: String!, contractAddress: String!, _as: BigInt!, _point: BigInt!): ResultBoolean!
-  getPool(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultBigInt!
   canReceive(blockHash: String!, contractAddress: String!, _recipient: String!): ResultBoolean!
-  getPoolStars(blockHash: String!, contractAddress: String!, _who: BigInt!): ResultIntArray!
-  getInviters(blockHash: String!, contractAddress: String!): ResultBigIntArray!
-  getInvited(blockHash: String!, contractAddress: String!, _who: BigInt!): ResultBigIntArray!
   getSyncStatus: SyncStatus
   getStateByCID(cid: String!): ResultState
   getState(blockHash: String!, contractAddress: String!, kind: String): ResultState

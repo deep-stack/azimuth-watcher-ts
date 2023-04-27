@@ -21,10 +21,9 @@ import { StateSyncStatus } from './entity/StateSyncStatus';
 import { BlockProgress } from './entity/BlockProgress';
 import { State } from './entity/State';
 import { CanSend } from './entity/CanSend';
-import { GetPool } from './entity/GetPool';
 import { CanReceive } from './entity/CanReceive';
 
-export const ENTITIES = [CanSend, GetPool, CanReceive];
+export const ENTITIES = [CanSend, CanReceive];
 
 export class Database implements DatabaseInterface {
   _config: ConnectionOptions;
@@ -67,15 +66,6 @@ export class Database implements DatabaseInterface {
       });
   }
 
-  async getGetPool ({ blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint }): Promise<GetPool | undefined> {
-    return this._conn.getRepository(GetPool)
-      .findOne({
-        blockHash,
-        contractAddress,
-        _point
-      });
-  }
-
   async getCanReceive ({ blockHash, contractAddress, _recipient }: { blockHash: string, contractAddress: string, _recipient: string }): Promise<CanReceive | undefined> {
     return this._conn.getRepository(CanReceive)
       .findOne({
@@ -88,12 +78,6 @@ export class Database implements DatabaseInterface {
   async saveCanSend ({ blockHash, blockNumber, contractAddress, _as, _point, value, proof }: DeepPartial<CanSend>): Promise<CanSend> {
     const repo = this._conn.getRepository(CanSend);
     const entity = repo.create({ blockHash, blockNumber, contractAddress, _as, _point, value, proof });
-    return repo.save(entity);
-  }
-
-  async saveGetPool ({ blockHash, blockNumber, contractAddress, _point, value, proof }: DeepPartial<GetPool>): Promise<GetPool> {
-    const repo = this._conn.getRepository(GetPool);
-    const entity = repo.create({ blockHash, blockNumber, contractAddress, _point, value, proof });
     return repo.save(entity);
   }
 
@@ -309,7 +293,6 @@ export class Database implements DatabaseInterface {
 
   _setPropColMaps (): void {
     this._propColMaps.CanSend = this._getPropertyColumnMapForEntity('CanSend');
-    this._propColMaps.GetPool = this._getPropertyColumnMapForEntity('GetPool');
     this._propColMaps.CanReceive = this._getPropertyColumnMapForEntity('CanReceive');
   }
 }

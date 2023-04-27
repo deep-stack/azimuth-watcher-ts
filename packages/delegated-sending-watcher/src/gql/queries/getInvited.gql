@@ -1,8 +1,0 @@
-query getInvited($blockHash: String!, $contractAddress: String!, $_who: BigInt!){
-    getInvited(blockHash: $blockHash, contractAddress: $contractAddress, _who: $_who){
-        value
-        proof{
-            data
-        }
-    }
-}

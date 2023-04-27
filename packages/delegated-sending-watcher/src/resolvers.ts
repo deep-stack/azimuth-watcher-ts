@@ -90,24 +90,6 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         return indexer.canSend(blockHash, contractAddress, _as, _point);
       },
 
-      getPool: (
-        _: any,
-        { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        info: GraphQLResolveInfo
-      ): Promise<ValueResult> => {
-        log('getPool', blockHash, contractAddress, _point);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getPool').inc(1);
-
-        // Set cache-control hints
-        // setGQLCacheHints(info, {}, gqlCacheConfig);
-
-        return indexer.getPool(blockHash, contractAddress, _point);
-      },
-
       canReceive: (
         _: any,
         { blockHash, contractAddress, _recipient }: { blockHash: string, contractAddress: string, _recipient: string },
@@ -124,60 +106,6 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
         return indexer.canReceive(blockHash, contractAddress, _recipient);
-      },
-
-      getPoolStars: (
-        _: any,
-        { blockHash, contractAddress, _who }: { blockHash: string, contractAddress: string, _who: bigint },
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        info: GraphQLResolveInfo
-      ): Promise<ValueResult> => {
-        log('getPoolStars', blockHash, contractAddress, _who);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getPoolStars').inc(1);
-
-        // Set cache-control hints
-        // setGQLCacheHints(info, {}, gqlCacheConfig);
-
-        return indexer.getPoolStars(blockHash, contractAddress, _who);
-      },
-
-      getInviters: (
-        _: any,
-        { blockHash, contractAddress }: { blockHash: string, contractAddress: string },
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        info: GraphQLResolveInfo
-      ): Promise<ValueResult> => {
-        log('getInviters', blockHash, contractAddress);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getInviters').inc(1);
-
-        // Set cache-control hints
-        // setGQLCacheHints(info, {}, gqlCacheConfig);
-
-        return indexer.getInviters(blockHash, contractAddress);
-      },
-
-      getInvited: (
-        _: any,
-        { blockHash, contractAddress, _who }: { blockHash: string, contractAddress: string, _who: bigint },
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        info: GraphQLResolveInfo
-      ): Promise<ValueResult> => {
-        log('getInvited', blockHash, contractAddress, _who);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getInvited').inc(1);
-
-        // Set cache-control hints
-        // setGQLCacheHints(info, {}, gqlCacheConfig);
-
-        return indexer.getInvited(blockHash, contractAddress, _who);
       },
 
       events: async (_: any, { blockHash, contractAddress, name }: { blockHash: string, contractAddress: string, name?: string }) => {
