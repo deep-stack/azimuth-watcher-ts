@@ -1,8 +1,0 @@
-query getVotingFor($blockHash: String!, $contractAddress: String!, $_proxy: String!){
-    getVotingFor(blockHash: $blockHash, contractAddress: $contractAddress, _proxy: $_proxy){
-        value
-        proof{
-            data
-        }
-    }
-}

@@ -1,8 +1,0 @@
-query getOwnedPointCount($blockHash: String!, $contractAddress: String!, $_whose: String!){
-    getOwnedPointCount(blockHash: $blockHash, contractAddress: $contractAddress, _whose: $_whose){
-        value
-        proof{
-            data
-        }
-    }
-}

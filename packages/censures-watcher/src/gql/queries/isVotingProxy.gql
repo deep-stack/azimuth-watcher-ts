@@ -1,8 +1,0 @@
-query isVotingProxy($blockHash: String!, $contractAddress: String!, $_point: BigInt!, $_proxy: String!){
-    isVotingProxy(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point, _proxy: $_proxy){
-        value
-        proof{
-            data
-        }
-    }
-}

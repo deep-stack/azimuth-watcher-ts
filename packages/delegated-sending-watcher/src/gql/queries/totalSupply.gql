@@ -1,8 +1,0 @@
-query totalSupply($blockHash: String!, $contractAddress: String!){
-    totalSupply(blockHash: $blockHash, contractAddress: $contractAddress){
-        value
-        proof{
-            data
-        }
-    }
-}

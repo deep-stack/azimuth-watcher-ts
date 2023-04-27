@@ -1,8 +1,0 @@
-query getOwner($blockHash: String!, $contractAddress: String!, $_point: BigInt!){
-    getOwner(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point){
-        value
-        proof{
-            data
-        }
-    }
-}

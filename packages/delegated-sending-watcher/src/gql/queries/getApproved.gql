@@ -1,8 +1,0 @@
-query getApproved($blockHash: String!, $contractAddress: String!, $_tokenId: BigInt!){
-    getApproved(blockHash: $blockHash, contractAddress: $contractAddress, _tokenId: $_tokenId){
-        value
-        proof{
-            data
-        }
-    }
-}

@@ -1,8 +1,0 @@
-query findClaim($blockHash: String!, $contractAddress: String!, $_whose: BigInt!, $_protocol: String!, $_claim: String!){
-    findClaim(blockHash: $blockHash, contractAddress: $contractAddress, _whose: $_whose, _protocol: $_protocol, _claim: $_claim){
-        value
-        proof{
-            data
-        }
-    }
-}

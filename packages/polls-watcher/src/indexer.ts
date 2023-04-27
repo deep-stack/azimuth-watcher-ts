@@ -100,8 +100,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getUpgradeProposals({ blockTag: blockHash });
+    const contractResult = await contract.getUpgradeProposals({ blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     return result;
@@ -127,9 +128,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getUpgradeProposalCount({ blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.getUpgradeProposalCount({ blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -145,8 +146,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getDocumentProposals({ blockTag: blockHash });
+    const contractResult = await contract.getDocumentProposals({ blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     return result;
@@ -172,9 +174,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getDocumentProposalCount({ blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.getDocumentProposalCount({ blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -190,8 +192,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getDocumentMajorities({ blockTag: blockHash });
+    const contractResult = await contract.getDocumentMajorities({ blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     return result;
@@ -217,8 +220,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.hasVotedOnUpgradePoll(_galaxy, _proposal, { blockTag: blockHash });
+    const contractResult = await contract.hasVotedOnUpgradePoll(_galaxy, _proposal, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveHasVotedOnUpgradePoll({ blockHash, blockNumber, contractAddress, _galaxy, _proposal, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -246,8 +250,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.hasVotedOnDocumentPoll(_galaxy, _proposal, { blockTag: blockHash });
+    const contractResult = await contract.hasVotedOnDocumentPoll(_galaxy, _proposal, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveHasVotedOnDocumentPoll({ blockHash, blockNumber, contractAddress, _galaxy, _proposal, value: result.value, proof: JSONbigNative.stringify(result.proof) });

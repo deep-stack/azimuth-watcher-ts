@@ -1,8 +1,0 @@
-query getDocumentProposalCount($blockHash: String!, $contractAddress: String!){
-    getDocumentProposalCount(blockHash: $blockHash, contractAddress: $contractAddress){
-        value
-        proof{
-            data
-        }
-    }
-}

@@ -1,8 +1,0 @@
-query getDocumentMajorities($blockHash: String!, $contractAddress: String!){
-    getDocumentMajorities(blockHash: $blockHash, contractAddress: $contractAddress){
-        value
-        proof{
-            data
-        }
-    }
-}

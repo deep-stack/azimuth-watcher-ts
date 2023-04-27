@@ -1,8 +1,0 @@
-query getContinuityNumber($blockHash: String!, $contractAddress: String!, $_point: BigInt!){
-    getContinuityNumber(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point){
-        value
-        proof{
-            data
-        }
-    }
-}

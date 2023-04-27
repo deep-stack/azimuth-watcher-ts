@@ -1,8 +1,0 @@
-query canManage($blockHash: String!, $contractAddress: String!, $_point: BigInt!, $_who: String!){
-    canManage(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point, _who: $_who){
-        value
-        proof{
-            data
-        }
-    }
-}

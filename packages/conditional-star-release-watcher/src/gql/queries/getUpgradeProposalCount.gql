@@ -1,8 +1,0 @@
-query getUpgradeProposalCount($blockHash: String!, $contractAddress: String!){
-    getUpgradeProposalCount(blockHash: $blockHash, contractAddress: $contractAddress){
-        value
-        proof{
-            data
-        }
-    }
-}

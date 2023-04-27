@@ -1,8 +1,0 @@
-query getSponsoring($blockHash: String!, $contractAddress: String!, $_sponsor: BigInt!){
-    getSponsoring(blockHash: $blockHash, contractAddress: $contractAddress, _sponsor: $_sponsor){
-        value
-        proof{
-            data
-        }
-    }
-}

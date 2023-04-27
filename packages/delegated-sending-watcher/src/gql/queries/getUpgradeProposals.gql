@@ -1,8 +1,0 @@
-query getUpgradeProposals($blockHash: String!, $contractAddress: String!){
-    getUpgradeProposals(blockHash: $blockHash, contractAddress: $contractAddress){
-        value
-        proof{
-            data
-        }
-    }
-}

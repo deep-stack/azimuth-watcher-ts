@@ -93,1358 +93,6 @@ export class Indexer implements IndexerInterface {
     return getResultEvent(event);
   }
 
-  async isActive (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
-    const entity = await this._db.getIsActive({ blockHash, contractAddress, _point });
-    if (entity) {
-      log('isActive: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('isActive: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isActive(_point, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveIsActive({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getKeyRevisionNumber (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
-    const entity = await this._db.getGetKeyRevisionNumber({ blockHash, contractAddress, _point });
-    if (entity) {
-      log('getKeyRevisionNumber: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getKeyRevisionNumber: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getKeyRevisionNumber(_point, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetKeyRevisionNumber({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async hasBeenLinked (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
-    const entity = await this._db.getHasBeenLinked({ blockHash, contractAddress, _point });
-    if (entity) {
-      log('hasBeenLinked: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('hasBeenLinked: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.hasBeenLinked(_point, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveHasBeenLinked({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async isLive (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
-    const entity = await this._db.getIsLive({ blockHash, contractAddress, _point });
-    if (entity) {
-      log('isLive: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('isLive: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isLive(_point, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveIsLive({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getContinuityNumber (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
-    const entity = await this._db.getGetContinuityNumber({ blockHash, contractAddress, _point });
-    if (entity) {
-      log('getContinuityNumber: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getContinuityNumber: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getContinuityNumber(_point, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetContinuityNumber({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getSpawnCount (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
-    const entity = await this._db.getGetSpawnCount({ blockHash, contractAddress, _point });
-    if (entity) {
-      log('getSpawnCount: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getSpawnCount: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getSpawnCount(_point, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetSpawnCount({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getSpawned (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
-    log('getSpawned: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getSpawned(_point, { blockTag: blockHash });
-    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
-
-    const result: ValueResult = { value };
-
-    return result;
-  }
-
-  async hasSponsor (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
-    const entity = await this._db.getHasSponsor({ blockHash, contractAddress, _point });
-    if (entity) {
-      log('hasSponsor: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('hasSponsor: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.hasSponsor(_point, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveHasSponsor({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getSponsor (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
-    const entity = await this._db.getGetSponsor({ blockHash, contractAddress, _point });
-    if (entity) {
-      log('getSponsor: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getSponsor: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getSponsor(_point, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetSponsor({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async isSponsor (blockHash: string, contractAddress: string, _point: bigint, _sponsor: bigint): Promise<ValueResult> {
-    const entity = await this._db.getIsSponsor({ blockHash, contractAddress, _point, _sponsor });
-    if (entity) {
-      log('isSponsor: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('isSponsor: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isSponsor(_point, _sponsor, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveIsSponsor({ blockHash, blockNumber, contractAddress, _point, _sponsor, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getSponsoringCount (blockHash: string, contractAddress: string, _sponsor: bigint): Promise<ValueResult> {
-    const entity = await this._db.getGetSponsoringCount({ blockHash, contractAddress, _sponsor });
-    if (entity) {
-      log('getSponsoringCount: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getSponsoringCount: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getSponsoringCount(_sponsor, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetSponsoringCount({ blockHash, blockNumber, contractAddress, _sponsor, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getSponsoring (blockHash: string, contractAddress: string, _sponsor: bigint): Promise<ValueResult> {
-    log('getSponsoring: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getSponsoring(_sponsor, { blockTag: blockHash });
-    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
-
-    const result: ValueResult = { value };
-
-    return result;
-  }
-
-  async isEscaping (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
-    const entity = await this._db.getIsEscaping({ blockHash, contractAddress, _point });
-    if (entity) {
-      log('isEscaping: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('isEscaping: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isEscaping(_point, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveIsEscaping({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getEscapeRequest (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
-    const entity = await this._db.getGetEscapeRequest({ blockHash, contractAddress, _point });
-    if (entity) {
-      log('getEscapeRequest: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getEscapeRequest: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getEscapeRequest(_point, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetEscapeRequest({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async isRequestingEscapeTo (blockHash: string, contractAddress: string, _point: bigint, _sponsor: bigint): Promise<ValueResult> {
-    const entity = await this._db.getIsRequestingEscapeTo({ blockHash, contractAddress, _point, _sponsor });
-    if (entity) {
-      log('isRequestingEscapeTo: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('isRequestingEscapeTo: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isRequestingEscapeTo(_point, _sponsor, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveIsRequestingEscapeTo({ blockHash, blockNumber, contractAddress, _point, _sponsor, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getEscapeRequestsCount (blockHash: string, contractAddress: string, _sponsor: bigint): Promise<ValueResult> {
-    const entity = await this._db.getGetEscapeRequestsCount({ blockHash, contractAddress, _sponsor });
-    if (entity) {
-      log('getEscapeRequestsCount: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getEscapeRequestsCount: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getEscapeRequestsCount(_sponsor, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetEscapeRequestsCount({ blockHash, blockNumber, contractAddress, _sponsor, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getEscapeRequests (blockHash: string, contractAddress: string, _sponsor: bigint): Promise<ValueResult> {
-    log('getEscapeRequests: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getEscapeRequests(_sponsor, { blockTag: blockHash });
-    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
-
-    const result: ValueResult = { value };
-
-    return result;
-  }
-
-  async getOwner (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
-    const entity = await this._db.getGetOwner({ blockHash, contractAddress, _point });
-    if (entity) {
-      log('getOwner: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getOwner: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getOwner(_point, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetOwner({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async isOwner (blockHash: string, contractAddress: string, _point: bigint, _address: string): Promise<ValueResult> {
-    const entity = await this._db.getIsOwner({ blockHash, contractAddress, _point, _address });
-    if (entity) {
-      log('isOwner: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('isOwner: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isOwner(_point, _address, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveIsOwner({ blockHash, blockNumber, contractAddress, _point, _address, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getOwnedPointCount (blockHash: string, contractAddress: string, _whose: string): Promise<ValueResult> {
-    const entity = await this._db.getGetOwnedPointCount({ blockHash, contractAddress, _whose });
-    if (entity) {
-      log('getOwnedPointCount: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getOwnedPointCount: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getOwnedPointCount(_whose, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetOwnedPointCount({ blockHash, blockNumber, contractAddress, _whose, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getOwnedPoints (blockHash: string, contractAddress: string, _whose: string): Promise<ValueResult> {
-    log('getOwnedPoints: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getOwnedPoints(_whose, { blockTag: blockHash });
-    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
-
-    const result: ValueResult = { value };
-
-    return result;
-  }
-
-  async getOwnedPointAtIndex (blockHash: string, contractAddress: string, _whose: string, _index: bigint): Promise<ValueResult> {
-    const entity = await this._db.getGetOwnedPointAtIndex({ blockHash, contractAddress, _whose, _index });
-    if (entity) {
-      log('getOwnedPointAtIndex: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getOwnedPointAtIndex: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getOwnedPointAtIndex(_whose, _index, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetOwnedPointAtIndex({ blockHash, blockNumber, contractAddress, _whose, _index, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getManagementProxy (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
-    const entity = await this._db.getGetManagementProxy({ blockHash, contractAddress, _point });
-    if (entity) {
-      log('getManagementProxy: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getManagementProxy: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getManagementProxy(_point, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetManagementProxy({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async isManagementProxy (blockHash: string, contractAddress: string, _point: bigint, _proxy: string): Promise<ValueResult> {
-    const entity = await this._db.getIsManagementProxy({ blockHash, contractAddress, _point, _proxy });
-    if (entity) {
-      log('isManagementProxy: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('isManagementProxy: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isManagementProxy(_point, _proxy, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveIsManagementProxy({ blockHash, blockNumber, contractAddress, _point, _proxy, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async canManage (blockHash: string, contractAddress: string, _point: bigint, _who: string): Promise<ValueResult> {
-    const entity = await this._db.getCanManage({ blockHash, contractAddress, _point, _who });
-    if (entity) {
-      log('canManage: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('canManage: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.canManage(_point, _who, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveCanManage({ blockHash, blockNumber, contractAddress, _point, _who, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getManagerForCount (blockHash: string, contractAddress: string, _proxy: string): Promise<ValueResult> {
-    const entity = await this._db.getGetManagerForCount({ blockHash, contractAddress, _proxy });
-    if (entity) {
-      log('getManagerForCount: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getManagerForCount: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getManagerForCount(_proxy, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetManagerForCount({ blockHash, blockNumber, contractAddress, _proxy, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getManagerFor (blockHash: string, contractAddress: string, _proxy: string): Promise<ValueResult> {
-    log('getManagerFor: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getManagerFor(_proxy, { blockTag: blockHash });
-    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
-
-    const result: ValueResult = { value };
-
-    return result;
-  }
-
-  async getSpawnProxy (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
-    const entity = await this._db.getGetSpawnProxy({ blockHash, contractAddress, _point });
-    if (entity) {
-      log('getSpawnProxy: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getSpawnProxy: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getSpawnProxy(_point, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetSpawnProxy({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async isSpawnProxy (blockHash: string, contractAddress: string, _point: bigint, _proxy: string): Promise<ValueResult> {
-    const entity = await this._db.getIsSpawnProxy({ blockHash, contractAddress, _point, _proxy });
-    if (entity) {
-      log('isSpawnProxy: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('isSpawnProxy: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isSpawnProxy(_point, _proxy, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveIsSpawnProxy({ blockHash, blockNumber, contractAddress, _point, _proxy, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async canSpawnAs (blockHash: string, contractAddress: string, _point: bigint, _who: string): Promise<ValueResult> {
-    const entity = await this._db.getCanSpawnAs({ blockHash, contractAddress, _point, _who });
-    if (entity) {
-      log('canSpawnAs: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('canSpawnAs: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.canSpawnAs(_point, _who, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveCanSpawnAs({ blockHash, blockNumber, contractAddress, _point, _who, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getSpawningForCount (blockHash: string, contractAddress: string, _proxy: string): Promise<ValueResult> {
-    const entity = await this._db.getGetSpawningForCount({ blockHash, contractAddress, _proxy });
-    if (entity) {
-      log('getSpawningForCount: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getSpawningForCount: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getSpawningForCount(_proxy, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetSpawningForCount({ blockHash, blockNumber, contractAddress, _proxy, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getSpawningFor (blockHash: string, contractAddress: string, _proxy: string): Promise<ValueResult> {
-    log('getSpawningFor: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getSpawningFor(_proxy, { blockTag: blockHash });
-    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
-
-    const result: ValueResult = { value };
-
-    return result;
-  }
-
-  async getVotingProxy (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
-    const entity = await this._db.getGetVotingProxy({ blockHash, contractAddress, _point });
-    if (entity) {
-      log('getVotingProxy: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getVotingProxy: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getVotingProxy(_point, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetVotingProxy({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async isVotingProxy (blockHash: string, contractAddress: string, _point: bigint, _proxy: string): Promise<ValueResult> {
-    const entity = await this._db.getIsVotingProxy({ blockHash, contractAddress, _point, _proxy });
-    if (entity) {
-      log('isVotingProxy: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('isVotingProxy: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isVotingProxy(_point, _proxy, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveIsVotingProxy({ blockHash, blockNumber, contractAddress, _point, _proxy, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async canVoteAs (blockHash: string, contractAddress: string, _point: bigint, _who: string): Promise<ValueResult> {
-    const entity = await this._db.getCanVoteAs({ blockHash, contractAddress, _point, _who });
-    if (entity) {
-      log('canVoteAs: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('canVoteAs: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.canVoteAs(_point, _who, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveCanVoteAs({ blockHash, blockNumber, contractAddress, _point, _who, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getVotingForCount (blockHash: string, contractAddress: string, _proxy: string): Promise<ValueResult> {
-    const entity = await this._db.getGetVotingForCount({ blockHash, contractAddress, _proxy });
-    if (entity) {
-      log('getVotingForCount: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getVotingForCount: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getVotingForCount(_proxy, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetVotingForCount({ blockHash, blockNumber, contractAddress, _proxy, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getVotingFor (blockHash: string, contractAddress: string, _proxy: string): Promise<ValueResult> {
-    log('getVotingFor: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getVotingFor(_proxy, { blockTag: blockHash });
-    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
-
-    const result: ValueResult = { value };
-
-    return result;
-  }
-
-  async getTransferProxy (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
-    const entity = await this._db.getGetTransferProxy({ blockHash, contractAddress, _point });
-    if (entity) {
-      log('getTransferProxy: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getTransferProxy: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getTransferProxy(_point, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetTransferProxy({ blockHash, blockNumber, contractAddress, _point, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async isTransferProxy (blockHash: string, contractAddress: string, _point: bigint, _proxy: string): Promise<ValueResult> {
-    const entity = await this._db.getIsTransferProxy({ blockHash, contractAddress, _point, _proxy });
-    if (entity) {
-      log('isTransferProxy: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('isTransferProxy: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isTransferProxy(_point, _proxy, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveIsTransferProxy({ blockHash, blockNumber, contractAddress, _point, _proxy, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async canTransfer (blockHash: string, contractAddress: string, _point: bigint, _who: string): Promise<ValueResult> {
-    const entity = await this._db.getCanTransfer({ blockHash, contractAddress, _point, _who });
-    if (entity) {
-      log('canTransfer: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('canTransfer: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.canTransfer(_point, _who, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveCanTransfer({ blockHash, blockNumber, contractAddress, _point, _who, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getTransferringForCount (blockHash: string, contractAddress: string, _proxy: string): Promise<ValueResult> {
-    const entity = await this._db.getGetTransferringForCount({ blockHash, contractAddress, _proxy });
-    if (entity) {
-      log('getTransferringForCount: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getTransferringForCount: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getTransferringForCount(_proxy, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetTransferringForCount({ blockHash, blockNumber, contractAddress, _proxy, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getTransferringFor (blockHash: string, contractAddress: string, _proxy: string): Promise<ValueResult> {
-    log('getTransferringFor: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getTransferringFor(_proxy, { blockTag: blockHash });
-    value = value.map((val: ethers.BigNumber) => ethers.BigNumber.from(val).toBigInt());
-
-    const result: ValueResult = { value };
-
-    return result;
-  }
-
-  async isOperator (blockHash: string, contractAddress: string, _owner: string, _operator: string): Promise<ValueResult> {
-    const entity = await this._db.getIsOperator({ blockHash, contractAddress, _owner, _operator });
-    if (entity) {
-      log('isOperator: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('isOperator: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isOperator(_owner, _operator, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveIsOperator({ blockHash, blockNumber, contractAddress, _owner, _operator, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getUpgradeProposals (blockHash: string, contractAddress: string): Promise<ValueResult> {
-    log('getUpgradeProposals: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getUpgradeProposals({ blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    return result;
-  }
-
-  async getUpgradeProposalCount (blockHash: string, contractAddress: string): Promise<ValueResult> {
-    const entity = await this._db.getGetUpgradeProposalCount({ blockHash, contractAddress });
-    if (entity) {
-      log('getUpgradeProposalCount: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getUpgradeProposalCount: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getUpgradeProposalCount({ blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetUpgradeProposalCount({ blockHash, blockNumber, contractAddress, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getDocumentProposals (blockHash: string, contractAddress: string): Promise<ValueResult> {
-    log('getDocumentProposals: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getDocumentProposals({ blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    return result;
-  }
-
-  async getDocumentProposalCount (blockHash: string, contractAddress: string): Promise<ValueResult> {
-    const entity = await this._db.getGetDocumentProposalCount({ blockHash, contractAddress });
-    if (entity) {
-      log('getDocumentProposalCount: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('getDocumentProposalCount: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getDocumentProposalCount({ blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
-
-    const result: ValueResult = { value };
-
-    await this._db.saveGetDocumentProposalCount({ blockHash, blockNumber, contractAddress, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async getDocumentMajorities (blockHash: string, contractAddress: string): Promise<ValueResult> {
-    log('getDocumentMajorities: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getDocumentMajorities({ blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    return result;
-  }
-
-  async hasVotedOnUpgradePoll (blockHash: string, contractAddress: string, _galaxy: number, _proposal: string): Promise<ValueResult> {
-    const entity = await this._db.getHasVotedOnUpgradePoll({ blockHash, contractAddress, _galaxy, _proposal });
-    if (entity) {
-      log('hasVotedOnUpgradePoll: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('hasVotedOnUpgradePoll: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.hasVotedOnUpgradePoll(_galaxy, _proposal, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveHasVotedOnUpgradePoll({ blockHash, blockNumber, contractAddress, _galaxy, _proposal, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async hasVotedOnDocumentPoll (blockHash: string, contractAddress: string, _galaxy: number, _proposal: string): Promise<ValueResult> {
-    const entity = await this._db.getHasVotedOnDocumentPoll({ blockHash, contractAddress, _galaxy, _proposal });
-    if (entity) {
-      log('hasVotedOnDocumentPoll: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('hasVotedOnDocumentPoll: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.hasVotedOnDocumentPoll(_galaxy, _proposal, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveHasVotedOnDocumentPoll({ blockHash, blockNumber, contractAddress, _galaxy, _proposal, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async findClaim (blockHash: string, contractAddress: string, _whose: bigint, _protocol: string, _claim: string): Promise<ValueResult> {
-    const entity = await this._db.getFindClaim({ blockHash, contractAddress, _whose, _protocol, _claim });
-    if (entity) {
-      log('findClaim: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('findClaim: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.findClaim(_whose, _protocol, _claim, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveFindClaim({ blockHash, blockNumber, contractAddress, _whose, _protocol, _claim, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
   async supportsInterface (blockHash: string, contractAddress: string, _interfaceId: string): Promise<ValueResult> {
     const entity = await this._db.getSupportsInterface({ blockHash, contractAddress, _interfaceId });
     if (entity) {
@@ -1465,11 +113,102 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.supportsInterface(_interfaceId, { blockTag: blockHash });
+    const contractResult = await contract.supportsInterface(_interfaceId, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveSupportsInterface({ blockHash, blockNumber, contractAddress, _interfaceId, value: result.value, proof: JSONbigNative.stringify(result.proof) });
+
+    return result;
+  }
+
+  async name (blockHash: string, contractAddress: string): Promise<ValueResult> {
+    const entity = await this._db.getName({ blockHash, contractAddress });
+    if (entity) {
+      log('name: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('name: db miss, fetching from upstream server');
+
+    const abi = this._abiMap.get(KIND_ECLIPTIC);
+    assert(abi);
+
+    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
+    const contractResult = await contract.name({ blockTag: blockHash });
+
+    const value = contractResult;
+    const result: ValueResult = { value };
+
+    await this._db.saveName({ blockHash, blockNumber, contractAddress, value: result.value, proof: JSONbigNative.stringify(result.proof) });
+
+    return result;
+  }
+
+  async symbol (blockHash: string, contractAddress: string): Promise<ValueResult> {
+    const entity = await this._db.getSymbol({ blockHash, contractAddress });
+    if (entity) {
+      log('symbol: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('symbol: db miss, fetching from upstream server');
+
+    const abi = this._abiMap.get(KIND_ECLIPTIC);
+    assert(abi);
+
+    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
+    const contractResult = await contract.symbol({ blockTag: blockHash });
+
+    const value = contractResult;
+    const result: ValueResult = { value };
+
+    await this._db.saveSymbol({ blockHash, blockNumber, contractAddress, value: result.value, proof: JSONbigNative.stringify(result.proof) });
+
+    return result;
+  }
+
+  async tokenURI (blockHash: string, contractAddress: string, _tokenId: bigint): Promise<ValueResult> {
+    const entity = await this._db.getTokenURI({ blockHash, contractAddress, _tokenId });
+    if (entity) {
+      log('tokenURI: db hit.');
+
+      return {
+        value: entity.value,
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
+    log('tokenURI: db miss, fetching from upstream server');
+
+    const abi = this._abiMap.get(KIND_ECLIPTIC);
+    assert(abi);
+
+    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
+    const contractResult = await contract.tokenURI(_tokenId, { blockTag: blockHash });
+
+    const value = contractResult;
+    const result: ValueResult = { value };
+
+    await this._db.saveTokenURI({ blockHash, blockNumber, contractAddress, _tokenId, value: result.value, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }
@@ -1494,9 +233,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.balanceOf(_owner, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.balanceOf(_owner, { blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -1525,8 +264,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.ownerOf(_tokenId, { blockTag: blockHash });
+    const contractResult = await contract.ownerOf(_tokenId, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveOwnerOf({ blockHash, blockNumber, contractAddress, _tokenId, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1554,8 +294,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.exists(_tokenId, { blockTag: blockHash });
+    const contractResult = await contract.exists(_tokenId, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveExists({ blockHash, blockNumber, contractAddress, _tokenId, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1583,8 +324,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.getApproved(_tokenId, { blockTag: blockHash });
+    const contractResult = await contract.getApproved(_tokenId, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveGetApproved({ blockHash, blockNumber, contractAddress, _tokenId, value: result.value, proof: JSONbigNative.stringify(result.proof) });
@@ -1612,191 +354,12 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.isApprovedForAll(_owner, _operator, { blockTag: blockHash });
+    const contractResult = await contract.isApprovedForAll(_owner, _operator, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveIsApprovedForAll({ blockHash, blockNumber, contractAddress, _owner, _operator, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async totalSupply (blockHash: string, contractAddress: string): Promise<ValueResult> {
-    const entity = await this._db.getTotalSupply({ blockHash, contractAddress });
-    if (entity) {
-      log('totalSupply: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('totalSupply: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.totalSupply({ blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
-
-    const result: ValueResult = { value };
-
-    await this._db.saveTotalSupply({ blockHash, blockNumber, contractAddress, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async tokenOfOwnerByIndex (blockHash: string, contractAddress: string, _owner: string, _index: bigint): Promise<ValueResult> {
-    const entity = await this._db.getTokenOfOwnerByIndex({ blockHash, contractAddress, _owner, _index });
-    if (entity) {
-      log('tokenOfOwnerByIndex: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('tokenOfOwnerByIndex: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.tokenOfOwnerByIndex(_owner, _index, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
-
-    const result: ValueResult = { value };
-
-    await this._db.saveTokenOfOwnerByIndex({ blockHash, blockNumber, contractAddress, _owner, _index, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async tokenByIndex (blockHash: string, contractAddress: string, _index: bigint): Promise<ValueResult> {
-    const entity = await this._db.getTokenByIndex({ blockHash, contractAddress, _index });
-    if (entity) {
-      log('tokenByIndex: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('tokenByIndex: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.tokenByIndex(_index, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
-
-    const result: ValueResult = { value };
-
-    await this._db.saveTokenByIndex({ blockHash, blockNumber, contractAddress, _index, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async name (blockHash: string, contractAddress: string): Promise<ValueResult> {
-    const entity = await this._db.getName({ blockHash, contractAddress });
-    if (entity) {
-      log('name: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('name: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.name({ blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveName({ blockHash, blockNumber, contractAddress, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async symbol (blockHash: string, contractAddress: string): Promise<ValueResult> {
-    const entity = await this._db.getSymbol({ blockHash, contractAddress });
-    if (entity) {
-      log('symbol: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('symbol: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.symbol({ blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveSymbol({ blockHash, blockNumber, contractAddress, value: result.value, proof: JSONbigNative.stringify(result.proof) });
-
-    return result;
-  }
-
-  async tokenURI (blockHash: string, contractAddress: string, _tokenId: bigint): Promise<ValueResult> {
-    const entity = await this._db.getTokenURI({ blockHash, contractAddress, _tokenId });
-    if (entity) {
-      log('tokenURI: db hit.');
-
-      return {
-        value: entity.value,
-        proof: JSON.parse(entity.proof)
-      };
-    }
-
-    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
-    const blockNumber = ethers.BigNumber.from(number).toNumber();
-
-    log('tokenURI: db miss, fetching from upstream server');
-
-    const abi = this._abiMap.get(KIND_ECLIPTIC);
-    assert(abi);
-
-    const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.tokenURI(_tokenId, { blockTag: blockHash });
-
-    const result: ValueResult = { value };
-
-    await this._db.saveTokenURI({ blockHash, blockNumber, contractAddress, _tokenId, value: result.value, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }
@@ -1821,9 +384,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    let value = await contract.getSpawnLimit(_point, _time, { blockTag: blockHash });
-    value = value.toString();
-    value = BigInt(value);
+    const contractResult = await contract.getSpawnLimit(_point, _time, { blockTag: blockHash });
+
+    const value = ethers.BigNumber.from(contractResult).toBigInt();
 
     const result: ValueResult = { value };
 
@@ -1852,8 +415,9 @@ export class Indexer implements IndexerInterface {
     assert(abi);
 
     const contract = new ethers.Contract(contractAddress, abi, this._ethProvider);
-    const value = await contract.canEscapeTo(_point, _sponsor, { blockTag: blockHash });
+    const contractResult = await contract.canEscapeTo(_point, _sponsor, { blockTag: blockHash });
 
+    const value = contractResult;
     const result: ValueResult = { value };
 
     await this._db.saveCanEscapeTo({ blockHash, blockNumber, contractAddress, _point, _sponsor, value: result.value, proof: JSONbigNative.stringify(result.proof) });

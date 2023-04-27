@@ -1,8 +1,0 @@
-query getEscapeRequests($blockHash: String!, $contractAddress: String!, $_sponsor: BigInt!){
-    getEscapeRequests(blockHash: $blockHash, contractAddress: $contractAddress, _sponsor: $_sponsor){
-        value
-        proof{
-            data
-        }
-    }
-}

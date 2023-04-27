@@ -1,8 +1,0 @@
-query getSpawningFor($blockHash: String!, $contractAddress: String!, $_proxy: String!){
-    getSpawningFor(blockHash: $blockHash, contractAddress: $contractAddress, _proxy: $_proxy){
-        value
-        proof{
-            data
-        }
-    }
-}

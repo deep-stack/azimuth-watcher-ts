@@ -1,8 +1,0 @@
-query canSpawnAs($blockHash: String!, $contractAddress: String!, $_point: BigInt!, $_who: String!){
-    canSpawnAs(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point, _who: $_who){
-        value
-        proof{
-            data
-        }
-    }
-}

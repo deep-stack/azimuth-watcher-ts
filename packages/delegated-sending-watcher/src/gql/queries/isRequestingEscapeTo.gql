@@ -1,8 +1,0 @@
-query isRequestingEscapeTo($blockHash: String!, $contractAddress: String!, $_point: BigInt!, $_sponsor: BigInt!){
-    isRequestingEscapeTo(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point, _sponsor: $_sponsor){
-        value
-        proof{
-            data
-        }
-    }
-}

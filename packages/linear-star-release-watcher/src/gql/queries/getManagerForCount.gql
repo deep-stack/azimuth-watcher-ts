@@ -1,8 +1,0 @@
-query getManagerForCount($blockHash: String!, $contractAddress: String!, $_proxy: String!){
-    getManagerForCount(blockHash: $blockHash, contractAddress: $contractAddress, _proxy: $_proxy){
-        value
-        proof{
-            data
-        }
-    }
-}

@@ -1,8 +1,0 @@
-query exists($blockHash: String!, $contractAddress: String!, $_tokenId: BigInt!){
-    exists(blockHash: $blockHash, contractAddress: $contractAddress, _tokenId: $_tokenId){
-        value
-        proof{
-            data
-        }
-    }
-}

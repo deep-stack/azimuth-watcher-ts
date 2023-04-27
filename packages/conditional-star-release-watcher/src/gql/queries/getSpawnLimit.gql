@@ -1,8 +1,0 @@
-query getSpawnLimit($blockHash: String!, $contractAddress: String!, $_point: BigInt!, $_time: BigInt!){
-    getSpawnLimit(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point, _time: $_time){
-        value
-        proof{
-            data
-        }
-    }
-}

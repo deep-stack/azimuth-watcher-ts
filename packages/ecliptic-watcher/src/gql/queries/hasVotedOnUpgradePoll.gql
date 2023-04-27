@@ -1,8 +1,0 @@
-query hasVotedOnUpgradePoll($blockHash: String!, $contractAddress: String!, $_galaxy: Int!, $_proposal: String!){
-    hasVotedOnUpgradePoll(blockHash: $blockHash, contractAddress: $contractAddress, _galaxy: $_galaxy, _proposal: $_proposal){
-        value
-        proof{
-            data
-        }
-    }
-}

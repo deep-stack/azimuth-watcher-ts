@@ -1,8 +1,0 @@
-query getManagerFor($blockHash: String!, $contractAddress: String!, $_proxy: String!){
-    getManagerFor(blockHash: $blockHash, contractAddress: $contractAddress, _proxy: $_proxy){
-        value
-        proof{
-            data
-        }
-    }
-}

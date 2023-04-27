@@ -1,8 +1,0 @@
-query isTransferProxy($blockHash: String!, $contractAddress: String!, $_point: BigInt!, $_proxy: String!){
-    isTransferProxy(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point, _proxy: $_proxy){
-        value
-        proof{
-            data
-        }
-    }
-}

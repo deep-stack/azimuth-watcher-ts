@@ -1,8 +1,0 @@
-query isSpawnProxy($blockHash: String!, $contractAddress: String!, $_point: BigInt!, $_proxy: String!){
-    isSpawnProxy(blockHash: $blockHash, contractAddress: $contractAddress, _point: $_point, _proxy: $_proxy){
-        value
-        proof{
-            data
-        }
-    }
-}
