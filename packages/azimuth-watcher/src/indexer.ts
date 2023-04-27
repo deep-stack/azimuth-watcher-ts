@@ -124,6 +124,24 @@ export class Indexer implements IndexerInterface {
   }
 
   async getKeys (blockHash: string, contractAddress: string, _point: bigint): Promise<ValueResult> {
+    const entity = await this._db.getGetKeys({ blockHash, contractAddress, _point });
+    if (entity) {
+      log('getKeys: db hit.');
+
+      return {
+        value: {
+          value0: entity.value0,
+          value1: entity.value1,
+          value2: entity.value2,
+          value3: entity.value3
+        },
+        proof: JSON.parse(entity.proof)
+      };
+    }
+
+    const { block: { number } } = await this._ethClient.getBlockByHash(blockHash);
+    const blockNumber = ethers.BigNumber.from(number).toNumber();
+
     log('getKeys: db miss, fetching from upstream server');
 
     const abi = this._abiMap.get(KIND_AZIMUTH);
@@ -140,6 +158,8 @@ export class Indexer implements IndexerInterface {
     };
 
     const result: ValueResult = { value };
+
+    await this._db.saveGetKeys({ blockHash, blockNumber, contractAddress, _point, value0: value.value0, value1: value.value1, value2: value.value2, value3: value.value3, proof: JSONbigNative.stringify(result.proof) });
 
     return result;
   }

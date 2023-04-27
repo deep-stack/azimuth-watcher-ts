@@ -24,7 +24,16 @@ export class GetKeys {
     _point!: bigint;
 
   @Column('varchar')
-    value!: string;
+    value0!: string;
+
+  @Column('varchar')
+    value1!: string;
+
+  @Column('numeric', { transformer: bigintTransformer })
+    value2!: bigint;
+
+  @Column('numeric', { transformer: bigintTransformer })
+    value3!: bigint;
 
   @Column('text', { nullable: true })
     proof!: string;

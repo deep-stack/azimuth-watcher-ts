@@ -433,9 +433,9 @@ export class Database implements DatabaseInterface {
     return repo.save(entity);
   }
 
-  async saveGetKeys ({ blockHash, blockNumber, contractAddress, _point, value, proof }: DeepPartial<GetKeys>): Promise<GetKeys> {
+  async saveGetKeys ({ blockHash, blockNumber, contractAddress, _point, value0, value1, value2, value3, proof }: DeepPartial<GetKeys>): Promise<GetKeys> {
     const repo = this._conn.getRepository(GetKeys);
-    const entity = repo.create({ blockHash, blockNumber, contractAddress, _point, value, proof });
+    const entity = repo.create({ blockHash, blockNumber, contractAddress, _point, value0, value1, value2, value3, proof });
     return repo.save(entity);
   }
 
