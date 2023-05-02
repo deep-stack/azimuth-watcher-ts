@@ -1,6 +1,6 @@
 [server]
   host = "127.0.0.1"
-  port = 3009
+  port = 3001
   kind = "lazy"
 
   # Checkpointing state.
@@ -48,8 +48,8 @@
 
 [upstream]
   [upstream.ethServer]
-    gqlApiEndpoint = "http://127.0.0.1:8082/graphql"
-    rpcProviderEndpoint = "http://127.0.0.1:8081"
+    gqlApiEndpoint = "http://127.0.0.1:8083/graphql"
+    rpcProviderEndpoint = "http://127.0.0.1:8082"
 
   [upstream.cache]
     name = "requests"
