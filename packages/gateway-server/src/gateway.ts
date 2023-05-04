@@ -4,6 +4,8 @@
 
 import { createYoga } from 'graphql-yoga';
 import isReachable from 'is-reachable';
+import assert from 'assert';
+import { URL } from 'url';
 
 import { buildHTTPExecutor } from '@graphql-tools/executor-http';
 import { stitchSchemas } from '@graphql-tools/stitch';
@@ -13,7 +15,14 @@ import watchers from './watchers.json';
 
 async function makeGatewaySchema () {
   // Check that watcher endpoints are reachable.
-  await isReachable(watchers.map(watcher => watcher.endpoint));
+  for (const watcher of watchers) {
+    const url = new URL(watcher.endpoint);
+
+    assert(
+      await isReachable(`${url.hostname}:${url.port}`),
+      `Watcher endpoint ${watcher.endpoint} is not reachable.`
+    );
+  }
 
   const subSchemaPromises = watchers.map(async watcher => {
     // Make remote executor:
@@ -44,6 +53,6 @@ export const gatewayApp = createYoga({
   schema: makeGatewaySchema(),
   maskedErrors: false,
   graphiql: {
-    title: 'Azimuth watchers'
+    title: 'Azimuth Watchers'
   }
 });
