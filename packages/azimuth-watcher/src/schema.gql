@@ -16,7 +16,7 @@ type Proof {
 }
 
 type _Block_ {
-  cid: String!
+  cid: String
   hash: String!
   number: Int!
   timestamp: Int!
@@ -155,19 +155,23 @@ type ResultString {
   proof: Proof
 }
 
-type SyncStatus {
-  latestIndexedBlockHash: String!
-  latestIndexedBlockNumber: Int!
-  latestCanonicalBlockHash: String!
-  latestCanonicalBlockNumber: Int!
-}
-
 type ResultState {
   block: _Block_!
   contractAddress: String!
   cid: String!
   kind: String!
   data: String!
+}
+
+type SyncStatus {
+  latestIndexedBlockHash: String!
+  latestIndexedBlockNumber: Int!
+  latestCanonicalBlockHash: String!
+  latestCanonicalBlockNumber: Int!
+  initialIndexedBlockHash: String!
+  initialIndexedBlockNumber: Int!
+  latestProcessedBlockHash: String!
+  latestProcessedBlockNumber: Int!
 }
 
 type Query {
@@ -217,9 +221,9 @@ type Query {
   getTransferringForCount(blockHash: String!, contractAddress: String!, _proxy: String!): ResultBigInt!
   getTransferringFor(blockHash: String!, contractAddress: String!, _proxy: String!): ResultBigIntArray!
   isOperator(blockHash: String!, contractAddress: String!, _owner: String!, _operator: String!): ResultBoolean!
-  getSyncStatus: SyncStatus
   getStateByCID(cid: String!): ResultState
   getState(blockHash: String!, contractAddress: String!, kind: String): ResultState
+  getSyncStatus: SyncStatus
 }
 
 type Mutation {

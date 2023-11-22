@@ -47,6 +47,6 @@ export const canTransfer = fs.readFileSync(path.join(__dirname, 'canTransfer.gql
 export const getTransferringForCount = fs.readFileSync(path.join(__dirname, 'getTransferringForCount.gql'), 'utf8');
 export const getTransferringFor = fs.readFileSync(path.join(__dirname, 'getTransferringFor.gql'), 'utf8');
 export const isOperator = fs.readFileSync(path.join(__dirname, 'isOperator.gql'), 'utf8');
-export const getSyncStatus = fs.readFileSync(path.join(__dirname, 'getSyncStatus.gql'), 'utf8');
 export const getStateByCID = fs.readFileSync(path.join(__dirname, 'getStateByCID.gql'), 'utf8');
 export const getState = fs.readFileSync(path.join(__dirname, 'getState.gql'), 'utf8');
+export const getSyncStatus = fs.readFileSync(path.join(__dirname, 'getSyncStatus.gql'), 'utf8');

@@ -2,9 +2,15 @@
   "name": "azimuth-watcher-ts",
   "private": true,
   "license": "AGPL-3.0",
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/@cerc-io/rpc-eth-client",
+      "**/typeorm-naming-strategies"
+    ]
+  },
   "scripts": {
     "build": "lerna run build --stream",
     "lint": "lerna run lint --stream -- --max-warnings=0",
