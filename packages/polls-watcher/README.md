@@ -81,7 +81,7 @@ To enable GQL requests caching:
     yarn server
     ```
 
-    GQL console: http://localhost:3009/graphql
+    GQL console: http://localhost:3008/graphql
 
 * If the watcher is an `active` watcher:
 
@@ -97,7 +97,7 @@ To enable GQL requests caching:
     yarn server
     ```
 
-    GQL console: http://localhost:3009/graphql
+    GQL console: http://localhost:3008/graphql
 
   * To watch a contract:
 

@@ -21,4 +21,7 @@ export class Contract {
 
   @Column('integer')
     startingBlock!: number;
+
+  @Column('jsonb', { nullable: true })
+    context!: Record<string, { data: any, type: number }>;
 }
