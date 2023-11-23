@@ -14,6 +14,6 @@ export const getApproved = fs.readFileSync(path.join(__dirname, 'getApproved.gql
 export const isApprovedForAll = fs.readFileSync(path.join(__dirname, 'isApprovedForAll.gql'), 'utf8');
 export const getSpawnLimit = fs.readFileSync(path.join(__dirname, 'getSpawnLimit.gql'), 'utf8');
 export const canEscapeTo = fs.readFileSync(path.join(__dirname, 'canEscapeTo.gql'), 'utf8');
-export const getSyncStatus = fs.readFileSync(path.join(__dirname, 'getSyncStatus.gql'), 'utf8');
 export const getStateByCID = fs.readFileSync(path.join(__dirname, 'getStateByCID.gql'), 'utf8');
 export const getState = fs.readFileSync(path.join(__dirname, 'getState.gql'), 'utf8');
+export const getSyncStatus = fs.readFileSync(path.join(__dirname, 'getSyncStatus.gql'), 'utf8');

@@ -4,5 +4,9 @@ query getSyncStatus{
         latestIndexedBlockNumber
         latestCanonicalBlockHash
         latestCanonicalBlockNumber
+        initialIndexedBlockHash
+        initialIndexedBlockNumber
+        latestProcessedBlockHash
+        latestProcessedBlockNumber
     }
 }
