@@ -3,13 +3,8 @@
 //
 
 import assert from 'assert';
-import BigInt from 'apollo-type-bigint';
 import debug from 'debug';
-import Decimal from 'decimal.js';
-import {
-  GraphQLScalarType,
-  GraphQLResolveInfo
-} from 'graphql';
+import { GraphQLResolveInfo } from 'graphql';
 
 import {
   ValueResult,
@@ -17,6 +12,8 @@ import {
   gqlQueryCount,
   getResultState,
   IndexerInterface,
+  GraphQLBigInt,
+  GraphQLBigDecimal,
   EventWatcher,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setGQLCacheHints
@@ -33,20 +30,9 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
   const gqlCacheConfig = indexer.serverConfig.gqlCache;
 
   return {
-    BigInt: new BigInt('bigInt'),
+    BigInt: GraphQLBigInt,
 
-    BigDecimal: new GraphQLScalarType({
-      name: 'BigDecimal',
-      description: 'BigDecimal custom scalar type',
-      parseValue (value) {
-        // value from the client
-        return new Decimal(value);
-      },
-      serialize (value: Decimal) {
-        // value sent to the client
-        return value.toFixed();
-      }
-    }),
+    BigDecimal: GraphQLBigDecimal,
 
     Event: {
       __resolveType: (obj: any) => {
@@ -127,9 +113,14 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         gqlTotalQueryCount.inc(1);
         gqlQueryCount.labels('eventsInRange').inc(1);
 
-        const { expected, actual } = await indexer.getProcessedBlockCountForRange(fromBlockNumber, toBlockNumber);
-        if (expected !== actual) {
-          throw new Error(`Range not available, expected ${expected}, got ${actual} blocks in range`);
+        const syncStatus = await indexer.getSyncStatus();
+
+        if (!syncStatus) {
+          throw new Error('No blocks processed yet');
+        }
+
+        if ((fromBlockNumber < syncStatus.initialIndexedBlockNumber) || (toBlockNumber > syncStatus.latestProcessedBlockNumber)) {
+          throw new Error(`Block range should be between ${syncStatus.initialIndexedBlockNumber} and ${syncStatus.latestProcessedBlockNumber}`);
         }
 
         const events = await indexer.getEventsInRange(fromBlockNumber, toBlockNumber);

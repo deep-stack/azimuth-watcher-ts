@@ -204,10 +204,10 @@ export class Database implements DatabaseInterface {
     return this._baseDatabase.saveBlockProgress(repo, block);
   }
 
-  async saveContract (queryRunner: QueryRunner, address: string, kind: string, checkpoint: boolean, startingBlock: number): Promise<Contract> {
+  async saveContract (queryRunner: QueryRunner, address: string, kind: string, checkpoint: boolean, startingBlock: number, context?: any): Promise<Contract> {
     const repo = queryRunner.manager.getRepository(Contract);
 
-    return this._baseDatabase.saveContract(repo, address, kind, checkpoint, startingBlock);
+    return this._baseDatabase.saveContract(repo, address, kind, checkpoint, startingBlock, context);
   }
 
   async updateSyncStatusIndexedBlock (queryRunner: QueryRunner, blockHash: string, blockNumber: number, force = false): Promise<SyncStatus> {
@@ -226,6 +226,18 @@ export class Database implements DatabaseInterface {
     const repo = queryRunner.manager.getRepository(SyncStatus);
 
     return this._baseDatabase.updateSyncStatusChainHead(repo, blockHash, blockNumber, force);
+  }
+
+  async updateSyncStatusProcessedBlock (queryRunner: QueryRunner, blockHash: string, blockNumber: number, force = false): Promise<SyncStatus> {
+    const repo = queryRunner.manager.getRepository(SyncStatus);
+
+    return this._baseDatabase.updateSyncStatusProcessedBlock(repo, blockHash, blockNumber, force);
+  }
+
+  async updateSyncStatusIndexingError (queryRunner: QueryRunner, hasIndexingError: boolean): Promise<SyncStatus | undefined> {
+    const repo = queryRunner.manager.getRepository(SyncStatus);
+
+    return this._baseDatabase.updateSyncStatusIndexingError(repo, hasIndexingError);
   }
 
   async getSyncStatus (queryRunner: QueryRunner): Promise<SyncStatus | undefined> {

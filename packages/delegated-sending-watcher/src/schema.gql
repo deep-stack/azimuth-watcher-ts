@@ -16,7 +16,7 @@ type Proof {
 }
 
 type _Block_ {
-  cid: String!
+  cid: String
   hash: String!
   number: Int!
   timestamp: Int!
@@ -54,13 +54,6 @@ type ResultBoolean {
   proof: Proof
 }
 
-type SyncStatus {
-  latestIndexedBlockHash: String!
-  latestIndexedBlockNumber: Int!
-  latestCanonicalBlockHash: String!
-  latestCanonicalBlockNumber: Int!
-}
-
 type ResultState {
   block: _Block_!
   contractAddress: String!
@@ -69,14 +62,25 @@ type ResultState {
   data: String!
 }
 
+type SyncStatus {
+  latestIndexedBlockHash: String!
+  latestIndexedBlockNumber: Int!
+  latestCanonicalBlockHash: String!
+  latestCanonicalBlockNumber: Int!
+  initialIndexedBlockHash: String!
+  initialIndexedBlockNumber: Int!
+  latestProcessedBlockHash: String!
+  latestProcessedBlockNumber: Int!
+}
+
 type Query {
   events(blockHash: String!, contractAddress: String!, name: String): [ResultEvent!]
   eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!): [ResultEvent!]
   canSend(blockHash: String!, contractAddress: String!, _as: BigInt!, _point: BigInt!): ResultBoolean!
   canReceive(blockHash: String!, contractAddress: String!, _recipient: String!): ResultBoolean!
-  getSyncStatus: SyncStatus
   getStateByCID(cid: String!): ResultState
   getState(blockHash: String!, contractAddress: String!, kind: String): ResultState
+  getSyncStatus: SyncStatus
 }
 
 type Mutation {
