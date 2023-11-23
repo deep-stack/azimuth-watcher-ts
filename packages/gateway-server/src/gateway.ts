@@ -52,6 +52,7 @@ async function makeGatewaySchema () {
 export const gatewayApp = createYoga({
   schema: makeGatewaySchema(),
   maskedErrors: false,
+  graphqlEndpoint: '/',
   graphiql: {
     title: 'Azimuth Watchers',
     defaultQuery: `#
