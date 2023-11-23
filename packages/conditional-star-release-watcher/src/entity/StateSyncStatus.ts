@@ -12,6 +12,6 @@ export class StateSyncStatus {
   @Column('integer')
     latestIndexedBlockNumber!: number;
 
-  @Column('integer', { nullable: true })
+  @Column('integer')
     latestCheckpointBlockNumber!: number;
 }

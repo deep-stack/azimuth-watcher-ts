@@ -16,7 +16,7 @@ type Proof {
 }
 
 type _Block_ {
-  cid: String!
+  cid: String
   hash: String!
   number: Int!
   timestamp: Int!
@@ -93,19 +93,23 @@ type GetConditionsStateType {
   value3: [BigInt!]!
 }
 
-type SyncStatus {
-  latestIndexedBlockHash: String!
-  latestIndexedBlockNumber: Int!
-  latestCanonicalBlockHash: String!
-  latestCanonicalBlockNumber: Int!
-}
-
 type ResultState {
   block: _Block_!
   contractAddress: String!
   cid: String!
   kind: String!
   data: String!
+}
+
+type SyncStatus {
+  latestIndexedBlockHash: String!
+  latestIndexedBlockNumber: Int!
+  latestCanonicalBlockHash: String!
+  latestCanonicalBlockNumber: Int!
+  initialIndexedBlockHash: String!
+  initialIndexedBlockNumber: Int!
+  latestProcessedBlockHash: String!
+  latestProcessedBlockNumber: Int!
 }
 
 type Query {
@@ -121,9 +125,9 @@ type Query {
   hasForfeitedBatch(blockHash: String!, contractAddress: String!, _participant: String!, _batch: Int!): ResultBoolean!
   getRemainingStars(blockHash: String!, contractAddress: String!, _participant: String!): ResultIntArray!
   getConditionsState(blockHash: String!, contractAddress: String!): ResultGetConditionsStateType!
-  getSyncStatus: SyncStatus
   getStateByCID(cid: String!): ResultState
   getState(blockHash: String!, contractAddress: String!, kind: String): ResultState
+  getSyncStatus: SyncStatus
 }
 
 type Mutation {

@@ -13,6 +13,6 @@ export const getForfeited = fs.readFileSync(path.join(__dirname, 'getForfeited.g
 export const hasForfeitedBatch = fs.readFileSync(path.join(__dirname, 'hasForfeitedBatch.gql'), 'utf8');
 export const getRemainingStars = fs.readFileSync(path.join(__dirname, 'getRemainingStars.gql'), 'utf8');
 export const getConditionsState = fs.readFileSync(path.join(__dirname, 'getConditionsState.gql'), 'utf8');
-export const getSyncStatus = fs.readFileSync(path.join(__dirname, 'getSyncStatus.gql'), 'utf8');
 export const getStateByCID = fs.readFileSync(path.join(__dirname, 'getStateByCID.gql'), 'utf8');
 export const getState = fs.readFileSync(path.join(__dirname, 'getState.gql'), 'utf8');
+export const getSyncStatus = fs.readFileSync(path.join(__dirname, 'getSyncStatus.gql'), 'utf8');
