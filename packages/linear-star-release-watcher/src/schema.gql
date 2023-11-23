@@ -16,7 +16,7 @@ type Proof {
 }
 
 type _Block_ {
-  cid: String!
+  cid: String
   hash: String!
   number: Int!
   timestamp: Int!
@@ -65,13 +65,6 @@ type ResultIntArray {
   proof: Proof
 }
 
-type SyncStatus {
-  latestIndexedBlockHash: String!
-  latestIndexedBlockNumber: Int!
-  latestCanonicalBlockHash: String!
-  latestCanonicalBlockNumber: Int!
-}
-
 type ResultState {
   block: _Block_!
   contractAddress: String!
@@ -80,15 +73,26 @@ type ResultState {
   data: String!
 }
 
+type SyncStatus {
+  latestIndexedBlockHash: String!
+  latestIndexedBlockNumber: Int!
+  latestCanonicalBlockHash: String!
+  latestCanonicalBlockNumber: Int!
+  initialIndexedBlockHash: String!
+  initialIndexedBlockNumber: Int!
+  latestProcessedBlockHash: String!
+  latestProcessedBlockNumber: Int!
+}
+
 type Query {
   events(blockHash: String!, contractAddress: String!, name: String): [ResultEvent!]
   eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!): [ResultEvent!]
   withdrawLimit(blockHash: String!, contractAddress: String!, _participant: String!): ResultInt!
   verifyBalance(blockHash: String!, contractAddress: String!, _participant: String!): ResultBoolean!
   getRemainingStars(blockHash: String!, contractAddress: String!, _participant: String!): ResultIntArray!
-  getSyncStatus: SyncStatus
   getStateByCID(cid: String!): ResultState
   getState(blockHash: String!, contractAddress: String!, kind: String): ResultState
+  getSyncStatus: SyncStatus
 }
 
 type Mutation {

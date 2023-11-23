@@ -13,8 +13,8 @@ export class BlockProgress implements BlockProgressInterface {
   @PrimaryGeneratedColumn()
     id!: number;
 
-  @Column('varchar')
-    cid!: string;
+  @Column('varchar', { nullable: true })
+    cid!: string | null;
 
   @Column('varchar', { length: 66 })
     blockHash!: string;
