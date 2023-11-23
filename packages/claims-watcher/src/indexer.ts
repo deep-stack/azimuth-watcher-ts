@@ -6,11 +6,10 @@ import assert from 'assert';
 import { DeepPartial, FindConditions, FindManyOptions } from 'typeorm';
 import debug from 'debug';
 import JSONbig from 'json-bigint';
-import { ethers } from 'ethers';
+import { ethers, constants } from 'ethers';
 
 import { JsonFragment } from '@ethersproject/abi';
 import { BaseProvider } from '@ethersproject/providers';
-import { EthClient } from '@cerc-io/ipld-eth-client';
 import { MappingKey, StorageLayout } from '@cerc-io/solidity-mapper';
 import {
   Indexer as BaseIndexer,
@@ -25,7 +24,12 @@ import {
   ResultEvent,
   getResultEvent,
   DatabaseInterface,
-  Clients
+  Clients,
+  EthClient,
+  UpstreamConfig,
+  EthFullBlock,
+  EthFullTransaction,
+  ExtraEventData
 } from '@cerc-io/util';
 
 import ClaimsArtifacts from './artifacts/Claims.json';
@@ -50,34 +54,58 @@ export class Indexer implements IndexerInterface {
   _ethProvider: BaseProvider;
   _baseIndexer: BaseIndexer;
   _serverConfig: ServerConfig;
+  _upstreamConfig: UpstreamConfig;
 
   _abiMap: Map<string, JsonFragment[]>;
   _storageLayoutMap: Map<string, StorageLayout>;
   _contractMap: Map<string, ethers.utils.Interface>;
+  eventSignaturesMap: Map<string, string[]>;
 
-  constructor (serverConfig: ServerConfig, db: DatabaseInterface, clients: Clients, ethProvider: BaseProvider, jobQueue: JobQueue) {
+  constructor (
+    config: {
+      server: ServerConfig;
+      upstream: UpstreamConfig;
+    },
+    db: DatabaseInterface,
+    clients: Clients,
+    ethProvider: BaseProvider,
+    jobQueue: JobQueue
+  ) {
     assert(db);
     assert(clients.ethClient);
 
     this._db = db as Database;
     this._ethClient = clients.ethClient;
     this._ethProvider = ethProvider;
-    this._serverConfig = serverConfig;
-    this._baseIndexer = new BaseIndexer(this._serverConfig, this._db, this._ethClient, this._ethProvider, jobQueue);
+    this._serverConfig = config.server;
+    this._upstreamConfig = config.upstream;
+    this._baseIndexer = new BaseIndexer(config, this._db, this._ethClient, this._ethProvider, jobQueue);
 
     this._abiMap = new Map();
     this._storageLayoutMap = new Map();
     this._contractMap = new Map();
+    this.eventSignaturesMap = new Map();
 
     const { abi: ClaimsABI } = ClaimsArtifacts;
 
     assert(ClaimsABI);
     this._abiMap.set(KIND_CLAIMS, ClaimsABI);
-    this._contractMap.set(KIND_CLAIMS, new ethers.utils.Interface(ClaimsABI));
+
+    const ClaimsContractInterface = new ethers.utils.Interface(ClaimsABI);
+    this._contractMap.set(KIND_CLAIMS, ClaimsContractInterface);
+
+    const ClaimsEventSignatures = Object.values(ClaimsContractInterface.events).map(value => {
+      return ClaimsContractInterface.getEventTopic(value);
+    });
+    this.eventSignaturesMap.set(KIND_CLAIMS, ClaimsEventSignatures);
   }
 
   get serverConfig (): ServerConfig {
     return this._serverConfig;
+  }
+
+  get upstreamConfig (): UpstreamConfig {
+    return this._upstreamConfig;
   }
 
   get storageLayoutMap (): Map<string, StorageLayout> {
@@ -234,16 +262,17 @@ export class Indexer implements IndexerInterface {
     await this._baseIndexer.removeStates(blockNumber, kind);
   }
 
-  async triggerIndexingOnEvent (event: Event): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async triggerIndexingOnEvent (event: Event, extraData: ExtraEventData): Promise<void> {
     const resultEvent = this.getResultEvent(event);
 
     // Call custom hook function for indexing on event.
     await handleEvent(this, resultEvent);
   }
 
-  async processEvent (event: Event): Promise<void> {
+  async processEvent (event: Event, extraData: ExtraEventData): Promise<void> {
     // Trigger indexing of data based on the event.
-    await this.triggerIndexingOnEvent(event);
+    await this.triggerIndexingOnEvent(event, extraData);
   }
 
   async processBlock (blockProgress: BlockProgress): Promise<void> {
@@ -274,7 +303,11 @@ export class Indexer implements IndexerInterface {
     return this._db.getStateSyncStatus();
   }
 
-  async updateStateSyncStatusIndexedBlock (blockNumber: number, force?: boolean): Promise<StateSyncStatus> {
+  async updateStateSyncStatusIndexedBlock (blockNumber: number, force?: boolean): Promise<StateSyncStatus | undefined> {
+    if (!this._serverConfig.enableState) {
+      return;
+    }
+
     const dbTx = await this._db.createTransactionRunner();
     let res;
 
@@ -308,9 +341,13 @@ export class Indexer implements IndexerInterface {
     return res;
   }
 
-  async getLatestCanonicalBlock (): Promise<BlockProgress> {
+  async getLatestCanonicalBlock (): Promise<BlockProgress | undefined> {
     const syncStatus = await this.getSyncStatus();
     assert(syncStatus);
+
+    if (syncStatus.latestCanonicalBlockHash === constants.HashZero) {
+      return;
+    }
 
     const latestCanonicalBlock = await this.getBlockProgress(syncStatus.latestCanonicalBlockHash);
     assert(latestCanonicalBlock);
@@ -322,8 +359,8 @@ export class Indexer implements IndexerInterface {
     return this._baseIndexer.getLatestStateIndexedBlock();
   }
 
-  async watchContract (address: string, kind: string, checkpoint: boolean, startingBlock: number): Promise<void> {
-    return this._baseIndexer.watchContract(address, kind, checkpoint, startingBlock);
+  async watchContract (address: string, kind: string, checkpoint: boolean, startingBlock: number, context?: any): Promise<void> {
+    return this._baseIndexer.watchContract(address, kind, checkpoint, startingBlock, context);
   }
 
   updateStateStatusMap (address: string, stateStatus: StateStatus): void {
@@ -338,12 +375,20 @@ export class Indexer implements IndexerInterface {
     return this._baseIndexer.saveEventEntity(dbEvent);
   }
 
+  async saveEvents (dbEvents: Event[]): Promise<void> {
+    return this._baseIndexer.saveEvents(dbEvents);
+  }
+
   async getEventsByFilter (blockHash: string, contract?: string, name?: string): Promise<Array<Event>> {
     return this._baseIndexer.getEventsByFilter(blockHash, contract, name);
   }
 
   isWatchedContract (address : string): Contract | undefined {
     return this._baseIndexer.isWatchedContract(address);
+  }
+
+  getWatchedContracts (): Contract[] {
+    return this._baseIndexer.getWatchedContracts();
   }
 
   getContractsByKind (kind: string): Contract[] {
@@ -380,6 +425,14 @@ export class Indexer implements IndexerInterface {
     return syncStatus;
   }
 
+  async updateSyncStatusProcessedBlock (blockHash: string, blockNumber: number, force = false): Promise<SyncStatus> {
+    return this._baseIndexer.updateSyncStatusProcessedBlock(blockHash, blockNumber, force);
+  }
+
+  async updateSyncStatusIndexingError (hasIndexingError: boolean): Promise<SyncStatus | undefined> {
+    return this._baseIndexer.updateSyncStatusIndexingError(hasIndexingError);
+  }
+
   async getEvent (id: string): Promise<Event | undefined> {
     return this._baseIndexer.getEvent(id);
   }
@@ -396,7 +449,24 @@ export class Indexer implements IndexerInterface {
     return this._baseIndexer.getBlocksAtHeight(height, isPruned);
   }
 
-  async saveBlockAndFetchEvents (block: DeepPartial<BlockProgress>): Promise<[BlockProgress, DeepPartial<Event>[]]> {
+  async fetchAndSaveFilteredEventsAndBlocks (startBlock: number, endBlock: number): Promise<{
+    blockProgress: BlockProgress,
+    events: DeepPartial<Event>[],
+    ethFullBlock: EthFullBlock;
+    ethFullTransactions: EthFullTransaction[];
+  }[]> {
+    return this._baseIndexer.fetchAndSaveFilteredEventsAndBlocks(startBlock, endBlock, this.eventSignaturesMap, this.parseEventNameAndArgs.bind(this));
+  }
+
+  async fetchEventsForContracts (blockHash: string, blockNumber: number, addresses: string[]): Promise<DeepPartial<Event>[]> {
+    return this._baseIndexer.fetchEventsForContracts(blockHash, blockNumber, addresses, this.eventSignaturesMap, this.parseEventNameAndArgs.bind(this));
+  }
+
+  async saveBlockAndFetchEvents (block: DeepPartial<BlockProgress>): Promise<[
+    BlockProgress,
+    DeepPartial<Event>[],
+    EthFullTransaction[]
+  ]> {
     return this._saveBlockAndFetchEvents(block);
   }
 
@@ -425,17 +495,26 @@ export class Indexer implements IndexerInterface {
     await this._baseIndexer.resetWatcherToBlock(blockNumber, entities);
   }
 
+  async clearProcessedBlockData (block: BlockProgress): Promise<void> {
+    const entities = [...ENTITIES];
+    await this._baseIndexer.clearProcessedBlockData(block, entities);
+  }
+
   async _saveBlockAndFetchEvents ({
     cid: blockCid,
     blockHash,
     blockNumber,
     blockTimestamp,
     parentHash
-  }: DeepPartial<BlockProgress>): Promise<[BlockProgress, DeepPartial<Event>[]]> {
+  }: DeepPartial<BlockProgress>): Promise<[
+    BlockProgress,
+    DeepPartial<Event>[],
+    EthFullTransaction[]
+  ]> {
     assert(blockHash);
     assert(blockNumber);
 
-    const dbEvents = await this._baseIndexer.fetchEvents(blockHash, blockNumber, this.parseEventNameAndArgs.bind(this));
+    const { events: dbEvents, transactions } = await this._baseIndexer.fetchEvents(blockHash, blockNumber, this.eventSignaturesMap, this.parseEventNameAndArgs.bind(this));
 
     const dbTx = await this._db.createTransactionRunner();
     try {
@@ -452,7 +531,7 @@ export class Indexer implements IndexerInterface {
       await dbTx.commitTransaction();
       console.timeEnd(`time:indexer#_saveBlockAndFetchEvents-db-save-${blockNumber}`);
 
-      return [blockProgress, []];
+      return [blockProgress, [], transactions];
     } catch (error) {
       await dbTx.rollbackTransaction();
       throw error;
