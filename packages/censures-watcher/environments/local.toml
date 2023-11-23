@@ -1,7 +1,8 @@
 [server]
   host = "127.0.0.1"
   port = 3002
-  kind = "lazy"
+  kind = "active"
+  gqlPath = "/graphql"
 
   # Checkpointing state.
   checkpointing = true
@@ -11,14 +12,14 @@
 
   # Enable state creation
   # CAUTION: Disable only if state creation is not desired or can be filled subsequently
-  enableState = true
-
-  # Boolean to filter logs by contract.
-  filterLogs = false
+  enableState = false
 
   # Max block range for which to return events in eventsInRange GQL query.
   # Use -1 for skipping check on block range.
   maxEventsBlockRange = 1000
+
+  # Flag to specify whether RPC endpoint supports block hash as block tag parameter
+  rpcSupportsBlockHashParam = false
 
   # GQL cache settings
   [server.gqlCache]
@@ -48,8 +49,19 @@
 
 [upstream]
   [upstream.ethServer]
-    gqlApiEndpoint = "http://127.0.0.1:8083/graphql"
-    rpcProviderEndpoint = "http://127.0.0.1:8082"
+    gqlApiEndpoint = "http://127.0.0.1:8082/graphql"
+    rpcProviderEndpoint = "http://127.0.0.1:8081"
+
+    # Boolean flag to specify if rpc-eth-client should be used for RPC endpoint instead of ipld-eth-client (ipld-eth-server GQL client)
+    rpcClient = true
+
+    # Boolean flag to specify if rpcProviderEndpoint is an FEVM RPC endpoint
+    isFEVM = false
+
+    # Boolean flag to filter event logs by contracts
+    filterLogsByAddresses = true
+    # Boolean flag to filter event logs by topics
+    filterLogsByTopics = false
 
   [upstream.cache]
     name = "requests"
@@ -61,6 +73,17 @@
   maxCompletionLagInSecs = 300
   jobDelayInMilliSecs = 100
   eventsInBatch = 50
+  subgraphEventsOrder = true
   blockDelayInMilliSecs = 2000
-  prefetchBlocksInMem = true
-  prefetchBlockCount = 10
+
+  # Boolean to switch between modes of processing events when starting the server.
+  # Setting to true will fetch filtered events and required blocks in a range of blocks and then process them.
+  # Setting to false will fetch blocks consecutively with its events and then process them (Behaviour is followed in realtime processing near head).
+  useBlockRanges = true
+
+  # Block range in which logs are fetched during historical blocks processing
+  historicalLogsBlockRange = 2000
+
+  # Max block range of historical processing after which it waits for completion of events processing
+  # If set to -1 historical processing does not wait for events processing and completes till latest canonical block
+  historicalMaxFetchAhead = 10000
