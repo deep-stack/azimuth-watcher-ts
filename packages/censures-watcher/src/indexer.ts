@@ -117,6 +117,12 @@ export class Indexer implements IndexerInterface {
     await this._baseIndexer.fetchStateStatus();
   }
 
+  switchClients ({ ethClient, ethProvider }: { ethClient: EthClient, ethProvider: BaseProvider }): void {
+    this._ethClient = ethClient;
+    this._ethProvider = ethProvider;
+    this._baseIndexer.switchClients({ ethClient, ethProvider });
+  }
+
   getResultEvent (event: Event): ResultEvent {
     return getResultEvent(event);
   }
@@ -374,20 +380,34 @@ export class Indexer implements IndexerInterface {
     console.timeEnd('time:indexer#processBlock-init_state');
   }
 
-  parseEventNameAndArgs (kind: string, logObj: any): any {
+  parseEventNameAndArgs (kind: string, logObj: any): { eventParsed: boolean, eventDetails: any } {
     const { topics, data } = logObj;
 
     const contract = this._contractMap.get(kind);
     assert(contract);
 
-    const logDescription = contract.parseLog({ data, topics });
+    let logDescription: ethers.utils.LogDescription;
+    try {
+      logDescription = contract.parseLog({ data, topics });
+    } catch (err) {
+      // Return if no matching event found
+      if ((err as Error).message.includes('no matching event')) {
+        log(`WARNING: Skipping event for contract ${kind} as no matching event found in the ABI`);
+        return { eventParsed: false, eventDetails: {} };
+      }
+
+      throw err;
+    }
 
     const { eventName, eventInfo, eventSignature } = this._baseIndexer.parseEvent(logDescription);
 
     return {
-      eventName,
-      eventInfo,
-      eventSignature
+      eventParsed: true,
+      eventDetails: {
+        eventName,
+        eventInfo,
+        eventSignature
+      }
     };
   }
 
@@ -582,8 +602,8 @@ export class Indexer implements IndexerInterface {
     return this._baseIndexer.updateBlockProgress(block, lastProcessedEventIndex);
   }
 
-  async getAncestorAtDepth (blockHash: string, depth: number): Promise<string> {
-    return this._baseIndexer.getAncestorAtDepth(blockHash, depth);
+  async getAncestorAtHeight (blockHash: string, height: number): Promise<string> {
+    return this._baseIndexer.getAncestorAtHeight(blockHash, height);
   }
 
   async resetWatcherToBlock (blockNumber: number): Promise<void> {
@@ -634,5 +654,9 @@ export class Indexer implements IndexerInterface {
     } finally {
       await dbTx.release();
     }
+  }
+
+  async getFullTransactions (txHashList: string[]): Promise<EthFullTransaction[]> {
+    return this._baseIndexer.getFullTransactions(txHashList);
   }
 }
