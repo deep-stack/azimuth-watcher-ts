@@ -420,7 +420,7 @@ export class Indexer implements IndexerInterface {
   }
 
   async getEventsInRange (fromBlockNumber: number, toBlockNumber: number): Promise<Array<Event>> {
-    return this._baseIndexer.getEventsInRange(fromBlockNumber, toBlockNumber, this._serverConfig.maxEventsBlockRange);
+    return this._baseIndexer.getEventsInRange(fromBlockNumber, toBlockNumber, this._serverConfig.gql.maxEventsBlockRange);
   }
 
   async getSyncStatus (): Promise<SyncStatus | undefined> {

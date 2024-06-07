@@ -142,7 +142,7 @@ Steps to generate Azimuth watchers using the code generator ([`@cerc-io/codegen`
   flatten: true
   ```
 
-  Note: Create `.sol` files with the contract code from Etherscan for [`DelegatedSending`](https://etherscan.io/address/0xf6b461fe1ad4bd2ce25b23fe0aff2ac19b3dfa76#code) and [`Ecliptic`](https://etherscan.io/address/ecliptic.eth#code) contracts and use the file path for `contracts.path`
+  Note: Create `.sol` files with the contract code from Etherscan for [`ConditionalStarRelease`](https://etherscan.io/address/0x8C241098C3D3498Fe1261421633FD57986D74AeA#code), [`DelegatedSending`](https://etherscan.io/address/0xf6b461fe1ad4bd2ce25b23fe0aff2ac19b3dfa76#code), [`Ecliptic`](https://etherscan.io/address/ecliptic.eth#code) and [`LinearStarRelease`](https://etherscan.io/address/0x86cd9cd0992F04231751E3761De45cEceA5d1801#code) contracts and use the file path for `contracts.path`
 
 * Run codegen command to generate the watcher:
 

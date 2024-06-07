@@ -2,7 +2,6 @@
   host = "127.0.0.1"
   port = 3008
   kind = "active"
-  gqlPath = "/graphql"
 
   # Checkpointing state.
   checkpointing = true
@@ -14,22 +13,29 @@
   # CAUTION: Disable only if state creation is not desired or can be filled subsequently
   enableState = false
 
-  # Max block range for which to return events in eventsInRange GQL query.
-  # Use -1 for skipping check on block range.
-  maxEventsBlockRange = 1000
-
   # Flag to specify whether RPC endpoint supports block hash as block tag parameter
   rpcSupportsBlockHashParam = false
 
-  # GQL cache settings
-  [server.gqlCache]
-    enabled = true
+  # Server GQL config
+  [server.gql]
+    path = "/graphql"
 
-    # Max in-memory cache size (in bytes) (default 8 MB)
-    # maxCacheSize
+    # Max block range for which to return events in eventsInRange GQL query.
+    # Use -1 for skipping check on block range.
+    maxEventsBlockRange = 1000
 
-    # GQL cache-control max-age settings (in seconds)
-    maxAge = 15
+    # Log directory for GQL requests
+    logDir = "./gql-logs"
+
+    # GQL cache settings
+    [server.gql.cache]
+      enabled = true
+
+      # Max in-memory cache size (in bytes) (default 8 MB)
+      # maxCacheSize
+
+      # GQL cache-control max-age settings (in seconds)
+      maxAge = 15
 
 [metrics]
   host = "127.0.0.1"

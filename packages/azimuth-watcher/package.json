@@ -1,6 +1,6 @@
 {
   "name": "@cerc-io/azimuth-watcher",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "azimuth-watcher",
   "private": true,
   "main": "dist/index.js",
@@ -28,7 +28,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cerc-io/watcher-ts.git"
+    "url": "https://github.com/cerc-io/azimuth-watcher-ts",
+    "directory": "packages/azimuth-watcher"
   },
   "author": "",
   "license": "AGPL-3.0",
@@ -38,10 +39,10 @@
   "homepage": "https://github.com/cerc-io/watcher-ts#readme",
   "dependencies": {
     "@apollo/client": "^3.3.19",
-    "@cerc-io/cli": "^0.2.92",
-    "@cerc-io/ipld-eth-client": "^0.2.92",
-    "@cerc-io/solidity-mapper": "^0.2.92",
-    "@cerc-io/util": "^0.2.92",
+    "@cerc-io/cli": "^0.2.94",
+    "@cerc-io/ipld-eth-client": "^0.2.94",
+    "@cerc-io/solidity-mapper": "^0.2.94",
+    "@cerc-io/util": "^0.2.94",
     "@ethersproject/providers": "^5.4.4",
     "debug": "^4.3.1",
     "decimal.js": "^10.3.1",
@@ -69,6 +70,7 @@
     "eslint-plugin-standard": "^5.0.0",
     "husky": "^7.0.2",
     "ts-node": "^10.2.1",
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.2",
+    "winston": "^3.13.0"
   }
 }

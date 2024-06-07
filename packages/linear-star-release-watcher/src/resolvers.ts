@@ -5,11 +5,14 @@
 import assert from 'assert';
 import debug from 'debug';
 import { GraphQLResolveInfo } from 'graphql';
+import { ExpressContext } from 'apollo-server-express';
+import winston from 'winston';
 
 import {
   ValueResult,
   gqlTotalQueryCount,
   gqlQueryCount,
+  gqlQueryDuration,
   getResultState,
   IndexerInterface,
   GraphQLBigInt,
@@ -23,11 +26,57 @@ import { Indexer } from './indexer';
 
 const log = debug('vulcanize:resolver');
 
-export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher: EventWatcher): Promise<any> => {
+const executeAndRecordMetrics = async (
+  indexer: Indexer,
+  gqlLogger: winston.Logger,
+  opName: string,
+  expressContext: ExpressContext,
+  operation: () => Promise<any>
+) => {
+  gqlTotalQueryCount.inc(1);
+  gqlQueryCount.labels(opName).inc(1);
+  const endTimer = gqlQueryDuration.labels(opName).startTimer();
+
+  try {
+    const [result, syncStatus] = await Promise.all([
+      operation(),
+      indexer.getSyncStatus()
+    ]);
+
+    gqlLogger.info({
+      opName,
+      query: expressContext.req.body.query,
+      variables: expressContext.req.body.variables,
+      latestIndexedBlockNumber: syncStatus?.latestIndexedBlockNumber,
+      urlPath: expressContext.req.path,
+      apiKey: expressContext.req.header('x-api-key'),
+      origin: expressContext.req.headers.origin
+    });
+    return result;
+  } catch (error) {
+    gqlLogger.error({
+      opName,
+      error,
+      query: expressContext.req.body.query,
+      variables: expressContext.req.body.variables,
+      urlPath: expressContext.req.path,
+      apiKey: expressContext.req.header('x-api-key'),
+      origin: expressContext.req.headers.origin
+    });
+  } finally {
+    endTimer();
+  }
+};
+
+export const createResolvers = async (
+  indexerArg: IndexerInterface,
+  eventWatcher: EventWatcher,
+  gqlLogger: winston.Logger
+): Promise<any> => {
   const indexer = indexerArg as Indexer;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const gqlCacheConfig = indexer.serverConfig.gqlCache;
+  const gqlCacheConfig = indexer.serverConfig.gql.cache;
 
   return {
     BigInt: GraphQLBigInt,
@@ -62,115 +111,175 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         _: any,
         { blockHash, contractAddress, _participant }: { blockHash: string, contractAddress: string, _participant: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('withdrawLimit', blockHash, contractAddress, _participant);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('withdrawLimit').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.withdrawLimit(blockHash, contractAddress, _participant);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'withdrawLimit',
+          expressContext,
+          async () => indexer.withdrawLimit(blockHash, contractAddress, _participant)
+        );
       },
 
       verifyBalance: (
         _: any,
         { blockHash, contractAddress, _participant }: { blockHash: string, contractAddress: string, _participant: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('verifyBalance', blockHash, contractAddress, _participant);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('verifyBalance').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.verifyBalance(blockHash, contractAddress, _participant);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'verifyBalance',
+          expressContext,
+          async () => indexer.verifyBalance(blockHash, contractAddress, _participant)
+        );
       },
 
       getRemainingStars: (
         _: any,
         { blockHash, contractAddress, _participant }: { blockHash: string, contractAddress: string, _participant: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getRemainingStars', blockHash, contractAddress, _participant);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getRemainingStars').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getRemainingStars(blockHash, contractAddress, _participant);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getRemainingStars',
+          expressContext,
+          async () => indexer.getRemainingStars(blockHash, contractAddress, _participant)
+        );
       },
 
-      events: async (_: any, { blockHash, contractAddress, name }: { blockHash: string, contractAddress: string, name?: string }) => {
+      events: async (
+        _: any,
+        { blockHash, contractAddress, name }: { blockHash: string, contractAddress: string, name?: string },
+        expressContext: ExpressContext
+      ) => {
         log('events', blockHash, contractAddress, name);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('events').inc(1);
 
-        const block = await indexer.getBlockProgress(blockHash);
-        if (!block || !block.isComplete) {
-          throw new Error(`Block hash ${blockHash} number ${block?.blockNumber} not processed yet`);
-        }
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'events',
+          expressContext,
+          async () => {
+            const block = await indexer.getBlockProgress(blockHash);
+            if (!block || !block.isComplete) {
+              throw new Error(`Block hash ${blockHash} number ${block?.blockNumber} not processed yet`);
+            }
 
-        const events = await indexer.getEventsByFilter(blockHash, contractAddress, name);
-        return events.map(event => indexer.getResultEvent(event));
+            const events = await indexer.getEventsByFilter(blockHash, contractAddress, name);
+            return events.map(event => indexer.getResultEvent(event));
+          }
+        );
       },
 
-      eventsInRange: async (_: any, { fromBlockNumber, toBlockNumber }: { fromBlockNumber: number, toBlockNumber: number }) => {
+      eventsInRange: async (
+        _: any,
+        { fromBlockNumber, toBlockNumber }: { fromBlockNumber: number, toBlockNumber: number },
+        expressContext: ExpressContext
+      ) => {
         log('eventsInRange', fromBlockNumber, toBlockNumber);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('eventsInRange').inc(1);
 
-        const syncStatus = await indexer.getSyncStatus();
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'eventsInRange',
+          expressContext,
+          async () => {
+            const syncStatus = await indexer.getSyncStatus();
 
-        if (!syncStatus) {
-          throw new Error('No blocks processed yet');
-        }
+            if (!syncStatus) {
+              throw new Error('No blocks processed yet');
+            }
 
-        if ((fromBlockNumber < syncStatus.initialIndexedBlockNumber) || (toBlockNumber > syncStatus.latestProcessedBlockNumber)) {
-          throw new Error(`Block range should be between ${syncStatus.initialIndexedBlockNumber} and ${syncStatus.latestProcessedBlockNumber}`);
-        }
+            if ((fromBlockNumber < syncStatus.initialIndexedBlockNumber) || (toBlockNumber > syncStatus.latestProcessedBlockNumber)) {
+              throw new Error(`Block range should be between ${syncStatus.initialIndexedBlockNumber} and ${syncStatus.latestProcessedBlockNumber}`);
+            }
 
-        const events = await indexer.getEventsInRange(fromBlockNumber, toBlockNumber);
-        return events.map(event => indexer.getResultEvent(event));
+            const events = await indexer.getEventsInRange(fromBlockNumber, toBlockNumber);
+            return events.map(event => indexer.getResultEvent(event));
+          }
+        );
       },
 
-      getStateByCID: async (_: any, { cid }: { cid: string }) => {
+      getStateByCID: async (
+        _: any,
+        { cid }: { cid: string },
+        expressContext: ExpressContext
+      ) => {
         log('getStateByCID', cid);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getStateByCID').inc(1);
 
-        const state = await indexer.getStateByCID(cid);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getStateByCID',
+          expressContext,
+          async () => {
+            const state = await indexer.getStateByCID(cid);
 
-        return state && state.block.isComplete ? getResultState(state) : undefined;
+            return state && state.block.isComplete ? getResultState(state) : undefined;
+          }
+        );
       },
 
-      getState: async (_: any, { blockHash, contractAddress, kind }: { blockHash: string, contractAddress: string, kind: string }) => {
+      getState: async (
+        _: any,
+        { blockHash, contractAddress, kind }: { blockHash: string, contractAddress: string, kind: string },
+        expressContext: ExpressContext
+      ) => {
         log('getState', blockHash, contractAddress, kind);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getState').inc(1);
 
-        const state = await indexer.getPrevState(blockHash, contractAddress, kind);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getState',
+          expressContext,
+          async () => {
+            const state = await indexer.getPrevState(blockHash, contractAddress, kind);
 
-        return state && state.block.isComplete ? getResultState(state) : undefined;
+            return state && state.block.isComplete ? getResultState(state) : undefined;
+          }
+        );
       },
 
-      getSyncStatus: async () => {
+      getSyncStatus: async (
+        _: any,
+        __: Record<string, never>,
+        expressContext: ExpressContext
+      ) => {
         log('getSyncStatus');
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getSyncStatus').inc(1);
 
-        return indexer.getSyncStatus();
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getSyncStatus',
+          expressContext,
+          async () => indexer.getSyncStatus()
+        );
       }
     }
   };

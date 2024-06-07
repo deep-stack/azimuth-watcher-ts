@@ -5,11 +5,14 @@
 import assert from 'assert';
 import debug from 'debug';
 import { GraphQLResolveInfo } from 'graphql';
+import { ExpressContext } from 'apollo-server-express';
+import winston from 'winston';
 
 import {
   ValueResult,
   gqlTotalQueryCount,
   gqlQueryCount,
+  gqlQueryDuration,
   getResultState,
   IndexerInterface,
   GraphQLBigInt,
@@ -23,11 +26,57 @@ import { Indexer } from './indexer';
 
 const log = debug('vulcanize:resolver');
 
-export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher: EventWatcher): Promise<any> => {
+const executeAndRecordMetrics = async (
+  indexer: Indexer,
+  gqlLogger: winston.Logger,
+  opName: string,
+  expressContext: ExpressContext,
+  operation: () => Promise<any>
+) => {
+  gqlTotalQueryCount.inc(1);
+  gqlQueryCount.labels(opName).inc(1);
+  const endTimer = gqlQueryDuration.labels(opName).startTimer();
+
+  try {
+    const [result, syncStatus] = await Promise.all([
+      operation(),
+      indexer.getSyncStatus()
+    ]);
+
+    gqlLogger.info({
+      opName,
+      query: expressContext.req.body.query,
+      variables: expressContext.req.body.variables,
+      latestIndexedBlockNumber: syncStatus?.latestIndexedBlockNumber,
+      urlPath: expressContext.req.path,
+      apiKey: expressContext.req.header('x-api-key'),
+      origin: expressContext.req.headers.origin
+    });
+    return result;
+  } catch (error) {
+    gqlLogger.error({
+      opName,
+      error,
+      query: expressContext.req.body.query,
+      variables: expressContext.req.body.variables,
+      urlPath: expressContext.req.path,
+      apiKey: expressContext.req.header('x-api-key'),
+      origin: expressContext.req.headers.origin
+    });
+  } finally {
+    endTimer();
+  }
+};
+
+export const createResolvers = async (
+  indexerArg: IndexerInterface,
+  eventWatcher: EventWatcher,
+  gqlLogger: winston.Logger
+): Promise<any> => {
   const indexer = indexerArg as Indexer;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const gqlCacheConfig = indexer.serverConfig.gqlCache;
+  const gqlCacheConfig = indexer.serverConfig.gql.cache;
 
   return {
     BigInt: GraphQLBigInt,
@@ -62,853 +111,1077 @@ export const createResolvers = async (indexerArg: IndexerInterface, eventWatcher
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isActive', blockHash, contractAddress, _point);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('isActive').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.isActive(blockHash, contractAddress, _point);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'isActive',
+          expressContext,
+          async () => indexer.isActive(blockHash, contractAddress, _point)
+        );
       },
 
       getKeys: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getKeys', blockHash, contractAddress, _point);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getKeys').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getKeys(blockHash, contractAddress, _point);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getKeys',
+          expressContext,
+          async () => indexer.getKeys(blockHash, contractAddress, _point)
+        );
       },
 
       getKeyRevisionNumber: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getKeyRevisionNumber', blockHash, contractAddress, _point);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getKeyRevisionNumber').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getKeyRevisionNumber(blockHash, contractAddress, _point);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getKeyRevisionNumber',
+          expressContext,
+          async () => indexer.getKeyRevisionNumber(blockHash, contractAddress, _point)
+        );
       },
 
       hasBeenLinked: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('hasBeenLinked', blockHash, contractAddress, _point);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('hasBeenLinked').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.hasBeenLinked(blockHash, contractAddress, _point);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'hasBeenLinked',
+          expressContext,
+          async () => indexer.hasBeenLinked(blockHash, contractAddress, _point)
+        );
       },
 
       isLive: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isLive', blockHash, contractAddress, _point);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('isLive').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.isLive(blockHash, contractAddress, _point);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'isLive',
+          expressContext,
+          async () => indexer.isLive(blockHash, contractAddress, _point)
+        );
       },
 
       getContinuityNumber: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getContinuityNumber', blockHash, contractAddress, _point);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getContinuityNumber').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getContinuityNumber(blockHash, contractAddress, _point);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getContinuityNumber',
+          expressContext,
+          async () => indexer.getContinuityNumber(blockHash, contractAddress, _point)
+        );
       },
 
       getSpawnCount: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getSpawnCount', blockHash, contractAddress, _point);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getSpawnCount').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getSpawnCount(blockHash, contractAddress, _point);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getSpawnCount',
+          expressContext,
+          async () => indexer.getSpawnCount(blockHash, contractAddress, _point)
+        );
       },
 
       getSpawned: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getSpawned', blockHash, contractAddress, _point);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getSpawned').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getSpawned(blockHash, contractAddress, _point);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getSpawned',
+          expressContext,
+          async () => indexer.getSpawned(blockHash, contractAddress, _point)
+        );
       },
 
       hasSponsor: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('hasSponsor', blockHash, contractAddress, _point);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('hasSponsor').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.hasSponsor(blockHash, contractAddress, _point);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'hasSponsor',
+          expressContext,
+          async () => indexer.hasSponsor(blockHash, contractAddress, _point)
+        );
       },
 
       getSponsor: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getSponsor', blockHash, contractAddress, _point);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getSponsor').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getSponsor(blockHash, contractAddress, _point);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getSponsor',
+          expressContext,
+          async () => indexer.getSponsor(blockHash, contractAddress, _point)
+        );
       },
 
       isSponsor: (
         _: any,
         { blockHash, contractAddress, _point, _sponsor }: { blockHash: string, contractAddress: string, _point: bigint, _sponsor: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isSponsor', blockHash, contractAddress, _point, _sponsor);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('isSponsor').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.isSponsor(blockHash, contractAddress, _point, _sponsor);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'isSponsor',
+          expressContext,
+          async () => indexer.isSponsor(blockHash, contractAddress, _point, _sponsor)
+        );
       },
 
       getSponsoringCount: (
         _: any,
         { blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getSponsoringCount', blockHash, contractAddress, _sponsor);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getSponsoringCount').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getSponsoringCount(blockHash, contractAddress, _sponsor);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getSponsoringCount',
+          expressContext,
+          async () => indexer.getSponsoringCount(blockHash, contractAddress, _sponsor)
+        );
       },
 
       getSponsoring: (
         _: any,
         { blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getSponsoring', blockHash, contractAddress, _sponsor);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getSponsoring').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getSponsoring(blockHash, contractAddress, _sponsor);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getSponsoring',
+          expressContext,
+          async () => indexer.getSponsoring(blockHash, contractAddress, _sponsor)
+        );
       },
 
       isEscaping: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isEscaping', blockHash, contractAddress, _point);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('isEscaping').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.isEscaping(blockHash, contractAddress, _point);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'isEscaping',
+          expressContext,
+          async () => indexer.isEscaping(blockHash, contractAddress, _point)
+        );
       },
 
       getEscapeRequest: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getEscapeRequest', blockHash, contractAddress, _point);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getEscapeRequest').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getEscapeRequest(blockHash, contractAddress, _point);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getEscapeRequest',
+          expressContext,
+          async () => indexer.getEscapeRequest(blockHash, contractAddress, _point)
+        );
       },
 
       isRequestingEscapeTo: (
         _: any,
         { blockHash, contractAddress, _point, _sponsor }: { blockHash: string, contractAddress: string, _point: bigint, _sponsor: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isRequestingEscapeTo', blockHash, contractAddress, _point, _sponsor);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('isRequestingEscapeTo').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.isRequestingEscapeTo(blockHash, contractAddress, _point, _sponsor);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'isRequestingEscapeTo',
+          expressContext,
+          async () => indexer.isRequestingEscapeTo(blockHash, contractAddress, _point, _sponsor)
+        );
       },
 
       getEscapeRequestsCount: (
         _: any,
         { blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getEscapeRequestsCount', blockHash, contractAddress, _sponsor);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getEscapeRequestsCount').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getEscapeRequestsCount(blockHash, contractAddress, _sponsor);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getEscapeRequestsCount',
+          expressContext,
+          async () => indexer.getEscapeRequestsCount(blockHash, contractAddress, _sponsor)
+        );
       },
 
       getEscapeRequests: (
         _: any,
         { blockHash, contractAddress, _sponsor }: { blockHash: string, contractAddress: string, _sponsor: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getEscapeRequests', blockHash, contractAddress, _sponsor);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getEscapeRequests').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getEscapeRequests(blockHash, contractAddress, _sponsor);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getEscapeRequests',
+          expressContext,
+          async () => indexer.getEscapeRequests(blockHash, contractAddress, _sponsor)
+        );
       },
 
       getOwner: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getOwner', blockHash, contractAddress, _point);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getOwner').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getOwner(blockHash, contractAddress, _point);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getOwner',
+          expressContext,
+          async () => indexer.getOwner(blockHash, contractAddress, _point)
+        );
       },
 
       isOwner: (
         _: any,
         { blockHash, contractAddress, _point, _address }: { blockHash: string, contractAddress: string, _point: bigint, _address: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isOwner', blockHash, contractAddress, _point, _address);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('isOwner').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.isOwner(blockHash, contractAddress, _point, _address);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'isOwner',
+          expressContext,
+          async () => indexer.isOwner(blockHash, contractAddress, _point, _address)
+        );
       },
 
       getOwnedPointCount: (
         _: any,
         { blockHash, contractAddress, _whose }: { blockHash: string, contractAddress: string, _whose: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getOwnedPointCount', blockHash, contractAddress, _whose);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getOwnedPointCount').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getOwnedPointCount(blockHash, contractAddress, _whose);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getOwnedPointCount',
+          expressContext,
+          async () => indexer.getOwnedPointCount(blockHash, contractAddress, _whose)
+        );
       },
 
       getOwnedPoints: (
         _: any,
         { blockHash, contractAddress, _whose }: { blockHash: string, contractAddress: string, _whose: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getOwnedPoints', blockHash, contractAddress, _whose);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getOwnedPoints').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getOwnedPoints(blockHash, contractAddress, _whose);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getOwnedPoints',
+          expressContext,
+          async () => indexer.getOwnedPoints(blockHash, contractAddress, _whose)
+        );
       },
 
       getOwnedPointAtIndex: (
         _: any,
         { blockHash, contractAddress, _whose, _index }: { blockHash: string, contractAddress: string, _whose: string, _index: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getOwnedPointAtIndex', blockHash, contractAddress, _whose, _index);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getOwnedPointAtIndex').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getOwnedPointAtIndex(blockHash, contractAddress, _whose, _index);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getOwnedPointAtIndex',
+          expressContext,
+          async () => indexer.getOwnedPointAtIndex(blockHash, contractAddress, _whose, _index)
+        );
       },
 
       getManagementProxy: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getManagementProxy', blockHash, contractAddress, _point);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getManagementProxy').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getManagementProxy(blockHash, contractAddress, _point);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getManagementProxy',
+          expressContext,
+          async () => indexer.getManagementProxy(blockHash, contractAddress, _point)
+        );
       },
 
       isManagementProxy: (
         _: any,
         { blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: bigint, _proxy: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isManagementProxy', blockHash, contractAddress, _point, _proxy);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('isManagementProxy').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.isManagementProxy(blockHash, contractAddress, _point, _proxy);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'isManagementProxy',
+          expressContext,
+          async () => indexer.isManagementProxy(blockHash, contractAddress, _point, _proxy)
+        );
       },
 
       canManage: (
         _: any,
         { blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: bigint, _who: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('canManage', blockHash, contractAddress, _point, _who);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('canManage').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.canManage(blockHash, contractAddress, _point, _who);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'canManage',
+          expressContext,
+          async () => indexer.canManage(blockHash, contractAddress, _point, _who)
+        );
       },
 
       getManagerForCount: (
         _: any,
         { blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getManagerForCount', blockHash, contractAddress, _proxy);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getManagerForCount').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getManagerForCount(blockHash, contractAddress, _proxy);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getManagerForCount',
+          expressContext,
+          async () => indexer.getManagerForCount(blockHash, contractAddress, _proxy)
+        );
       },
 
       getManagerFor: (
         _: any,
         { blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getManagerFor', blockHash, contractAddress, _proxy);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getManagerFor').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getManagerFor(blockHash, contractAddress, _proxy);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getManagerFor',
+          expressContext,
+          async () => indexer.getManagerFor(blockHash, contractAddress, _proxy)
+        );
       },
 
       getSpawnProxy: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getSpawnProxy', blockHash, contractAddress, _point);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getSpawnProxy').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getSpawnProxy(blockHash, contractAddress, _point);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getSpawnProxy',
+          expressContext,
+          async () => indexer.getSpawnProxy(blockHash, contractAddress, _point)
+        );
       },
 
       isSpawnProxy: (
         _: any,
         { blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: bigint, _proxy: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isSpawnProxy', blockHash, contractAddress, _point, _proxy);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('isSpawnProxy').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.isSpawnProxy(blockHash, contractAddress, _point, _proxy);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'isSpawnProxy',
+          expressContext,
+          async () => indexer.isSpawnProxy(blockHash, contractAddress, _point, _proxy)
+        );
       },
 
       canSpawnAs: (
         _: any,
         { blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: bigint, _who: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('canSpawnAs', blockHash, contractAddress, _point, _who);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('canSpawnAs').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.canSpawnAs(blockHash, contractAddress, _point, _who);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'canSpawnAs',
+          expressContext,
+          async () => indexer.canSpawnAs(blockHash, contractAddress, _point, _who)
+        );
       },
 
       getSpawningForCount: (
         _: any,
         { blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getSpawningForCount', blockHash, contractAddress, _proxy);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getSpawningForCount').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getSpawningForCount(blockHash, contractAddress, _proxy);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getSpawningForCount',
+          expressContext,
+          async () => indexer.getSpawningForCount(blockHash, contractAddress, _proxy)
+        );
       },
 
       getSpawningFor: (
         _: any,
         { blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getSpawningFor', blockHash, contractAddress, _proxy);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getSpawningFor').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getSpawningFor(blockHash, contractAddress, _proxy);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getSpawningFor',
+          expressContext,
+          async () => indexer.getSpawningFor(blockHash, contractAddress, _proxy)
+        );
       },
 
       getVotingProxy: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getVotingProxy', blockHash, contractAddress, _point);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getVotingProxy').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getVotingProxy(blockHash, contractAddress, _point);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getVotingProxy',
+          expressContext,
+          async () => indexer.getVotingProxy(blockHash, contractAddress, _point)
+        );
       },
 
       isVotingProxy: (
         _: any,
         { blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: bigint, _proxy: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isVotingProxy', blockHash, contractAddress, _point, _proxy);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('isVotingProxy').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.isVotingProxy(blockHash, contractAddress, _point, _proxy);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'isVotingProxy',
+          expressContext,
+          async () => indexer.isVotingProxy(blockHash, contractAddress, _point, _proxy)
+        );
       },
 
       canVoteAs: (
         _: any,
         { blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: bigint, _who: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('canVoteAs', blockHash, contractAddress, _point, _who);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('canVoteAs').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.canVoteAs(blockHash, contractAddress, _point, _who);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'canVoteAs',
+          expressContext,
+          async () => indexer.canVoteAs(blockHash, contractAddress, _point, _who)
+        );
       },
 
       getVotingForCount: (
         _: any,
         { blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getVotingForCount', blockHash, contractAddress, _proxy);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getVotingForCount').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getVotingForCount(blockHash, contractAddress, _proxy);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getVotingForCount',
+          expressContext,
+          async () => indexer.getVotingForCount(blockHash, contractAddress, _proxy)
+        );
       },
 
       getVotingFor: (
         _: any,
         { blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getVotingFor', blockHash, contractAddress, _proxy);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getVotingFor').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getVotingFor(blockHash, contractAddress, _proxy);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getVotingFor',
+          expressContext,
+          async () => indexer.getVotingFor(blockHash, contractAddress, _proxy)
+        );
       },
 
       getTransferProxy: (
         _: any,
         { blockHash, contractAddress, _point }: { blockHash: string, contractAddress: string, _point: bigint },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getTransferProxy', blockHash, contractAddress, _point);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getTransferProxy').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getTransferProxy(blockHash, contractAddress, _point);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getTransferProxy',
+          expressContext,
+          async () => indexer.getTransferProxy(blockHash, contractAddress, _point)
+        );
       },
 
       isTransferProxy: (
         _: any,
         { blockHash, contractAddress, _point, _proxy }: { blockHash: string, contractAddress: string, _point: bigint, _proxy: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isTransferProxy', blockHash, contractAddress, _point, _proxy);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('isTransferProxy').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.isTransferProxy(blockHash, contractAddress, _point, _proxy);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'isTransferProxy',
+          expressContext,
+          async () => indexer.isTransferProxy(blockHash, contractAddress, _point, _proxy)
+        );
       },
 
       canTransfer: (
         _: any,
         { blockHash, contractAddress, _point, _who }: { blockHash: string, contractAddress: string, _point: bigint, _who: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('canTransfer', blockHash, contractAddress, _point, _who);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('canTransfer').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.canTransfer(blockHash, contractAddress, _point, _who);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'canTransfer',
+          expressContext,
+          async () => indexer.canTransfer(blockHash, contractAddress, _point, _who)
+        );
       },
 
       getTransferringForCount: (
         _: any,
         { blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getTransferringForCount', blockHash, contractAddress, _proxy);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getTransferringForCount').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getTransferringForCount(blockHash, contractAddress, _proxy);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getTransferringForCount',
+          expressContext,
+          async () => indexer.getTransferringForCount(blockHash, contractAddress, _proxy)
+        );
       },
 
       getTransferringFor: (
         _: any,
         { blockHash, contractAddress, _proxy }: { blockHash: string, contractAddress: string, _proxy: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('getTransferringFor', blockHash, contractAddress, _proxy);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getTransferringFor').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.getTransferringFor(blockHash, contractAddress, _proxy);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getTransferringFor',
+          expressContext,
+          async () => indexer.getTransferringFor(blockHash, contractAddress, _proxy)
+        );
       },
 
       isOperator: (
         _: any,
         { blockHash, contractAddress, _owner, _operator }: { blockHash: string, contractAddress: string, _owner: string, _operator: string },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        __: any,
+        expressContext: ExpressContext,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info: GraphQLResolveInfo
       ): Promise<ValueResult> => {
         log('isOperator', blockHash, contractAddress, _owner, _operator);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('isOperator').inc(1);
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
-        return indexer.isOperator(blockHash, contractAddress, _owner, _operator);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'isOperator',
+          expressContext,
+          async () => indexer.isOperator(blockHash, contractAddress, _owner, _operator)
+        );
       },
 
-      events: async (_: any, { blockHash, contractAddress, name }: { blockHash: string, contractAddress: string, name?: string }) => {
+      events: async (
+        _: any,
+        { blockHash, contractAddress, name }: { blockHash: string, contractAddress: string, name?: string },
+        expressContext: ExpressContext
+      ) => {
         log('events', blockHash, contractAddress, name);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('events').inc(1);
 
-        const block = await indexer.getBlockProgress(blockHash);
-        if (!block || !block.isComplete) {
-          throw new Error(`Block hash ${blockHash} number ${block?.blockNumber} not processed yet`);
-        }
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'events',
+          expressContext,
+          async () => {
+            const block = await indexer.getBlockProgress(blockHash);
+            if (!block || !block.isComplete) {
+              throw new Error(`Block hash ${blockHash} number ${block?.blockNumber} not processed yet`);
+            }
 
-        const events = await indexer.getEventsByFilter(blockHash, contractAddress, name);
-        return events.map(event => indexer.getResultEvent(event));
+            const events = await indexer.getEventsByFilter(blockHash, contractAddress, name);
+            return events.map(event => indexer.getResultEvent(event));
+          }
+        );
       },
 
-      eventsInRange: async (_: any, { fromBlockNumber, toBlockNumber }: { fromBlockNumber: number, toBlockNumber: number }) => {
+      eventsInRange: async (
+        _: any,
+        { fromBlockNumber, toBlockNumber }: { fromBlockNumber: number, toBlockNumber: number },
+        expressContext: ExpressContext
+      ) => {
         log('eventsInRange', fromBlockNumber, toBlockNumber);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('eventsInRange').inc(1);
 
-        const syncStatus = await indexer.getSyncStatus();
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'eventsInRange',
+          expressContext,
+          async () => {
+            const syncStatus = await indexer.getSyncStatus();
 
-        if (!syncStatus) {
-          throw new Error('No blocks processed yet');
-        }
+            if (!syncStatus) {
+              throw new Error('No blocks processed yet');
+            }
 
-        if ((fromBlockNumber < syncStatus.initialIndexedBlockNumber) || (toBlockNumber > syncStatus.latestProcessedBlockNumber)) {
-          throw new Error(`Block range should be between ${syncStatus.initialIndexedBlockNumber} and ${syncStatus.latestProcessedBlockNumber}`);
-        }
+            if ((fromBlockNumber < syncStatus.initialIndexedBlockNumber) || (toBlockNumber > syncStatus.latestProcessedBlockNumber)) {
+              throw new Error(`Block range should be between ${syncStatus.initialIndexedBlockNumber} and ${syncStatus.latestProcessedBlockNumber}`);
+            }
 
-        const events = await indexer.getEventsInRange(fromBlockNumber, toBlockNumber);
-        return events.map(event => indexer.getResultEvent(event));
+            const events = await indexer.getEventsInRange(fromBlockNumber, toBlockNumber);
+            return events.map(event => indexer.getResultEvent(event));
+          }
+        );
       },
 
-      getStateByCID: async (_: any, { cid }: { cid: string }) => {
+      getStateByCID: async (
+        _: any,
+        { cid }: { cid: string },
+        expressContext: ExpressContext
+      ) => {
         log('getStateByCID', cid);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getStateByCID').inc(1);
 
-        const state = await indexer.getStateByCID(cid);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getStateByCID',
+          expressContext,
+          async () => {
+            const state = await indexer.getStateByCID(cid);
 
-        return state && state.block.isComplete ? getResultState(state) : undefined;
+            return state && state.block.isComplete ? getResultState(state) : undefined;
+          }
+        );
       },
 
-      getState: async (_: any, { blockHash, contractAddress, kind }: { blockHash: string, contractAddress: string, kind: string }) => {
+      getState: async (
+        _: any,
+        { blockHash, contractAddress, kind }: { blockHash: string, contractAddress: string, kind: string },
+        expressContext: ExpressContext
+      ) => {
         log('getState', blockHash, contractAddress, kind);
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getState').inc(1);
 
-        const state = await indexer.getPrevState(blockHash, contractAddress, kind);
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getState',
+          expressContext,
+          async () => {
+            const state = await indexer.getPrevState(blockHash, contractAddress, kind);
 
-        return state && state.block.isComplete ? getResultState(state) : undefined;
+            return state && state.block.isComplete ? getResultState(state) : undefined;
+          }
+        );
       },
 
-      getSyncStatus: async () => {
+      getSyncStatus: async (
+        _: any,
+        __: Record<string, never>,
+        expressContext: ExpressContext
+      ) => {
         log('getSyncStatus');
-        gqlTotalQueryCount.inc(1);
-        gqlQueryCount.labels('getSyncStatus').inc(1);
 
-        return indexer.getSyncStatus();
+        return executeAndRecordMetrics(
+          indexer,
+          gqlLogger,
+          'getSyncStatus',
+          expressContext,
+          async () => indexer.getSyncStatus()
+        );
       }
     }
   };
