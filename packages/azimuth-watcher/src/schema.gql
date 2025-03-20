@@ -176,7 +176,7 @@ type SyncStatus {
 
 type Query {
   events(blockHash: String!, contractAddress: String!, name: String): [ResultEvent!]
-  eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!): [ResultEvent!]
+  eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!, name: String): [ResultEvent!]
   isActive(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultBoolean!
   getKeys(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultGetKeysType!
   getKeyRevisionNumber(blockHash: String!, contractAddress: String!, _point: BigInt!): ResultBigInt!

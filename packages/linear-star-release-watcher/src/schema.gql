@@ -86,7 +86,7 @@ type SyncStatus {
 
 type Query {
   events(blockHash: String!, contractAddress: String!, name: String): [ResultEvent!]
-  eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!): [ResultEvent!]
+  eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!, name: String): [ResultEvent!]
   withdrawLimit(blockHash: String!, contractAddress: String!, _participant: String!): ResultInt!
   verifyBalance(blockHash: String!, contractAddress: String!, _participant: String!): ResultBoolean!
   getRemainingStars(blockHash: String!, contractAddress: String!, _participant: String!): ResultIntArray!

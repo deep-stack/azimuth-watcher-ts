@@ -75,7 +75,7 @@ type SyncStatus {
 
 type Query {
   events(blockHash: String!, contractAddress: String!, name: String): [ResultEvent!]
-  eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!): [ResultEvent!]
+  eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!, name: String): [ResultEvent!]
   canSend(blockHash: String!, contractAddress: String!, _as: BigInt!, _point: BigInt!): ResultBoolean!
   canReceive(blockHash: String!, contractAddress: String!, _recipient: String!): ResultBoolean!
   getStateByCID(cid: String!): ResultState

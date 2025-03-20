@@ -87,7 +87,7 @@ type SyncStatus {
 
 type Query {
   events(blockHash: String!, contractAddress: String!, name: String): [ResultEvent!]
-  eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!): [ResultEvent!]
+  eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!, name: String): [ResultEvent!]
   getCensuringCount(blockHash: String!, contractAddress: String!, _whose: Int!): ResultBigInt!
   getCensuring(blockHash: String!, contractAddress: String!, _whose: Int!): ResultBigIntArray!
   getCensuredByCount(blockHash: String!, contractAddress: String!, _who: Int!): ResultBigInt!

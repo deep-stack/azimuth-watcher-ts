@@ -80,7 +80,7 @@ type SyncStatus {
 
 type Query {
   events(blockHash: String!, contractAddress: String!, name: String): [ResultEvent!]
-  eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!): [ResultEvent!]
+  eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!, name: String): [ResultEvent!]
   findClaim(blockHash: String!, contractAddress: String!, _whose: BigInt!, _protocol: String!, _claim: String!): ResultInt!
   getStateByCID(cid: String!): ResultState
   getState(blockHash: String!, contractAddress: String!, kind: String): ResultState

@@ -721,8 +721,8 @@ export class Indexer implements IndexerInterface {
     return this._baseIndexer.getProcessedBlockCountForRange(fromBlockNumber, toBlockNumber);
   }
 
-  async getEventsInRange (fromBlockNumber: number, toBlockNumber: number): Promise<Array<Event>> {
-    return this._baseIndexer.getEventsInRange(fromBlockNumber, toBlockNumber, this._serverConfig.gql.maxEventsBlockRange);
+  async getEventsInRange (fromBlockNumber: number, toBlockNumber: number, name?: string): Promise<Array<Event>> {
+    return this._baseIndexer.getEventsInRange(fromBlockNumber, toBlockNumber, this._serverConfig.gql.maxEventsBlockRange, name);
   }
 
   async getSyncStatus (): Promise<SyncStatus | undefined> {

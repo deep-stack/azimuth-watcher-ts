@@ -108,7 +108,7 @@ type SyncStatus {
 
 type Query {
   events(blockHash: String!, contractAddress: String!, name: String): [ResultEvent!]
-  eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!): [ResultEvent!]
+  eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!, name: String): [ResultEvent!]
   supportsInterface(blockHash: String!, contractAddress: String!, _interfaceId: String!): ResultBoolean!
   name(blockHash: String!, contractAddress: String!): ResultString!
   symbol(blockHash: String!, contractAddress: String!): ResultString!

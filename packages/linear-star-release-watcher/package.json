@@ -1,6 +1,6 @@
 {
   "name": "@cerc-io/linear-star-release-watcher",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "linear-star-release-watcher",
   "private": true,
   "main": "dist/index.js",
@@ -39,10 +39,10 @@
   "homepage": "https://github.com/cerc-io/watcher-ts#readme",
   "dependencies": {
     "@apollo/client": "^3.3.19",
-    "@cerc-io/cli": "0.2.98-patch.1",
-    "@cerc-io/ipld-eth-client": "0.2.98-patch.1",
-    "@cerc-io/solidity-mapper": "0.2.98-patch.1",
-    "@cerc-io/util": "0.2.98-patch.1",
+    "@cerc-io/cli": "0.2.98-patch.2",
+    "@cerc-io/ipld-eth-client": "0.2.98-patch.2",
+    "@cerc-io/solidity-mapper": "0.2.98-patch.2",
+    "@cerc-io/util": "0.2.98-patch.2",
     "@ethersproject/providers": "^5.4.4",
     "debug": "^4.3.1",
     "decimal.js": "^10.3.1",

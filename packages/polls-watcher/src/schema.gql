@@ -102,7 +102,7 @@ type SyncStatus {
 
 type Query {
   events(blockHash: String!, contractAddress: String!, name: String): [ResultEvent!]
-  eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!): [ResultEvent!]
+  eventsInRange(fromBlockNumber: Int!, toBlockNumber: Int!, name: String): [ResultEvent!]
   getUpgradeProposals(blockHash: String!, contractAddress: String!): ResultStringArray!
   getUpgradeProposalCount(blockHash: String!, contractAddress: String!): ResultBigInt!
   getDocumentProposals(blockHash: String!, contractAddress: String!): ResultStringArray!
