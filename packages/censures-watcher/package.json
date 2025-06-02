@@ -1,6 +1,6 @@
 {
   "name": "@cerc-io/censures-watcher",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "censures-watcher",
   "private": true,
   "main": "dist/index.js",

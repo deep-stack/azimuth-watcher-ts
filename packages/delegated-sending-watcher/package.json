@@ -1,6 +1,6 @@
 {
   "name": "@cerc-io/delegated-sending-watcher",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "delegated-sending-watcher",
   "private": true,
   "main": "dist/index.js",

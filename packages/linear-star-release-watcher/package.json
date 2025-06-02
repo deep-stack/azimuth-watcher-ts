@@ -1,6 +1,6 @@
 {
   "name": "@cerc-io/linear-star-release-watcher",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "linear-star-release-watcher",
   "private": true,
   "main": "dist/index.js",
