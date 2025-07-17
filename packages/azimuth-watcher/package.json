@@ -1,6 +1,6 @@
 {
   "name": "@cerc-io/azimuth-watcher",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "azimuth-watcher",
   "private": true,
   "main": "dist/index.js",

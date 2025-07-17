@@ -1,0 +1,29 @@
+name: Publish azimuth-watcher docker image on release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: Run docker build and publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run docker build
+        run: docker build -t cerc/watcher-azimuth -f Dockerfile .
+      - name: Get the version
+        id: vars
+        run: |
+          echo "sha=$(echo ${GITHUB_SHA:0:7})" >> $GITHUB_OUTPUT
+          echo "tag=$(echo ${GITHUB_REF#refs/tags/})" >> $GITHUB_OUTPUT          
+      - name: Tag docker image with SHA
+        run: docker tag cerc/watcher-azimuth git.vdb.to/laconicnetwork/cerc/watcher-azimuth:${{steps.vars.outputs.sha}}
+      - name: Tag docker image with release tag
+        run: docker tag git.vdb.to/laconicnetwork/cerc/watcher-azimuth:${{steps.vars.outputs.sha}} git.vdb.to/laconicnetwork/cerc/watcher-azimuth:${{steps.vars.outputs.tag}}
+      - name: Docker Login
+        run: echo ${{ secrets.CICD_PUBLISH_TOKEN }} | docker login https://git.vdb.to -u laconiccicd --password-stdin
+      - name: Docker Push SHA
+        run: docker push git.vdb.to/laconicnetwork/cerc/watcher-azimuth:${{steps.vars.outputs.sha}}
+      - name: Docker Push TAGGED
+        run: docker push git.vdb.to/laconicnetwork/cerc/watcher-azimuth:${{steps.vars.outputs.tag}}
