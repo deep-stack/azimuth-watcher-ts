@@ -2,9 +2,21 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## What is Azimuth?
+
+Azimuth is Urbit's public key infrastructure (PKI) that lives on Ethereum. It's a set of smart contracts that manage Urbit identities called "points" (similar to usernames), their ownership, cryptographic keys, and hierarchical relationships. By storing identity data on Ethereum, the system is decentralized and censorship-resistant.
+
 ## Project Overview
 
 This is a monorepo containing blockchain watchers for the Azimuth PKI system used in Urbit identities. It watches multiple Ethereum contracts (Azimuth, Censures, Claims, ConditionalStarRelease, DelegatedSending, Ecliptic, LinearStarRelease, Polls) and provides GraphQL APIs for querying their state.
+
+**Watchers** are services that continuously monitor smart contracts on Ethereum, index their events and state changes, and provide efficient APIs for querying blockchain data. Instead of directly querying the Ethereum blockchain (which is slow and expensive), applications can query watchers for fast, indexed access to current and historical blockchain state.
+
+## Hosted Service
+
+A public instance is available at: **https://azimuth.dev.vdb.to/graphql**
+
+You can also run the system locally using [Stack Orchestrator](https://git.vdb.to/cerc-io/stack-orchestrator/src/branch/main/app/data/stacks/azimuth).
 
 ## Common Commands
 
@@ -59,6 +71,7 @@ yarn index-block
 ```
 
 ### Gateway Server
+The gateway server runs on port 4000 by default.
 ```bash
 # Development gateway server (proxies to all watchers)
 yarn server:dev
@@ -91,10 +104,12 @@ Each watcher follows identical structure:
 - `src/cli/` - Command-line utilities for management
 
 ### Gateway Server Architecture
+- **Port**: Runs on port 4000 by default (http://localhost:4000/graphql)
 - **Schema stitching**: Combines all watcher schemas with prefixed field names
 - **Health checking**: Monitors watcher availability before routing
-- **Configuration**: `src/watchers.json` defines watcher endpoints and prefixes
+- **Configuration**: `packages/gateway-server/src/watchers.json` defines watcher endpoints and prefixes
 - **GraphQL proxy**: Routes queries like `azimuthGetKeys` to azimuth-watcher at localhost:3001
+- **Query prefixing**: Each watcher's queries are prefixed (e.g., `azimuthGetKeys`, `censuresGetCensuredByCount`, `claimsFindClaim`)
 
 ### Data Flow
 1. **Event Processing**: job-runner fetches Ethereum events → processes through indexer → stores in database
@@ -116,3 +131,57 @@ Each watcher follows identical structure:
 
 ### Generated Watcher Creation
 Watchers are generated using `@cerc-io/codegen` from contract ABIs. The process involves creating config.yaml files specifying contract paths, output folders, and generation modes (eth_call/storage/all).
+
+## Docker & Deployment
+
+### Building Docker Images
+The project includes a Dockerfile for building production-ready container images:
+
+```bash
+# Build the watcher-azimuth image
+docker build -t cerc/watcher-azimuth -f Dockerfile .
+```
+
+The Dockerfile:
+- Uses Node.js 18.16.0 on Alpine Linux 3.16
+- Installs build dependencies (git, python3, alpine-sdk, jq)
+- Embeds the Git commit hash in all package.json files
+- Builds only azimuth-watcher and gateway-server packages
+- Includes toml-js for runtime configuration updates
+- Results in a ~1.1GB production image
+
+### CI/CD Pipeline
+The project uses GitHub Actions for automated Docker image publishing:
+
+- **Trigger**: On release publication (tags)
+- **Workflow**: `.gitea/workflows/docker-image.yml`
+- **Outputs**:
+  - Image tagged with git SHA (e.g., `git.vdb.to/laconicnetwork/cerc/watcher-azimuth:abc1234`)
+  - Image tagged with release version (e.g., `git.vdb.to/laconicnetwork/cerc/watcher-azimuth:v0.1.10`)
+- **Registry**: git.vdb.to
+
+To trigger a release build:
+1. Create and push a new git tag
+2. Publish the release on GitHub
+3. CI will automatically build and push Docker images
+
+## Git Hooks
+
+The project uses [Husky](https://typicode.github.io/husky/) for Git hooks:
+
+- **Pre-commit hook**: Automatically runs `yarn lint` before every commit
+- **Configuration**: `.husky/pre-commit`
+- **Setup**: Run `yarn install` or `yarn prepare` to install hooks
+- **Bypass**: Use `git commit --no-verify` to skip hooks (not recommended)
+
+This ensures code quality by enforcing linting rules before code is committed.
+
+## Key Technologies
+
+- **Language**: TypeScript 5.0+
+- **Database**: PostgreSQL with TypeORM 0.2.37
+- **Blockchain**: ethers.js 5.4+ for Ethereum interaction
+- **GraphQL**: graphql 15.5+ with custom resolvers
+- **API Framework**: @cerc-io packages for watcher infrastructure
+- **Monorepo**: Lerna 6.6+ with Yarn workspaces
+- **Base Image**: Node.js 18.16.0 on Alpine Linux (Docker)

@@ -23,6 +23,7 @@ import {
 } from '@cerc-io/util';
 
 import { Indexer } from './indexer';
+import { mockEventStore, MockEventInput } from './mock-event-store';
 
 const log = debug('vulcanize:resolver');
 
@@ -105,6 +106,12 @@ export const createResolvers = async (
         await indexer.watchContract(address, kind, checkpoint, startingBlock);
 
         return true;
+      },
+
+      injectMockEvents: async (_: any, { events }: { events: MockEventInput[] }): Promise<{ success: boolean, eventsInjected: number }> => {
+        log('injectMockEvents', events.length);
+        const eventsInjected = mockEventStore.addEvents(events);
+        return { success: true, eventsInjected };
       }
     },
 
@@ -1125,7 +1132,8 @@ export const createResolvers = async (
             }
 
             const events = await indexer.getEventsInRange(fromBlockNumber, toBlockNumber, name);
-            return events.map(event => indexer.getResultEvent(event));
+            const mockEvents = mockEventStore.getEventsInRange(fromBlockNumber, toBlockNumber, name);
+            return [...events.map(event => indexer.getResultEvent(event)), ...mockEvents];
           }
         );
       },
