@@ -79,7 +79,7 @@ export const createResolvers = async (
   const indexer = indexerArg as Indexer;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const gqlCacheConfig = indexer.serverConfig.gql.cache;
+  const gqlConfig = indexer.serverConfig.gql;
 
   return {
     BigInt: GraphQLBigInt,
@@ -109,9 +109,14 @@ export const createResolvers = async (
       },
 
       injectMockEvents: async (_: any, { events }: { events: MockEventInput[] }): Promise<{ success: boolean, eventsInjected: number }> => {
-        log('injectMockEvents', events.length);
-        const eventsInjected = mockEventStore.addEvents(events);
-        return { success: true, eventsInjected };
+        if ((gqlConfig as any).enableMockEvents) {
+          log('injectMockEvents', events.length);
+          const eventsInjected = mockEventStore.addEvents(events);
+          return { success: true, eventsInjected };
+        }
+
+        log('Forbidden');
+        return { success: false, eventsInjected: 0 };
       }
     },
 

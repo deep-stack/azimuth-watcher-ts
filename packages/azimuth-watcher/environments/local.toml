@@ -27,6 +27,9 @@
     # Log directory for GQL requests
     logDir = "./gql-logs"
 
+    # Flag to enable injecting mock events for testing
+    enableMockEvents = false
+
     # GQL cache settings
     [server.gql.cache]
       enabled = true
