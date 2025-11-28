@@ -30,6 +30,9 @@
     # Flag to enable injecting mock events for testing
     enableMockEvents = false
 
+    # Flag to enable mocking ship keys for testing
+    enableMockShipKeys = false
+
     # GQL cache settings
     [server.gql.cache]
       enabled = true

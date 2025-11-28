@@ -27,6 +27,12 @@ import { mockEventStore, MockEventInput } from './mock-event-store';
 
 const log = debug('vulcanize:resolver');
 
+// Mock ship keys environment variables
+const TEST_MOCK_POINT = process.env.TEST_MOCK_POINT;
+const TEST_MOCK_ENCRYPTION_KEY = process.env.TEST_MOCK_ENCRYPTION_KEY;
+const TEST_MOCK_AUTHENTICATION_KEY = process.env.TEST_MOCK_AUTHENTICATION_KEY;
+const TEST_MOCK_LIFE = process.env.TEST_MOCK_LIFE;
+
 const executeAndRecordMetrics = async (
   indexer: Indexer,
   gqlLogger: winston.Logger,
@@ -80,6 +86,7 @@ export const createResolvers = async (
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const gqlConfig = indexer.serverConfig.gql;
+  const mockShipKeysEnabled = (gqlConfig as any).enableMockShipKeys;
 
   return {
     BigInt: GraphQLBigInt,
@@ -134,6 +141,17 @@ export const createResolvers = async (
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
 
+        // Check if we should return mocked active status for this point
+        const shouldMock = mockShipKeysEnabled && TEST_MOCK_POINT && _point === BigInt(TEST_MOCK_POINT);
+
+        if (shouldMock) {
+          log('isActive: returning mocked value (true) for point:', _point.toString());
+          return Promise.resolve({
+            value: true,
+            proof: undefined
+          });
+        }
+
         return executeAndRecordMetrics(
           indexer,
           gqlLogger,
@@ -155,6 +173,22 @@ export const createResolvers = async (
 
         // Set cache-control hints
         // setGQLCacheHints(info, {}, gqlCacheConfig);
+
+        // Check if we should return mocked keys for this point
+        const shouldMock = mockShipKeysEnabled && TEST_MOCK_POINT && _point === BigInt(TEST_MOCK_POINT);
+
+        if (shouldMock) {
+          log('getKeys: returning mocked keys for point:', _point.toString());
+          return Promise.resolve({
+            value: {
+              value0: TEST_MOCK_ENCRYPTION_KEY,
+              value1: TEST_MOCK_AUTHENTICATION_KEY,
+              value2: BigInt(0),
+              value3: BigInt(TEST_MOCK_LIFE ?? 1)
+            },
+            proof: undefined
+          });
+        }
 
         return executeAndRecordMetrics(
           indexer,
